@@ -1,0 +1,37 @@
+.quiz-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  justify-content: center;
+}
+
+.quiz-content {
+  width: 300px;
+  background: #f7f7f7;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.option-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.option-input {
+  margin-right: 10px;
+}
+
+.result-text {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.result-text.correct {
+  color: green;
+}
+
+.result-text.incorrect {
+  color: red;
+}

@@ -1,0 +1,75 @@
+import axios from "axios";
+import store from "../redux/store";
+import { SERVICE_HTTP_ADDRESS } from "./constants";
+
+/* -------------------------------------------------------------------------- */
+/*                         HTTP Requests Configuration                        */
+/* -------------------------------------------------------------------------- */
+
+/* ----------------------------- Default Values ----------------------------- */
+
+// axios.defaults.headers = { Authorization: `Bearer ${store.getState().session.token}` }
+
+/* ------------------------------ Interceptors ------------------------------ */
+
+// axios.interceptors.request.use((config) => {
+//   // store.dispatch(incrementLoading());
+//   config.headers.Authorization  =  `Bearer ${store.getState().session.token}`;
+//   return config;
+// });
+
+/* ------------------------------ Http Requests ----------------------------- */
+
+export function get(url, id) {
+  const urlTemplate = (id && `${url}/${id}`) || url;
+
+  return new Promise((resolve, reject) =>
+    axios
+      .get(urlTemplate)
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((err) => {
+        reject(err);
+      })
+  );
+}
+
+export function post(url, params) {
+  return new Promise((resolve, reject) =>
+    axios
+      .post(url, params)
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((err) => {
+        reject(err);
+      })
+  );
+}
+
+export function put(url, params) {
+  return new Promise((resolve, reject) =>
+    axios
+      .put(url, params)
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((err) => {
+        reject(err);
+      })
+  );
+}
+
+export function del(url, params) {
+  return new Promise((resolve, reject) =>
+    axios
+      .delete(url, params)
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((err) => {
+        reject(err);
+      })
+  );
+}
