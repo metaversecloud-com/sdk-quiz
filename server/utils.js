@@ -4,7 +4,6 @@ function checkEnvVariables() {
     "INSTANCE_PROTOCOL",
     "INTERACTIVE_KEY",
     "INTERACTIVE_SECRET",
-    "API_KEY",
   ];
   const missingVariables = requiredEnvVariables.filter(
     (variable) => !process.env[variable]
