@@ -4,7 +4,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   visitor: null,
   droppedAsset: null,
-  droppedAssets: null,
   error: null,
 };
 
@@ -14,9 +13,6 @@ const reducers = {
   },
   setDroppedAsset: (state, action) => {
     state.droppedAsset = action.payload;
-  },
-  setDroppedAssets: (state, action) => {
-    state.droppedAssets = action.payload;
   },
   setError: (state, action) => {
     state.error = action.payload;

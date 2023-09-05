@@ -1,8 +1,7 @@
 import { session } from "../reducers/session";
 import { push } from "redux-first-history";
 import axios from "axios";
-// import { SERVICE_HTTP_ADDRESS } from "../../utils/constants";
-// axios.defaults.baseURL = SERVICE_HTTP_ADDRESS;
+axios.defaults.baseURL = "http://localhost:3000";
 
 export const { setVisitor, setDroppedAsset, setDroppedAssets, setError } =
   session.actions;
@@ -28,6 +27,7 @@ export const getVisitor = () => async (dispatch) => {
       dispatch(setVisitor(response.data.visitor));
     }
   } catch (error) {
+    console.error(error);
     dispatch(setError("There was an error when getting the user content."));
     if (error.response && error.response.data) {
     } else {
@@ -41,28 +41,8 @@ export const getDroppedAsset = () => async (dispatch) => {
     const url = `backend/dropped-asset?${queryParams}`;
 
     const response = await axios.get(url);
-
     if (response.status === 200) {
       dispatch(setDroppedAsset(response?.data?.droppedAsset));
-    }
-  } catch (error) {
-    console.error("error", error);
-    if (error.response && error.response.data) {
-    } else {
-    }
-  }
-};
-
-export const getDroppedAssets = () => async (dispatch) => {
-  try {
-    const queryParams = getQueryParams();
-    const url = `backend/dropped-assets?${queryParams}`;
-
-    const response = await axios.get(url);
-
-    console.log("resssp", response.data.droppedAssets);
-    if (response.status === 200) {
-      dispatch(setDroppedAssets(response?.data?.droppedAssets));
     }
   } catch (error) {
     console.error("error", error);

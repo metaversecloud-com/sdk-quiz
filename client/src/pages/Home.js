@@ -1,26 +1,47 @@
-// src/components/Quiz.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ClipLoader } from "react-spinners";
+import moment from "moment-timezone";
+import { getDroppedAsset, getVisitor } from "../redux/actions/session";
 import "./Home.scss";
 
-const data = {
-  question: "1 + 1?",
-  options: ["1", "2", "3", "4"],
-  answer: "2",
-};
-
 function Quiz() {
+  const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
+
+  const data = droppedAsset?.dataObject;
+
+  useEffect(() => {
+    const fetchDroppedAsset = async () => {
+      await dispatch(getDroppedAsset());
+      await dispatch(getVisitor());
+      setLoading(false);
+    };
+
+    fetchDroppedAsset();
+  }, [dispatch]);
 
   const handleSubmit = () => {
-    setIsCorrect(data.answer === selectedOption);
+    setIsCorrect(data?.answer === selectedOption);
   };
+
+  if (loading) {
+    return (
+      <div className="loader">
+        <ClipLoader color={"#123abc"} loading={loading} size={150} />
+      </div>
+    );
+  }
 
   return (
     <div className="quiz-container">
-      <h1>{data.question}</h1>
+      <h1>{data?.question}</h1>
       <div className="quiz-content">
-        {data.options.map((option, index) => (
+        {data?.options.map((option, index) => (
           <div key={index} className="option-container">
             <input
               type="radio"

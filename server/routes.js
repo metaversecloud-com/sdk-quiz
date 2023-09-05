@@ -1,11 +1,12 @@
 import express from "express";
-import { getDroppedAssets } from "./utils/index.js";
+import { getDroppedAssets, getVisitor } from "./utils/index.js";
 const router = express.Router();
 
 router.get("/", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-router.get("/dropped-assets", getDroppedAssets);
+router.get("/dropped-asset", getDroppedAssets);
+router.get("/visitor", getVisitor);
 
 export default router;

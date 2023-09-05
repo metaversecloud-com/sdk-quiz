@@ -1,4 +1,4 @@
-import { World } from "../topiaInit.js";
+import { DroppedAsset } from "../topiaInit.js";
 export const getDroppedAssets = async (req, res) => {
   try {
     const {
@@ -16,18 +16,11 @@ export const getDroppedAssets = async (req, res) => {
       visitorId,
     };
 
-    const world = await World.create(urlSlug, { credentials });
+    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, {
+      credentials,
+    });
 
-    await world.fetchDroppedAssets();
-    const assets = world.droppedAssets;
-
-    const privateZoneAssets = Object.entries(assets)
-      .filter(
-        ([key, value]) => value.isPrivateZone === true && value.uniqueName
-      )
-      .map(([key, value]) => value);
-
-    return res.json({ droppedAssets: privateZoneAssets });
+    return res.json({ droppedAsset });
   } catch (error) {
     console.error("Error getting the visitor", error);
     return res.status(500).send({ error, success: false });
