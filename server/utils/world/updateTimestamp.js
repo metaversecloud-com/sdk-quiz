@@ -1,5 +1,5 @@
 import { Visitor } from "../topiaInit.js";
-export const getVisitor = async (req, res) => {
+export const updateTimestamp = async (req, res) => {
   try {
     const {
       visitorId,
@@ -8,6 +8,7 @@ export const getVisitor = async (req, res) => {
       interactivePublicKey,
       urlSlug,
     } = req.query;
+
     const visitor = await Visitor.get(visitorId, urlSlug, {
       credentials: {
         assetId,
@@ -17,6 +18,9 @@ export const getVisitor = async (req, res) => {
       },
     });
 
+    const now = Date.now();
+
+    await visitor.setDataObject({ quiz: { start_timestamp: now } });
     await visitor.fetchDataObject();
 
     return res.json({ visitor, success: true });

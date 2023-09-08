@@ -4,6 +4,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   visitor: null,
   droppedAsset: null,
+  leaderboard: null,
+  questionsAnswered: null,
   error: null,
 };
 
@@ -13,6 +15,12 @@ const reducers = {
   },
   setDroppedAsset: (state, action) => {
     state.droppedAsset = action.payload;
+  },
+  setLeaderboard: (state, action) => {
+    state.leaderboard = action.payload;
+  },
+  setQuestionsAnswered: (state, action) => {
+    state.questionsAnswered = action.payload;
   },
   setError: (state, action) => {
     state.error = action.payload;
