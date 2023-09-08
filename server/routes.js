@@ -2,7 +2,8 @@ import express from "express";
 import {
   getDroppedAssets,
   getVisitor,
-  updateTimestamp,
+  getOrUpdateTimestamp,
+  getTimestamp,
   registerUserAnswer,
   clear,
   leaderboard,
@@ -18,7 +19,8 @@ router.get("/", (req, res) => {
 router.get("/dropped-asset", getDroppedAssets);
 router.get("/visitor", getVisitor);
 router.get("/leaderboard", leaderboard);
-router.put("/timestamp", updateTimestamp);
+router.put("/timestamp", getOrUpdateTimestamp);
+router.get("/timestamp", getTimestamp);
 router.post("/registerUserAnswer", registerUserAnswer);
 router.get("/questionsAnsweredFromStart", getQuestionsAnsweredFromStart);
 router.post("/clear", clear);

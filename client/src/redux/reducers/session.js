@@ -22,6 +22,9 @@ const reducers = {
   setQuestionsAnswered: (state, action) => {
     state.questionsAnswered = action.payload;
   },
+  setTimestamp: (state, action) => {
+    state.startTimestamp = action.payload;
+  },
   setError: (state, action) => {
     state.error = action.payload;
   },

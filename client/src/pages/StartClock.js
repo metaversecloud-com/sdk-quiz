@@ -7,6 +7,7 @@ import {
   getVisitor,
   startClock,
   getQuestionsAnsweredFromStart,
+  getOrUpdateTimestamp,
 } from "../redux/actions/session";
 import "./StartClock.scss";
 import Leaderboard from "./Leaderboard";
@@ -23,13 +24,14 @@ function StartClock() {
   const numberOfQuestionsAnswered = useSelector(
     (state) => state?.session?.questionsAnswered?.numberOfQuestionsAnswered
   );
-
-  console.log("visitor", visitor);
+  const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
       await dispatch(getVisitor());
       await dispatch(getQuestionsAnsweredFromStart());
+      await dispatch(getOrUpdateTimestamp());
+
       setLoading(false);
     };
 
@@ -44,7 +46,10 @@ function StartClock() {
     );
   }
 
-  if (numberOfQuestionsAnswered < totalNumberOfQuestionsInQuiz) {
+  if (
+    numberOfQuestionsAnswered != 0 &&
+    numberOfQuestionsAnswered < totalNumberOfQuestionsInQuiz
+  ) {
     return (
       <div className="quiz-ongoing-container">
         <h2>Quiz Still Ongoing!</h2>
@@ -59,6 +64,13 @@ function StartClock() {
           You have answered all the questions in the quiz. We appreciate your
           effort.
         </p>
+      </div>
+    );
+  } else if (numberOfQuestionsAnswered === 0 && startTimestamp) {
+    return (
+      <div className="quiz-ongoing-container">
+        <h2>The quiz started! </h2>
+        <p>Try to answer all questions in the shortest possible time.</p>
       </div>
     );
   }

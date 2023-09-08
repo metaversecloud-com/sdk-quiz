@@ -12,6 +12,7 @@ export const {
   setDroppedAssets,
   setLeaderboard,
   setQuestionsAnswered,
+  setTimestamp,
   setError,
 } = session.actions;
 
@@ -138,6 +139,23 @@ export const getQuestionsAnsweredFromStart = () => async (dispatch) => {
     const response = await axios.get(url);
     if (response.status === 200) {
       dispatch(setQuestionsAnswered(response?.data));
+    }
+  } catch (error) {
+    console.error("error", error);
+    if (error.response && error.response.data) {
+    } else {
+    }
+  }
+};
+
+export const getOrUpdateTimestamp = () => async (dispatch) => {
+  try {
+    const queryParams = getQueryParams();
+    const url = `backend/timestamp?${queryParams}`;
+
+    const response = await axios.get(url);
+    if (response.status === 200) {
+      dispatch(setTimestamp(response?.data?.startTimestamp));
     }
   } catch (error) {
     console.error("error", error);
