@@ -7,6 +7,7 @@ import {
   getVisitor,
   registerUserAnswer,
   clear,
+  getTimestamp,
 } from "../redux/actions/session";
 import "./Home.scss";
 
@@ -14,10 +15,11 @@ function Quiz() {
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [elapsedTime, setElapsedTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
 
   const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
   const visitor = useSelector((state) => state?.session?.visitor);
+  const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const data = droppedAsset?.dataObject;
 
   const quizResults =
@@ -29,6 +31,7 @@ function Quiz() {
     const fetchDroppedAsset = async () => {
       await dispatch(getDroppedAsset());
       await dispatch(getVisitor());
+      await dispatch(getTimestamp());
       setLoading(false);
     };
 
@@ -36,19 +39,15 @@ function Quiz() {
   }, [dispatch]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (visitor?.dataObject?.quiz?.start_timestamp) {
-        const startTimestamp = moment(visitor.dataObject.quiz.start_timestamp);
-        const now = moment();
-        const duration = moment.duration(now.diff(startTimestamp));
-        const minutes = String(duration.minutes()).padStart(2, "0");
-        const seconds = String(duration.seconds()).padStart(2, "0");
-        setElapsedTime(`${minutes}:${seconds}`);
-      }
-    }, 1000);
+    if (startTimestamp) {
+      const interval = setInterval(() => {
+        const now = moment().unix(); // Tempo atual em segundos
+        setElapsedTime(now - startTimestamp);
+      }, 1000);
 
-    return () => clearInterval(interval);
-  }, [visitor]);
+      return () => clearInterval(interval);
+    }
+  }, [startTimestamp]);
 
   const handleSubmit = () => {
     const isCorrectCondition = data?.answer === selectedOption;
@@ -63,6 +62,14 @@ function Quiz() {
     return (
       <div className="loader">
         <ClipLoader color={"#123abc"} loading={loading} size={150} />
+      </div>
+    );
+  }
+
+  function renderTime() {
+    return (
+      <div>
+        <p>Time elapsed: {moment.utc(elapsedTime * 1000).format("HH:mm:ss")}</p>
       </div>
     );
   }
@@ -94,7 +101,7 @@ function Quiz() {
           )}
           <p>You answered: {userAnswer}</p>
         </div>
-        <button onClick={handleClear}>clear</button>
+        <button onClick={handleClear}>Clear</button>
       </div>
     );
   }
@@ -118,7 +125,7 @@ function Quiz() {
         ))}
         <button onClick={handleSubmit}>Check</button>
       </div>
-      {elapsedTime && <div className="timer">Time elapsed: {elapsedTime}</div>}
+      {elapsedTime && renderTime()}
     </div>
   );
 }

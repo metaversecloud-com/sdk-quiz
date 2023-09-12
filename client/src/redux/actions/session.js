@@ -97,6 +97,23 @@ export const clear = () => async (dispatch) => {
   }
 };
 
+export const resetTimer = () => async (dispatch) => {
+  try {
+    const queryParams = getQueryParams();
+    const url = `backend/resetTimer?${queryParams}`;
+
+    const response = await axios.post(url);
+    if (response.status === 200) {
+      dispatch(getDroppedAsset());
+    }
+  } catch (error) {
+    console.error("error", error);
+    if (error.response && error.response.data) {
+    } else {
+    }
+  }
+};
+
 export const getLeaderboard = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
@@ -148,7 +165,7 @@ export const getQuestionsAnsweredFromStart = () => async (dispatch) => {
   }
 };
 
-export const getOrUpdateTimestamp = () => async (dispatch) => {
+export const getTimestamp = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
     const url = `backend/timestamp?${queryParams}`;

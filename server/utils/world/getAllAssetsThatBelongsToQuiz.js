@@ -1,11 +1,5 @@
-/**
- * This module provides an endpoint function `updateTimestamp` that updates or fetches
- * the start timestamp of a quiz associated with a specific dropped asset in the Topia platform.
- * The timestamp is used to track the time that each user spends on the quiz
- */
-
 import { Visitor, DroppedAsset, World } from "../topiaInit.js";
-export const getTimestamp = async (req, res) => {
+export const getAllAssetsThatBelongsToQuiz = async ( => {
   try {
     const {
       visitorId,
@@ -46,9 +40,6 @@ export const getTimestamp = async (req, res) => {
     }
 
     await startDroppedAsset.fetchDataObject();
-
-    // startDroppedAsset.dataObject.quiz[visitor.profileId] = null;
-    // startDroppedAsset.updateDataObject();
 
     return res.json({
       startTimestamp:

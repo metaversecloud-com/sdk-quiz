@@ -7,7 +7,8 @@ import {
   getVisitor,
   startClock,
   getQuestionsAnsweredFromStart,
-  getOrUpdateTimestamp,
+  getTimestamp,
+  resetTimer,
 } from "../redux/actions/session";
 import "./StartClock.scss";
 import Leaderboard from "./Leaderboard";
@@ -15,6 +16,7 @@ import Leaderboard from "./Leaderboard";
 function StartClock() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  const [elapsedTime, setElapsedTime] = useState(0);
 
   const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
   const visitor = useSelector((state) => state?.session?.visitor);
@@ -30,7 +32,7 @@ function StartClock() {
     const fetchDroppedAsset = async () => {
       await dispatch(getVisitor());
       await dispatch(getQuestionsAnsweredFromStart());
-      await dispatch(getOrUpdateTimestamp());
+      await dispatch(getTimestamp());
 
       setLoading(false);
     };
@@ -38,10 +40,29 @@ function StartClock() {
     fetchDroppedAsset();
   }, [dispatch]);
 
+  useEffect(() => {
+    if (startTimestamp) {
+      const interval = setInterval(() => {
+        const now = moment().unix(); // Tempo atual em segundos
+        setElapsedTime(now - startTimestamp);
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [startTimestamp]);
+
   if (loading) {
     return (
       <div className="loader">
         <ClipLoader color={"#123abc"} loading={loading} size={150} />
+      </div>
+    );
+  }
+
+  function renderTime() {
+    return (
+      <div>
+        <p>Time elapsed: {moment.utc(elapsedTime * 1000).format("HH:mm:ss")}</p>
       </div>
     );
   }
@@ -54,6 +75,7 @@ function StartClock() {
       <div className="quiz-ongoing-container">
         <h2>Quiz Still Ongoing!</h2>
         <p>Please answer all the questions to proceed.</p>
+        {renderTime()}
       </div>
     );
   } else if (numberOfQuestionsAnswered === totalNumberOfQuestionsInQuiz) {
@@ -64,6 +86,7 @@ function StartClock() {
           You have answered all the questions in the quiz. We appreciate your
           effort.
         </p>
+        <button onClick={dispatch(resetTimer)}>ResetTimer</button>
       </div>
     );
   } else if (numberOfQuestionsAnswered === 0 && startTimestamp) {
@@ -71,6 +94,7 @@ function StartClock() {
       <div className="quiz-ongoing-container">
         <h2>The quiz started! </h2>
         <p>Try to answer all questions in the shortest possible time.</p>
+        {renderTime()}
       </div>
     );
   }

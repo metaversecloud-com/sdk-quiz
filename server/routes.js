@@ -8,6 +8,7 @@ import {
   clear,
   leaderboard,
   getQuestionsAnsweredFromStart,
+  resetTimer,
 } from "./utils/index.js";
 
 const router = express.Router();
@@ -24,5 +25,6 @@ router.get("/timestamp", getTimestamp);
 router.post("/registerUserAnswer", registerUserAnswer);
 router.get("/questionsAnsweredFromStart", getQuestionsAnsweredFromStart);
 router.post("/clear", clear);
+router.post("/resetTimer", resetTimer);
 
 export default router;
