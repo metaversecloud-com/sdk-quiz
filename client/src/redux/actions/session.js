@@ -103,6 +103,7 @@ export const resetTimer = () => async (dispatch) => {
     const url = `backend/resetTimer?${queryParams}`;
 
     const response = await axios.post(url);
+    console.log("res", response);
     if (response.status === 200) {
       dispatch(getDroppedAsset());
     }
@@ -138,7 +139,7 @@ export const startClock = () => async (dispatch) => {
 
     const response = await axios.put(url);
     if (response.status === 200) {
-      dispatch(getVisitor());
+      dispatch(getTimestamp(response?.data));
     }
   } catch (error) {
     console.error("error", error);
@@ -148,10 +149,10 @@ export const startClock = () => async (dispatch) => {
   }
 };
 
-export const getQuestionsAnsweredFromStart = () => async (dispatch) => {
+export const getQuestionsStatistics = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/questionsAnsweredFromStart?${queryParams}`;
+    const url = `backend/questionsStatistics?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {

@@ -9,7 +9,7 @@ import {
   clear,
   getTimestamp,
 } from "../redux/actions/session";
-import "./Home.scss";
+import "./QuestionAssetView.scss";
 
 function Quiz() {
   const dispatch = useDispatch();

@@ -2,12 +2,12 @@ import express from "express";
 import {
   getDroppedAssets,
   getVisitor,
-  getOrUpdateTimestamp,
+  updateTimestamp,
   getTimestamp,
   registerUserAnswer,
   clear,
   leaderboard,
-  getQuestionsAnsweredFromStart,
+  getQuestionsStatistics,
   resetTimer,
 } from "./utils/index.js";
 
@@ -20,10 +20,10 @@ router.get("/", (req, res) => {
 router.get("/dropped-asset", getDroppedAssets);
 router.get("/visitor", getVisitor);
 router.get("/leaderboard", leaderboard);
-router.put("/timestamp", getOrUpdateTimestamp);
+router.put("/timestamp", updateTimestamp);
 router.get("/timestamp", getTimestamp);
 router.post("/registerUserAnswer", registerUserAnswer);
-router.get("/questionsAnsweredFromStart", getQuestionsAnsweredFromStart);
+router.get("/questionsStatistics", getQuestionsStatistics);
 router.post("/clear", clear);
 router.post("/resetTimer", resetTimer);
 

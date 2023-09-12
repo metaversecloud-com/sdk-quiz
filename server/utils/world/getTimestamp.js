@@ -5,6 +5,7 @@
  */
 
 import { Visitor, DroppedAsset, World } from "../topiaInit.js";
+import { getQuestionsAndLeaderboardStartAndAssets } from "./getQuestionsAndLeaderboardStartAndAssets.js";
 export const getTimestamp = async (req, res) => {
   try {
     const {
@@ -26,34 +27,13 @@ export const getTimestamp = async (req, res) => {
       credentials,
     });
 
-    const now = Date.now();
-
-    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, {
-      credentials,
-    });
-
-    let startDroppedAsset;
-
-    if (isStartAsset(droppedAsset?.uniqueName)) {
-      startDroppedAsset = droppedAsset;
-    } else {
-      const quizName = getLastWord(droppedAsset?.uniqueName);
-      startDroppedAsset = await getStartDroppedAsset(
-        quizName,
-        urlSlug,
-        credentials
-      );
-    }
-
-    await startDroppedAsset.fetchDataObject();
-
-    // startDroppedAsset.dataObject.quiz[visitor.profileId] = null;
-    // startDroppedAsset.updateDataObject();
+    const { startAsset } = await getQuestionsAndLeaderboardStartAndAssets(
+      req.query
+    );
 
     return res.json({
       startTimestamp:
-        startDroppedAsset?.dataObject.quiz?.[visitor?.profileId]
-          ?.startTimestamp,
+        startAsset?.dataObject?.quiz?.[visitor?.profileId]?.startTimestamp,
     });
   } catch (error) {
     console.error("Error getting the visitor", error);

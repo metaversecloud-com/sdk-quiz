@@ -4,17 +4,17 @@ import { history } from "../redux/store";
 
 import { Route, Routes } from "react-router-dom";
 
-import Home from "./Home";
-import Leaderboard from "./Leaderboard";
-import StartClock from "./StartClock";
+import QuestionAssetView from "./QuestionAssetView";
+import LeaderboardAssetView from "./LeaderboardAssetView";
+import StartAssetView from "./StartAssetView";
 
 const PageRoutes = () => {
   return (
     <Router history={history}>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/start" element={<StartClock />} />
+        <Route path="/questions" element={<QuestionAssetView />} />
+        <Route path="/leaderboard" element={<LeaderboardAssetView />} />
+        <Route path="/start" element={<StartAssetView />} />
       </Routes>
     </Router>
   );

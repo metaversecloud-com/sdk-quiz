@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
-import moment from "moment-timezone";
 import {
   getDroppedAsset,
   getVisitor,
   getLeaderboard,
 } from "../redux/actions/session";
-import "./Leaderboard.scss";
+import "./LeaderboardAssetView.scss";
 
 function Leaderboard() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const [elapsedTime, setElapsedTime] = useState(null);
 
   const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
   const visitor = useSelector((state) => state?.session?.visitor);

@@ -3,17 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import moment from "moment-timezone";
 import {
-  getDroppedAsset,
   getVisitor,
   startClock,
-  getQuestionsAnsweredFromStart,
+  getQuestionsStatistics,
   getTimestamp,
   resetTimer,
 } from "../redux/actions/session";
-import "./StartClock.scss";
-import Leaderboard from "./Leaderboard";
+import "./StartAssetView.scss";
 
-function StartClock() {
+function StartAssetView() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -31,7 +29,7 @@ function StartClock() {
   useEffect(() => {
     const fetchDroppedAsset = async () => {
       await dispatch(getVisitor());
-      await dispatch(getQuestionsAnsweredFromStart());
+      await dispatch(getQuestionsStatistics());
       await dispatch(getTimestamp());
 
       setLoading(false);
@@ -43,7 +41,7 @@ function StartClock() {
   useEffect(() => {
     if (startTimestamp) {
       const interval = setInterval(() => {
-        const now = moment().unix(); // Tempo atual em segundos
+        const now = Date.now();
         setElapsedTime(now - startTimestamp);
       }, 1000);
 
@@ -62,7 +60,7 @@ function StartClock() {
   function renderTime() {
     return (
       <div>
-        <p>Time elapsed: {moment.utc(elapsedTime * 1000).format("HH:mm:ss")}</p>
+        <p>Time elapsed: {moment.utc(elapsedTime).format("HH:mm:ss")}</p>
       </div>
     );
   }
@@ -113,4 +111,4 @@ function StartClock() {
   );
 }
 
-export default StartClock;
+export default StartAssetView;

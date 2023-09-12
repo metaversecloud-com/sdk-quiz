@@ -5,7 +5,8 @@
  */
 
 import { Visitor, DroppedAsset } from "../topiaInit.js";
-export const getOrUpdateTimestamp = async (req, res) => {
+import { getQuestionsAndLeaderboardStartAndAssets } from "./getQuestionsAndLeaderboardStartAndAssets.js";
+export const updateTimestamp = async (req, res) => {
   try {
     const {
       visitorId,
@@ -28,39 +29,25 @@ export const getOrUpdateTimestamp = async (req, res) => {
 
     const now = Date.now();
 
-    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, {
-      credentials,
-    });
+    const { startAsset } = await getQuestionsAndLeaderboardStartAndAssets(
+      req.query
+    );
+    await startAsset.fetchDataObject();
 
-    let startDroppedAsset;
-
-    if (isStartAsset(droppedAsset?.uniqueName)) {
-      startDroppedAsset = droppedAsset;
-    } else {
-      startDroppedAsset = getStartDroppedAsset();
+    if (!startAsset?.dataObject?.quiz) {
+      startAsset.dataObject.quiz = {};
     }
 
-    await startDroppedAsset.fetchDataObject();
-
-    if (!startDroppedAsset?.dataObject?.quiz) {
-      startDroppedAsset.dataObject.quiz = {};
-    }
-    if (!startDroppedAsset?.dataObject?.quiz?.[visitor?.profileId]) {
-      startDroppedAsset.dataObject.quiz[visitor.profileId] = {};
-      startDroppedAsset.dataObject.quiz[visitor.profileId].startTimestamp = now;
-      startDroppedAsset.updateDataObject();
-    }
+    startAsset.dataObject.quiz[visitor.profileId] = {};
+    startAsset.dataObject.quiz[visitor.profileId].startTimestamp = now;
+    startAsset.updateDataObject();
 
     return res.json({
       startTimestamp:
-        startDroppedAsset?.dataObject.quiz[visitor?.profileId].startTimestamp,
+        startAsset?.dataObject.quiz[visitor?.profileId].startTimestamp,
     });
   } catch (error) {
     console.error("Error getting the visitor", error);
     return res.status(500).send({ error, success: false });
   }
 };
-
-function isStartAsset(str) {
-  return str.startsWith("start-");
-}
