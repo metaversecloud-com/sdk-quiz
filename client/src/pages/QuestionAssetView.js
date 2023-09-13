@@ -6,7 +6,6 @@ import {
   getDroppedAsset,
   getVisitor,
   registerUserAnswer,
-  clear,
   getTimestamp,
 } from "../redux/actions/session";
 import "./QuestionAssetView.scss";
@@ -52,10 +51,6 @@ function Quiz() {
   const handleSubmit = () => {
     const isCorrectCondition = data?.answer === selectedOption;
     dispatch(registerUserAnswer(isCorrectCondition, selectedOption));
-  };
-
-  const handleClear = () => {
-    dispatch(clear());
   };
 
   if (loading) {
@@ -110,7 +105,6 @@ function Quiz() {
           )}
           <p>You answered: {userAnswer}</p>
         </div>
-        <button onClick={handleClear}>Clear</button>
       </div>
     );
   }
