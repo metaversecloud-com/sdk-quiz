@@ -39,9 +39,7 @@ function Leaderboard() {
   if (!leaderboard) {
     return (
       <div className="leaderboard-container">
-        <p>
-          Be the first to answer the questions and and be in the leaderboard!
-        </p>
+        <p>Be the first and fill the leaderboard by answering the quiz!</p>
       </div>
     );
   }

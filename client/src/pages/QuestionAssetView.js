@@ -74,6 +74,15 @@ function Quiz() {
     );
   }
 
+  if (!elapsedTime) {
+    return (
+      <div className="center-content">
+        <h2>Quiz Not Started</h2>
+        <p>Please navigate to the starting point to begin a new quiz.</p>
+      </div>
+    );
+  }
+
   if (userAnswer) {
     return (
       <div className="quiz-container">
