@@ -1,4 +1,5 @@
 import { DroppedAsset, Visitor } from "../topiaInit.js";
+import { getHasAnsweredAllQuestions } from "./utils.js";
 
 export const registerUserAnswer = async (req, res) => {
   try {
@@ -10,8 +11,6 @@ export const registerUserAnswer = async (req, res) => {
       urlSlug,
     } = req.query;
 
-    const { isCorrect, selectedOption } = req.body;
-
     const credentials = {
       assetId,
       interactiveNonce,
@@ -19,13 +18,10 @@ export const registerUserAnswer = async (req, res) => {
       visitorId,
     };
 
+    const { isCorrect, selectedOption } = req.body;
+
     const visitor = await Visitor.get(visitorId, urlSlug, {
-      credentials: {
-        assetId,
-        interactiveNonce,
-        interactivePublicKey,
-        visitorId,
-      },
+      credentials,
     });
 
     const profileId = visitor?.profileId;
@@ -51,6 +47,14 @@ export const registerUserAnswer = async (req, res) => {
     };
 
     await droppedAsset.updateDataObject();
+
+    const { hasAnsweredAllQuestions, startAsset } =
+      await getHasAnsweredAllQuestions(req.query);
+
+    if (hasAnsweredAllQuestions) {
+      startAsset.dataObject.quiz[profileId].endTimestamp = Date.now();
+      await startAsset.updateDataObject();
+    }
 
     return res.json({
       droppedAsset,

@@ -41,7 +41,7 @@ function Quiz() {
   useEffect(() => {
     if (startTimestamp) {
       const interval = setInterval(() => {
-        const now = moment().unix(); // Tempo atual em segundos
+        const now = Date.now();
         setElapsedTime(now - startTimestamp);
       }, 1000);
 
@@ -69,7 +69,7 @@ function Quiz() {
   function renderTime() {
     return (
       <div>
-        <p>Time elapsed: {moment.utc(elapsedTime * 1000).format("HH:mm:ss")}</p>
+        <p>Time elapsed: {moment.utc(elapsedTime).format("HH:mm:ss")}</p>
       </div>
     );
   }

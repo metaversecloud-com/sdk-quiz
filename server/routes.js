@@ -9,6 +9,7 @@ import {
   leaderboard,
   getQuestionsStatistics,
   resetTimer,
+  resetGame,
 } from "./utils/index.js";
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.post("/registerUserAnswer", registerUserAnswer);
 router.get("/questionsStatistics", getQuestionsStatistics);
 router.post("/clear", clear);
 router.post("/resetTimer", resetTimer);
+router.post("/resetGame", resetGame);
 
 export default router;

@@ -44,6 +44,40 @@ export const getQuestionsAndLeaderboardStartAndAssets = async (queryParams) => {
       questionAssets,
     };
   } catch (error) {
+    console.error("Error getQuestionsAndLeaderboardStartAndAssets", error);
+    return res.status(500).send({ error, success: false });
+  }
+};
+
+export const getHasAnsweredAllQuestions = async (queryParams) => {
+  try {
+    const {
+      visitorId,
+      interactiveNonce,
+      assetId,
+      interactivePublicKey,
+      urlSlug,
+    } = queryParams;
+
+    const credentials = {
+      assetId,
+      interactiveNonce,
+      interactivePublicKey,
+      visitorId,
+    };
+
+    const { startAsset, leaderboardAsset, questionAssets } =
+      await getQuestionsAndLeaderboardStartAndAssets(queryParams);
+
+    const hasAnsweredAllQuestions = checkAllAnswered(questionAssets);
+
+    return {
+      hasAnsweredAllQuestions,
+      startAsset,
+      leaderboardAsset,
+      questionAssets,
+    };
+  } catch (error) {
     console.error("Error getting the visitor", error);
     return res.status(500).send({ error, success: false });
   }
@@ -99,4 +133,22 @@ function getQuestionAssets(droppedAssets, quizName) {
   return droppedAssets.filter((asset) => {
     return regex.test(asset.uniqueName);
   });
+}
+
+function checkAllAnswered(droppedAssets) {
+  for (let asset of droppedAssets) {
+    if (!asset.dataObject.quiz) {
+      return false;
+    }
+    for (let profileId in asset.dataObject.quiz.results) {
+      if (
+        !asset.dataObject.quiz.results?.[profileId]?.hasOwnProperty(
+          "userAnswer"
+        )
+      ) {
+        return false;
+      }
+    }
+  }
+  return true;
 }

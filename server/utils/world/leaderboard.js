@@ -1,4 +1,5 @@
 import { DroppedAsset, Visitor, World } from "../topiaInit.js";
+import { getQuestionsAndLeaderboardStartAndAssets } from "./utils.js";
 
 export const leaderboard = async (req, res) => {
   try {
@@ -17,66 +18,39 @@ export const leaderboard = async (req, res) => {
       visitorId,
     };
 
-    const visitor = await Visitor.get(visitorId, urlSlug, {
-      credentials: {
-        assetId,
-        interactiveNonce,
-        interactivePublicKey,
-        visitorId,
-      },
-    });
+    const { questionAssets, startAsset } =
+      await getQuestionsAndLeaderboardStartAndAssets(req.query);
 
-    const leaderboardDroppedAsset = await DroppedAsset.get(assetId, urlSlug, {
-      credentials,
-    });
-
-    const world = await World.create(urlSlug, { credentials });
-
-    await world.fetchDroppedAssets();
-    const assets = world.droppedAssets;
-
-    const assetsThatBelongsToQuiz = Object.entries(assets)
-      .filter(([key, value]) => {
-        return belongsToQuiz(
-          value.uniqueName,
-          leaderboardDroppedAsset.uniqueName
-        );
-      })
-      .map(async ([key, value]) => {
-        await value.fetchDataObject();
-        return value;
-      });
-
-    const result = await Promise.all(assetsThatBelongsToQuiz);
-
-    const leaderboard = calculateLeaderboard(result);
+    const leaderboard = calculateLeaderboard(questionAssets, startAsset);
 
     return res.json({
       leaderboard,
       success: true,
     });
   } catch (error) {
-    console.error("Error selecting the answer", error);
+    console.error("Error creating the leaderboard", error);
     return res.status(500).send({ error, success: false });
   }
 };
 
-function belongsToQuiz(assetUniqueName, quizUniqueName) {
-  const regex = new RegExp(`^-?\\w+-belongsTo-${quizUniqueName}$`);
-
-  return regex.test(assetUniqueName);
-}
-
-function calculateLeaderboard(questions) {
+function calculateLeaderboard(questions, startAsset) {
   const scoreData = {};
 
   for (const question of questions) {
     for (const profileId in question.dataObject.quiz.results) {
+      const startTimestamp =
+        startAsset?.dataObject?.quiz?.[profileId]?.startTimestamp;
+      const endTimestamp =
+        startAsset?.dataObject?.quiz?.[profileId]?.endTimestamp;
+
       if (!scoreData[profileId]) {
         scoreData[profileId] = {};
         scoreData[profileId].score = 0;
         scoreData[profileId].username =
           question.dataObject.quiz.results[profileId].username;
+        scoreData[profileId].timeElapsed = endTimestamp
+          ? endTimestamp - startTimestamp
+          : null;
       }
 
       if (question.dataObject.quiz.results[profileId].isCorrect) {
@@ -89,9 +63,20 @@ function calculateLeaderboard(questions) {
     profileId: profileId,
     score: scoreData[profileId].score,
     username: scoreData[profileId].username,
+    timeElapsed: scoreData[profileId].timeElapsed,
   }));
 
-  const sortedLeaderboard = leaderboardArray.sort((a, b) => b.score - a.score);
+  const sortedLeaderboard = leaderboardArray.sort((a, b) => {
+    const scoreDifference = b.score - a.score;
+    if (scoreDifference === 0) {
+      const aTime = a.timeElapsed === null ? Infinity : a.timeElapsed;
+      const bTime = b.timeElapsed === null ? Infinity : b.timeElapsed;
+
+      return aTime - bTime;
+    }
+
+    return scoreDifference;
+  });
 
   return sortedLeaderboard;
 }

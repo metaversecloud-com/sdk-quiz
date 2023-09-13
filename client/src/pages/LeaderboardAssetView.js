@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment-timezone";
 import { ClipLoader } from "react-spinners";
 import {
   getDroppedAsset,
@@ -43,6 +44,7 @@ function Leaderboard() {
           <tr>
             <th>Username</th>
             <th>Score</th>
+            <th>Time</th>
           </tr>
         </thead>
         <tbody>
@@ -50,6 +52,7 @@ function Leaderboard() {
             <tr key={index}>
               <td>{entry.username}</td>
               <td>{entry.score}</td>
+              <td>{moment.utc(entry.timeElapsed).format("HH:mm:ss")}</td>
             </tr>
           ))}
         </tbody>

@@ -5,5 +5,6 @@ export { getTimestamp } from "./getTimestamp.js";
 export { registerUserAnswer } from "./registerUserAnswer.js";
 export { clear } from "./clear.js";
 export { resetTimer } from "./resetTimer.js";
+export { resetGame } from "./resetGame.js";
 export { leaderboard } from "./leaderboard.js";
 export { getQuestionsStatistics } from "./getQuestionsStatistics.js";

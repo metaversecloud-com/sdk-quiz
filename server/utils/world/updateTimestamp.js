@@ -5,7 +5,7 @@
  */
 
 import { Visitor, DroppedAsset } from "../topiaInit.js";
-import { getQuestionsAndLeaderboardStartAndAssets } from "./getQuestionsAndLeaderboardStartAndAssets.js";
+import { getQuestionsAndLeaderboardStartAndAssets } from "./utils.js";
 export const updateTimestamp = async (req, res) => {
   try {
     const {

@@ -7,7 +7,6 @@ import {
   startClock,
   getQuestionsStatistics,
   getTimestamp,
-  resetTimer,
 } from "../redux/actions/session";
 import "./StartAssetView.scss";
 
@@ -70,7 +69,7 @@ function StartAssetView() {
     numberOfQuestionsAnswered < totalNumberOfQuestionsInQuiz
   ) {
     return (
-      <div className="quiz-ongoing-container">
+      <div className="quiz-ongoing-container center-content">
         <h2>Quiz Still Ongoing!</h2>
         <p>Please answer all the questions to proceed.</p>
         {renderTime()}
@@ -78,18 +77,17 @@ function StartAssetView() {
     );
   } else if (numberOfQuestionsAnswered === totalNumberOfQuestionsInQuiz) {
     return (
-      <div className="quiz-completed-container">
+      <div className="quiz-completed-container center-content">
         <h2>Thank you for participating!</h2>
         <p>
           You have answered all the questions in the quiz. We appreciate your
           effort.
         </p>
-        <button onClick={dispatch(resetTimer)}>ResetTimer</button>
       </div>
     );
   } else if (numberOfQuestionsAnswered === 0 && startTimestamp) {
     return (
-      <div className="quiz-ongoing-container">
+      <div className="quiz-ongoing-container center-content">
         <h2>The quiz started! </h2>
         <p>Try to answer all questions in the shortest possible time.</p>
         {renderTime()}
@@ -98,7 +96,7 @@ function StartAssetView() {
   }
 
   return (
-    <div className="start-container">
+    <div className="start-container center-content">
       <h2>Welcome to the Quiz!</h2>
       <p>
         Test your knowledge and see how much you know. Try to answer all

@@ -97,6 +97,23 @@ export const clear = () => async (dispatch) => {
   }
 };
 
+export const resetGame = () => async (dispatch) => {
+  try {
+    const queryParams = getQueryParams();
+    const url = `backend/resetGame?${queryParams}`;
+
+    const response = await axios.post(url);
+    if (response.status === 200) {
+      dispatch(getDroppedAsset());
+    }
+  } catch (error) {
+    console.error("error", error);
+    if (error.response && error.response.data) {
+    } else {
+    }
+  }
+};
+
 export const resetTimer = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
