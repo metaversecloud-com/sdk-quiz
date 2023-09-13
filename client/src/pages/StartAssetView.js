@@ -96,7 +96,7 @@ function StartAssetView() {
   }
 
   return (
-    <div className="start-container center-content">
+    <div className="center-content">
       <h2>Welcome to the Quiz!</h2>
       <p>
         Test your knowledge and see how much you know. Try to answer all

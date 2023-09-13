@@ -36,6 +36,16 @@ function Leaderboard() {
     );
   }
 
+  if (!leaderboard) {
+    return (
+      <div className="leaderboard-container">
+        <p>
+          Be the first to answer the questions and and be in the leaderboard!
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="leaderboard-container">
       <h2>Leaderboard</h2>
@@ -48,11 +58,11 @@ function Leaderboard() {
           </tr>
         </thead>
         <tbody>
-          {leaderboard.map((entry, index) => (
+          {leaderboard?.map((entry, index) => (
             <tr key={index}>
-              <td>{entry.username}</td>
-              <td>{entry.score}</td>
-              <td>{moment.utc(entry.timeElapsed).format("HH:mm:ss")}</td>
+              <td>{entry?.username}</td>
+              <td>{entry?.score}</td>
+              <td>{moment.utc(entry?.timeElapsed).format("HH:mm:ss")}</td>
             </tr>
           ))}
         </tbody>
