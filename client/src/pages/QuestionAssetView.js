@@ -15,11 +15,18 @@ function Quiz() {
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [elapsedTime, setElapsedTime] = useState(false);
 
   const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
   const visitor = useSelector((state) => state?.session?.visitor);
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
+
+  const totalNumberOfQuestionsInQuiz = useSelector(
+    (state) => state?.session?.questionsAnswered?.totalNumberOfQuestionsInQuiz
+  );
+  const numberOfQuestionsAnswered = useSelector(
+    (state) => state?.session?.questionsAnswered?.numberOfQuestionsAnswered
+  );
+
   const data = droppedAsset?.dataObject;
 
   const quizResults =
@@ -39,17 +46,6 @@ function Quiz() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (startTimestamp) {
-      const interval = setInterval(() => {
-        const now = Date.now();
-        setElapsedTime(now - startTimestamp);
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [startTimestamp]);
-
-  useEffect(() => {
     setSelectedOption(userAnswer);
   }, [userAnswer]);
 
@@ -61,7 +57,11 @@ function Quiz() {
     }
   };
 
-  if (loading) {
+  function hasAnsweredAllQuestions() {
+    return numberOfQuestionsAnswered != totalNumberOfQuestionsInQuiz;
+  }
+
+  if (loading || startTimestamp === null) {
     return (
       <div className="loader">
         <ClipLoader color={"#123abc"} loading={loading} size={150} />
@@ -69,7 +69,8 @@ function Quiz() {
     );
   }
 
-  if (!startTimestamp) {
+  console.log("startTimestamp", startTimestamp, startTimestamp === undefined);
+  if (startTimestamp === undefined) {
     return (
       <div className="center-content">
         <img
@@ -88,7 +89,7 @@ function Quiz() {
     return (
       <div className="quiz-container">
         <div style={{ marginTop: "20px" }}>
-          <Timer />
+          {hasAnsweredAllQuestions() ? <Timer /> : ""}
         </div>
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           <h1>❓</h1>
@@ -130,6 +131,11 @@ function Quiz() {
               </>
             )}
           </div>
+        )}
+        {hasAnsweredAllQuestions ? (
+          <p>Congratulations, you answered all questions!</p>
+        ) : (
+          ""
         )}
       </div>
     );

@@ -6,6 +6,7 @@ const initialState = {
   droppedAsset: null,
   leaderboard: null,
   questionsAnswered: null,
+  startTimestamp: null,
   error: null,
 };
 

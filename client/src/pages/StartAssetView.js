@@ -13,7 +13,7 @@ import Timer from "../components/timer/Timer.js";
 function StartAssetView() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isStartButtonClicked, setIsStartButtonClicked] = useState(false);
 
   const totalNumberOfQuestionsInQuiz = useSelector(
     (state) => state?.session?.questionsAnswered?.totalNumberOfQuestionsInQuiz
@@ -123,10 +123,13 @@ function StartAssetView() {
             </div>
           ) : null}
           <button
-            onClick={() => dispatch(startClock())}
+            onClick={() => {
+              setIsStartButtonClicked(true);
+              dispatch(startClock());
+            }}
             className="start-btn"
             style={{ width: "90%" }}
-            disabled={isQuizOngoing()}
+            disabled={isQuizOngoing() || isStartButtonClicked}
           >
             Start Quiz
           </button>
