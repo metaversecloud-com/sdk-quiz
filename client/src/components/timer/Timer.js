@@ -19,7 +19,7 @@ function Timer() {
   }, [startTimestamp]);
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="timer" style={{ textAlign: "center" }}>
       ⌛ {moment.utc(elapsedTime).format("HH:mm:ss")}
     </div>
   );

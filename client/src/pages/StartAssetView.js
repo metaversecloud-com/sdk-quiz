@@ -9,6 +9,7 @@ import {
 } from "../redux/actions/session";
 import "./StartAssetView.scss";
 import Timer from "../components/timer/Timer.js";
+import TotalQuestionsAnsweredView from "../components/totalQuestionsAnsweredView/TotalQuestionsAnsweredView.js";
 
 function StartAssetView() {
   const dispatch = useDispatch();
@@ -63,9 +64,13 @@ function StartAssetView() {
   if (isQuizOngoing()) {
     return (
       <div>
-        <div style={{ textAlign: "center", margin: "20px 0px" }}>
-          <Timer />
-          {getTotalQuestionsAnsweredView()}
+        <div style={{ textAlign: "center", margin: "24px 0px" }}>
+          <div style={{ textAlign: "center" }}>
+            <Timer />
+          </div>
+          <div style={{ marginTop: "16px" }}>
+            <TotalQuestionsAnsweredView />
+          </div>
         </div>
         {startScreen()}
       </div>
@@ -82,7 +87,7 @@ function StartAssetView() {
   function startScreen() {
     return (
       <div>
-        <div style={{ textAlign: "left", margin: "20px 0px" }}>
+        <div style={{ textAlign: "left", margin: "24px 0px" }}>
           <h4 style={{ textAlign: "left" }}>🏎️ Welcome to Quiz Race!</h4>
         </div>
         <div className="instructions">
@@ -121,7 +126,10 @@ function StartAssetView() {
             <div className="balloon-dialog">
               This quiz is currently in progress
             </div>
+          ) : isStartButtonClicked ? (
+            <div className="balloon-dialog">Starting Quiz...</div>
           ) : null}
+
           <button
             onClick={() => {
               setIsStartButtonClicked(true);

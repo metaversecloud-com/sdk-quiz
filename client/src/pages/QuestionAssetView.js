@@ -88,8 +88,14 @@ function Quiz() {
   function questionStartScreen() {
     return (
       <div className="quiz-container">
-        <div style={{ marginTop: "20px" }}>
-          {hasAnsweredAllQuestions() ? <Timer /> : ""}
+        <div style={{ marginTop: "24px" }}>
+          {hasAnsweredAllQuestions() ? (
+            ""
+          ) : (
+            <div style={{ textAlign: "center" }}>
+              <Timer />
+            </div>
+          )}
         </div>
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           <h1>❓</h1>
@@ -132,7 +138,7 @@ function Quiz() {
             )}
           </div>
         )}
-        {hasAnsweredAllQuestions ? (
+        {hasAnsweredAllQuestions() ? (
           <p>Congratulations, you answered all questions!</p>
         ) : (
           ""
