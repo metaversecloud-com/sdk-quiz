@@ -1,8 +1,5 @@
 .leaderboard-container {
   padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
@@ -27,4 +24,24 @@ h2 {
 
 .leaderboard-table tr:nth-child(even) {
   background-color: #f2f2f2;
+}
+
+.trophy {
+  font-family: 'Quicksand';
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 130%;
+  letter-spacing: -0.24px;
+}
+
+h3 {
+  color: #0A2540;
+  text-align: center;
+  font-family: Quicksand;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%;
+  letter-spacing: 0.06px;
 }

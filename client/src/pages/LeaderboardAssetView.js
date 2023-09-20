@@ -36,17 +36,12 @@ function Leaderboard() {
     );
   }
 
-  if (!leaderboard) {
-    return (
-      <div className="leaderboard-container">
-        <p>Be the first and fill the leaderboard by answering the quiz!</p>
-      </div>
-    );
-  }
-
   return (
     <div className="leaderboard-container">
-      <h2>Leaderboard</h2>
+      <div style={{ textAlign: "center" }}>
+        <h1 className="trophy">🏆</h1>
+      </div>
+      <h3>Leaderboard</h3>
       <table className="leaderboard-table">
         <thead>
           <tr>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
-import moment from "moment-timezone";
 import {
   getVisitor,
   startClock,
@@ -9,14 +8,13 @@ import {
   getTimestamp,
 } from "../redux/actions/session";
 import "./StartAssetView.scss";
+import Timer from "../components/timer/Timer.js";
 
 function StartAssetView() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [elapsedTime, setElapsedTime] = useState(0);
 
-  const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
-  const visitor = useSelector((state) => state?.session?.visitor);
   const totalNumberOfQuestionsInQuiz = useSelector(
     (state) => state?.session?.questionsAnswered?.totalNumberOfQuestionsInQuiz
   );
@@ -37,17 +35,6 @@ function StartAssetView() {
     fetchDroppedAsset();
   }, [dispatch]);
 
-  useEffect(() => {
-    if (startTimestamp) {
-      const interval = setInterval(() => {
-        const now = Date.now();
-        setElapsedTime(now - startTimestamp);
-      }, 1000);
-
-      return () => clearInterval(interval);
-    }
-  }, [startTimestamp]);
-
   if (loading) {
     return (
       <div className="loader">
@@ -56,57 +43,99 @@ function StartAssetView() {
     );
   }
 
-  function renderTime() {
+  const getTotalQuestionsAnsweredView = () => {
     return (
       <div>
-        <p>Time elapsed: {moment.utc(elapsedTime).format("HH:mm:ss")}</p>
+        {numberOfQuestionsAnswered}/{totalNumberOfQuestionsInQuiz}
       </div>
+    );
+  };
+
+  function isQuizOngoing() {
+    return (
+      numberOfQuestionsAnswered >= 0 &&
+      numberOfQuestionsAnswered < totalNumberOfQuestionsInQuiz &&
+      startTimestamp
     );
   }
 
-  if (
-    numberOfQuestionsAnswered != 0 &&
-    numberOfQuestionsAnswered < totalNumberOfQuestionsInQuiz
-  ) {
+  // is quiz ongoing?
+  if (isQuizOngoing()) {
     return (
-      <div className="quiz-ongoing-container center-content">
-        <h2>Quiz Still Ongoing!</h2>
-        <p>Please answer all the questions to proceed.</p>
-        {renderTime()}
+      <div>
+        <div style={{ textAlign: "center", margin: "20px 0px" }}>
+          <Timer />
+          {getTotalQuestionsAnsweredView()}
+        </div>
+        {startScreen()}
       </div>
     );
   } else if (numberOfQuestionsAnswered === totalNumberOfQuestionsInQuiz) {
     return (
       <div className="quiz-completed-container center-content">
-        <h2>Thank you for participating!</h2>
-        <p>
-          You have answered all the questions in the quiz. We appreciate your
-          effort.
-        </p>
-      </div>
-    );
-  } else if (numberOfQuestionsAnswered === 0 && startTimestamp) {
-    return (
-      <div className="quiz-ongoing-container center-content">
-        <h2>The quiz started! </h2>
-        <p>Try to answer all questions in the shortest possible time.</p>
-        {renderTime()}
+        <h3>Hooray, quiz complete!</h3>
+        <p>See how you stack up against others on the leaderboard!</p>
       </div>
     );
   }
 
-  return (
-    <div className="center-content">
-      <h2>Welcome to the Quiz!</h2>
-      <p>
-        Test your knowledge and see how much you know. Try to answer all
-        questions in the shortest possible time.
-      </p>
-      <button onClick={() => dispatch(startClock())} className="start-btn">
-        Start
-      </button>
-    </div>
-  );
+  function startScreen() {
+    return (
+      <div>
+        <div style={{ textAlign: "left", margin: "20px 0px" }}>
+          <h4 style={{ textAlign: "left" }}>🏎️ Welcome to Quiz Race!</h4>
+        </div>
+        <div className="instructions">
+          <div className="title" style={{ fontWeight: "600" }}>
+            How to play:
+          </div>
+          <ol style={{ marginTop: "5px" }}>
+            <li>
+              Click <b style={{ color: "green" }}>Start Quiz</b>.
+            </li>
+            <li>
+              Run to each ⭕️ question zone, and click the❓question mark.
+            </li>
+            <li>Answer all questions (there are 4).</li>
+            <li>Run back to the 🏁 start zone.</li>
+          </ol>
+
+          <div className="tips">
+            <div className="title" style={{ fontWeight: "600" }}>
+              Helpful Tips:
+            </div>
+            <ul style={{ marginTop: "5px" }}>
+              <li>
+                You must be in the ⭕️ question zone to answer the question.
+              </li>
+              <li>
+                ⌛️ Time starts when you click{" "}
+                <b style={{ color: "green" }}>Start Quiz</b>.
+              </li>
+              <li>Click the 🏆 leaderboard to check your rank.</li>
+            </ul>
+          </div>
+        </div>
+        <div className="footer-fixed">
+          {isQuizOngoing() ? (
+            <div className="balloon-dialog">
+              This quiz is currently in progress
+            </div>
+          ) : null}
+          <button
+            onClick={() => dispatch(startClock())}
+            className="start-btn"
+            style={{ width: "90%" }}
+            disabled={isQuizOngoing()}
+          >
+            Start Quiz
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return startScreen();
 }
 
 export default StartAssetView;
