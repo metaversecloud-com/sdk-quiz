@@ -69,7 +69,7 @@ function Quiz() {
     );
   }
 
-  if (!elapsedTime) {
+  if (!startTimestamp) {
     return (
       <div className="center-content">
         <img
