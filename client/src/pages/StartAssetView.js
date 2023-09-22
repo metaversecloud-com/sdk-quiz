@@ -6,6 +6,7 @@ import {
   startClock,
   getQuestionsStatistics,
   getTimestamp,
+  getDroppedAsset,
 } from "../redux/actions/session";
 import "./StartAssetView.scss";
 import Timer from "../components/timer/Timer.js";
@@ -16,19 +17,26 @@ function StartAssetView() {
   const [loading, setLoading] = useState(true);
   const [isStartButtonClicked, setIsStartButtonClicked] = useState(false);
 
-  const totalNumberOfQuestionsInQuiz = useSelector(
-    (state) => state?.session?.questionsAnswered?.totalNumberOfQuestionsInQuiz
+  const profileId = useSelector(
+    (state) => state?.session?.visitor?.profile.profileId
   );
-  const numberOfQuestionsAnswered = useSelector(
-    (state) => state?.session?.questionsAnswered?.numberOfQuestionsAnswered
-  );
+
+  const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
+
+  const totalNumberOfQuestionsInQuiz =
+    droppedAsset?.dataObject?.quiz?.numberOfQuestionsThatBelongToQuiz;
+
+  const numberOfQuestionsAnswered =
+    droppedAsset?.dataObject?.quiz?.[profileId]?.numberOfQuestionsAnswered || 0;
+
+  console.log("numberOfQuestionsAnswered", numberOfQuestionsAnswered);
+
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
-      await dispatch(getVisitor());
-      await dispatch(getQuestionsStatistics());
       await dispatch(getTimestamp());
+      await dispatch(getDroppedAsset());
 
       setLoading(false);
     };

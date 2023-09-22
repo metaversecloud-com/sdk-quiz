@@ -54,10 +54,17 @@ export const registerUserAnswer = async (req, res) => {
     const { hasAnsweredAllQuestions, startAsset } =
       await getHasAnsweredAllQuestions(req.query);
 
+    if (!startAsset?.dataObject?.quiz?.[profileId]?.numberOfQuestionsAnswered) {
+      startAsset.dataObject.quiz[profileId].numberOfQuestionsAnswered = 1;
+    } else {
+      startAsset.dataObject.quiz[profileId].numberOfQuestionsAnswered++;
+    }
+
     if (hasAnsweredAllQuestions) {
       startAsset.dataObject.quiz[profileId].endTimestamp = Date.now();
-      await startAsset.updateDataObject();
     }
+
+    await startAsset.updateDataObject();
 
     return res.json({
       droppedAsset,

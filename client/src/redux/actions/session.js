@@ -53,6 +53,7 @@ export const getDroppedAsset = () => async (dispatch) => {
     const response = await axios.get(url);
     if (response.status === 200) {
       dispatch(setDroppedAsset(response?.data?.droppedAsset));
+      dispatch(setVisitor(response?.data?.visitor));
     }
   } catch (error) {
     console.error("error", error);

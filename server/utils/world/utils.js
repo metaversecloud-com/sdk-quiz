@@ -49,6 +49,7 @@ export const getQuestionsAndLeaderboardStartAndAssets = async (queryParams) => {
       startAsset,
       leaderboardAsset,
       questionAssets,
+      numberOfAssetsThatBelongToQuiz: allAssetsThatBelongToQuiz?.length,
     };
   } catch (error) {
     console.error("Error getQuestionsAndLeaderboardStartAndAssets", error);

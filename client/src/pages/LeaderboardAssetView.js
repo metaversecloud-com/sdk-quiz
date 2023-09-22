@@ -49,10 +49,6 @@ function Leaderboard() {
       <div style={{ margin: "15px 0px" }}>
         <h3>Leaderboard</h3>
       </div>
-      {/* <div class="tab-container" style={{ marginBottom: "20px" }}>
-        <button>This Quiz</button>
-        <button class="btn-text">My Results</button>
-      </div> */}
       <table className="leaderboard-table">
         <tbody>
           {leaderboard?.map((entry, index) => (

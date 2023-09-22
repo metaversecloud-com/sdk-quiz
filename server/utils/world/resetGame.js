@@ -24,6 +24,11 @@ export const resetGame = async (req, res) => {
     startAsset.dataObject.quiz = null;
     await startAsset.updateDataObject();
 
+    startAsset.dataObject.quiz = {};
+    startAsset.dataObject.quiz.numberOfQuestionsThatBelongToQuiz =
+      questionAssets.length;
+    await startAsset.updateDataObject();
+
     for (const question of questionAssets) {
       question.dataObject.quiz = null;
       await question.updateDataObject();
