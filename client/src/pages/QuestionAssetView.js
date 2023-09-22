@@ -38,9 +38,9 @@ function Quiz() {
   useEffect(() => {
     const fetchDroppedAsset = () => {
       dispatch(getDroppedAsset());
-      dispatch(getVisitor());
-      dispatch(getTimestamp());
-      dispatch(getQuestionsStatistics());
+      // dispatch(getVisitor());
+      // dispatch(getTimestamp());
+      // dispatch(getQuestionsStatistics());
 
       setLoading(false);
     };

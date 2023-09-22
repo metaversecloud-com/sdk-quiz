@@ -29,13 +29,10 @@ function StartAssetView() {
   const numberOfQuestionsAnswered =
     droppedAsset?.dataObject?.quiz?.[profileId]?.numberOfQuestionsAnswered || 0;
 
-  console.log("numberOfQuestionsAnswered", numberOfQuestionsAnswered);
-
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
-      await dispatch(getTimestamp());
       await dispatch(getDroppedAsset());
 
       setLoading(false);

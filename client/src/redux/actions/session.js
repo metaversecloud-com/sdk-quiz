@@ -13,6 +13,7 @@ export const {
   setLeaderboard,
   setQuestionsAnswered,
   setTimestamp,
+  setStartDroppedAsset,
   setError,
 } = session.actions;
 
@@ -52,8 +53,16 @@ export const getDroppedAsset = () => async (dispatch) => {
 
     const response = await axios.get(url);
     if (response.status === 200) {
-      dispatch(setDroppedAsset(response?.data?.droppedAsset));
-      dispatch(setVisitor(response?.data?.visitor));
+      const droppedAsset = response?.data?.droppedAsset;
+      const visitor = response?.data?.visitor;
+      const startTimestamp =
+        response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
+          ?.startTimestamp;
+
+      console.log("startTimestamp", startTimestamp);
+      dispatch(setDroppedAsset(droppedAsset));
+      dispatch(setVisitor(visitor));
+      dispatch(setTimestamp(startTimestamp));
     }
   } catch (error) {
     console.error("error", error);
@@ -192,6 +201,32 @@ export const getTimestamp = () => async (dispatch) => {
     const response = await axios.get(url);
     if (response.status === 200) {
       dispatch(setTimestamp(response?.data?.startTimestamp));
+    }
+  } catch (error) {
+    console.error("error", error);
+    if (error.response && error.response.data) {
+    } else {
+    }
+  }
+};
+
+export const getStartDroppedAsset = () => async (dispatch) => {
+  try {
+    const queryParams = getQueryParams();
+    const url = `backend/start-dropped-asset?${queryParams}`;
+
+    const response = await axios.get(url);
+    if (response.status === 200) {
+      const startDroppedAsset = response?.data?.startDroppedAsset;
+      const visitor = response?.data?.visitor;
+      const startTimestamp =
+        response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
+          ?.startTimestamp;
+
+      console.log("startTimestamp", startTimestamp);
+      dispatch(setStartDroppedAsset(startDroppedAsset));
+      dispatch(setVisitor(visitor));
+      dispatch(setTimestamp(startTimestamp));
     }
   } catch (error) {
     console.error("error", error);
