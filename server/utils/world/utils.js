@@ -16,11 +16,18 @@ export const getQuestionsAndLeaderboardStartAndAssets = async (queryParams) => {
       visitorId,
     };
 
-    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, {
-      credentials,
-    });
+    const droppedAsset = DroppedAsset.create(assetId, urlSlug, { credentials });
+    await Promise.all([
+      droppedAsset.fetchDroppedAssetById(),
+      droppedAsset.fetchDataObject(),
+    ]);
+
+    console.log(droppedAsset.uniqueName, droppedAsset.dataObject);
 
     const quizName = getQuizName(droppedAsset?.uniqueName);
+
+    // Use partial search to get all the assets the belongs to the quiz
+    // world.fetchDroppedAssetsWithUniqueName("math_quiz1_", true)
 
     const allAssetsThatBelongToQuiz = await getAllAssetsThatBelongsToQuiz(
       quizName,
@@ -152,3 +159,34 @@ function checkAllAnswered(droppedAssets) {
   }
   return true;
 }
+
+export const getMainQuizAsset = async (queryParams) => {
+  // try {
+  //   const {
+  //     visitorId,
+  //     interactiveNonce,
+  //     assetId,
+  //     interactivePublicKey,
+  //     urlSlug,
+  //   } = queryParams;
+  //   const credentials = {
+  //     assetId,
+  //     interactiveNonce,
+  //     interactivePublicKey,
+  //     visitorId,
+  //   };
+  //   const world = await World.create(urlSlug, { credentials });
+  //   const { startAsset, leaderboardAsset, questionAssets } =
+  //     await getQuestionsAndLeaderboardStartAndAssets(queryParams);
+  //   const hasAnsweredAllQuestions = checkAllAnswered(questionAssets);
+  //   return {
+  //     hasAnsweredAllQuestions,
+  //     startAsset,
+  //     leaderboardAsset,
+  //     questionAssets,
+  //   };
+  // } catch (error) {
+  //   console.error("Error getting the visitor", error);
+  //   return res.status(500).send({ error, success: false });
+  // }
+};

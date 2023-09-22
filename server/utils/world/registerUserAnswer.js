@@ -1,5 +1,8 @@
 import { DroppedAsset, Visitor } from "../topiaInit.js";
-import { getHasAnsweredAllQuestions } from "./utils.js";
+import {
+  getHasAnsweredAllQuestions,
+  getQuestionsAndLeaderboardStartAndAssets,
+} from "./utils.js";
 
 export const registerUserAnswer = async (req, res) => {
   try {

@@ -44,14 +44,6 @@ function StartAssetView() {
     );
   }
 
-  const getTotalQuestionsAnsweredView = () => {
-    return (
-      <div>
-        {numberOfQuestionsAnswered}/{totalNumberOfQuestionsInQuiz}
-      </div>
-    );
-  };
-
   function isQuizOngoing() {
     return (
       numberOfQuestionsAnswered >= 0 &&

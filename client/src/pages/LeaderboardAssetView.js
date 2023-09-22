@@ -6,6 +6,7 @@ import {
   getDroppedAsset,
   getVisitor,
   getLeaderboard,
+  getQuestionsStatistics,
 } from "../redux/actions/session";
 import "./LeaderboardAssetView.scss";
 
@@ -16,12 +17,16 @@ function Leaderboard() {
   const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
   const visitor = useSelector((state) => state?.session?.visitor);
   const leaderboard = useSelector((state) => state?.session?.leaderboard);
+  const totalNumberOfQuestionsInQuiz = useSelector(
+    (state) => state?.session?.questionsAnswered?.totalNumberOfQuestionsInQuiz
+  );
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
       await dispatch(getDroppedAsset());
       await dispatch(getVisitor());
       await dispatch(getLeaderboard());
+      await dispatch(getQuestionsStatistics());
       setLoading(false);
     };
 
@@ -41,21 +46,29 @@ function Leaderboard() {
       <div style={{ textAlign: "center" }}>
         <h1 className="trophy">🏆</h1>
       </div>
-      <h3>Leaderboard</h3>
+      <div style={{ margin: "15px 0px" }}>
+        <h3>Leaderboard</h3>
+      </div>
+      {/* <div class="tab-container" style={{ marginBottom: "20px" }}>
+        <button>This Quiz</button>
+        <button class="btn-text">My Results</button>
+      </div> */}
       <table className="leaderboard-table">
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Score</th>
-            <th>Time</th>
-          </tr>
-        </thead>
         <tbody>
           {leaderboard?.map((entry, index) => (
             <tr key={index}>
+              <td>{index + 1}</td>
               <td>{entry?.username}</td>
-              <td>{entry?.score}</td>
-              <td>{moment.utc(entry?.timeElapsed).format("HH:mm:ss")}</td>
+              <td>
+                <span className="hug">
+                  {entry?.score}/{totalNumberOfQuestionsInQuiz}
+                </span>
+              </td>
+              <td>
+                <span className="hug">
+                  {moment.utc(entry?.timeElapsed).format("HH:mm:ss")}
+                </span>
+              </td>
             </tr>
           ))}
         </tbody>

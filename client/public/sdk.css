@@ -161,7 +161,7 @@ body,
   letter-spacing: 0.025px;
 }
 
-.error {
+.text-error {
   color: var(--colors-danger-500, #cc4040);
   font-family: "Open Sans";
   font-size: 12px;
@@ -172,7 +172,7 @@ body,
 }
 
 /*** Buttons ***/
-button {
+button, .btn {
   display: inline-flex;
   height: 40px;
   width: 100%;
@@ -187,72 +187,72 @@ button {
   background: var(--colors-primary-900);
   border-color: var(--colors-primary-900);
 }
-button:hover {
+button:hover, .btn:hover {
   background: var(--colors-primary-700);
   border-color: var(--colors-primary-700);
 }
-button:disabled {
+button:disabled, .btn:disabled {
   background: var(--colors-primary-400);
   border-color: var(--colors-primary-400);
 }
-button a {
+button a, .btn a {
   text-decoration: none;
 }
 
 /* Outline Button */
-button.outline {
+.btn-outline {
   background: var(--colors-primary-0);
   border-color: var(--colors-primary-900);
   color: var(--colors-primary-900);
 }
-button.outline:hover {
+.btn-outline:hover {
   background: var(--colors-primary-0);
   border-color: var(--colors-primary-700);
   color: var(--colors-primary-700);
 }
-button.outline:disabled {
+.btn-outline:disabled {
   background: var(--colors-primary-0);
   border-color: var(--colors-primary-400);
   color: var(--colors-primary-400);
 }
 
 /* Text Button */
-button.text {
+.btn-text {
   background: var(--colors-primary-0);
   border-color: var(--colors-primary-0);
   color: var(--colors-primary-900);
 }
-button.text:hover {
+.btn-text:hover {
   background: var(--colors-primary-0);
   border-color: var(--colors-primary-0);
   color: var(--colors-primary-700);
 }
-button.text:disabled {
+.btn-text:disabled {
   background: var(--colors-primary-0);
   border-color: var(--colors-primary-0);
   color: var(--colors-primary-400);
 }
 
 /* Success/Danger Buttons */
-button.success {
+.btn-success {
   background: var(--colors-success-700);
   border-color: var(--colors-success-700);
 }
-button.success:hover {
+.btn-success:hover {
   background: var(--colors-success-500);
   border-color: var(--colors-success-500);
 }
-button.danger {
+.btn-danger {
   background: var(--colors-danger-900);
   border-color: var(--colors-danger-900);
 }
-button.danger:hover {
+.btn-danger:hover {
   background: var(--colors-danger-500);
   border-color: var(--colors-danger-500);
 }
 
 /* Icon Button */
-button.icon {
+.btn-icon {
   width: 40px;
   min-width: 40px;
   border-radius: 50px;
@@ -260,11 +260,11 @@ button.icon {
   border-color: var(--colors-primary-100);
   color: var(--colors-primary-900);
 }
-button.icon:hover {
+.btn-icon:hover {
   background: var(--colors-primary-50);
   border-color: var(--colors-primary-50);
 }
-button.icon:disabled {
+.btn-icon:disabled {
   background: var(--colors-primary-300);
   border-color: var(--colors-primary-100);
 }
@@ -289,7 +289,7 @@ input {
 input:focus {
   border-color: var(--colors-primary-500);
 }
-input.error {
+.input-error {
   color: var(--colors-primary-900);
   border-color: var(--colors-danger-500);
 }
@@ -311,16 +311,16 @@ input[type="radio"]:disabled {
   border-color: var(--colors-primary-100);
   outline-color: var(--colors-primary-100);
 }
-input[type="radio"].success {
+input[type="radio"].input-success {
   outline-color: var(--colors-success-500);
 }
-input[type="radio"].success:checked {
+input[type="radio"].input-success:checked {
   background: var(--colors-success-500);
 }
-input[type="radio"].danger {
+input[type="radio"].input-danger {
   outline-color: var(--colors-danger-500);
 }
-input[type="radio"].danger:checked {
+input[type="radio"].input-danger:checked {
   background: var(--colors-danger-500);
 }
 
@@ -341,7 +341,7 @@ input[type="radio"].danger:checked {
   flex-direction: row;
 }
 
-.card .image {
+.card-image {
   display: block;
   border-radius: 8px;
   border: 1px solid var(--colors-primary-100);
@@ -350,18 +350,18 @@ input[type="radio"].danger:checked {
   height: 278px;
 }
 
-.card.small .image {
+.card.small .card-image {
   width: 128px;
   min-width: 128px;
   height: 128px;
 }
 
-.card.small .details {
+.card.small .card-details {
   flex: 2 1 0%;
   max-width: 255px;
 }
 
-.card.horizontal .details {
+.card.horizontal .card-details {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -389,7 +389,7 @@ input[type="radio"].danger:checked {
   white-space: normal;
 }
 
-.card .actions {
+.card-actions {
   -webkit-box-align: center;
   align-items: center;
   border-radius: 0px;
@@ -399,7 +399,7 @@ input[type="radio"].danger:checked {
   width: 100%;
 }
 
-.card.horizontal .details .actions {
+.card.horizontal .card-actions {
   width: auto;
 }
 
@@ -480,11 +480,11 @@ input[type="radio"].danger:checked {
   border: 1px solid var(--colors-primary-100);
   background: var(--colors-primary-0);  
 }
-.chip.success {
+.chip-success {
   color: var(--colors-success-700);
   border-color: var(--colors-success-700);
 }
-.chip.danger {
+.chip-danger {
   color: var(--colors-danger-900);
   border-color: var(--colors-danger-900);
 }

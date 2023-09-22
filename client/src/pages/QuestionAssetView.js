@@ -6,6 +6,7 @@ import {
   getVisitor,
   registerUserAnswer,
   getTimestamp,
+  getQuestionsStatistics,
 } from "../redux/actions/session";
 import "./QuestionAssetView.scss";
 import info from "../assets/info.png";
@@ -39,6 +40,7 @@ function Quiz() {
       dispatch(getDroppedAsset());
       dispatch(getVisitor());
       dispatch(getTimestamp());
+      dispatch(getQuestionsStatistics());
 
       setLoading(false);
     };
@@ -58,7 +60,15 @@ function Quiz() {
   };
 
   function hasAnsweredAllQuestions() {
-    return numberOfQuestionsAnswered != totalNumberOfQuestionsInQuiz;
+    console.log(
+      "numberOfQuestionsAnswered totalNumberOfQuestionsInQuiz",
+      numberOfQuestionsAnswered,
+      totalNumberOfQuestionsInQuiz
+    );
+    if (!numberOfQuestionsAnswered || !totalNumberOfQuestionsInQuiz) {
+      return false;
+    }
+    return numberOfQuestionsAnswered == totalNumberOfQuestionsInQuiz;
   }
 
   if (loading || startTimestamp === null) {
@@ -89,6 +99,7 @@ function Quiz() {
     return (
       <div className="quiz-container">
         <div style={{ marginTop: "24px" }}>
+          {console.log("hasAnsweredAllQuestions()", hasAnsweredAllQuestions())}
           {hasAnsweredAllQuestions() ? (
             ""
           ) : (

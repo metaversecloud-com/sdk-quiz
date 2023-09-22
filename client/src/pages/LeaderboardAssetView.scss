@@ -1,5 +1,5 @@
 .leaderboard-container {
-  padding: 20px;
+  padding: 5px;
 }
 
 h2 {
@@ -9,23 +9,18 @@ h2 {
 
 .leaderboard-table {
   width: 100%;
-  border-collapse: collapse;
+  border-radius: 8px;
+  border: 1px solid var(--colors-primary-100, #EBEDEF);
+  background: #FFF;
 }
 
 .leaderboard-table th, .leaderboard-table td {
   padding: 10px 15px;
-  border: 1px solid #e0e0e0;
 }
 
-.leaderboard-table th {
-  background-color: #007BFF;
-  color: white;
+table {
+  padding: 0;
 }
-
-.leaderboard-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
 .trophy {
   font-family: 'Quicksand';
   font-size: 48px;
@@ -44,4 +39,15 @@ h3 {
   font-weight: 600;
   line-height: 130%;
   letter-spacing: 0.06px;
+}
+
+.tab-container {
+  width: unset;
+}
+
+.hug {
+  border-radius: 100px;
+  border: 1px solid #EBEDEF;
+  background: #FFF;
+  padding: 2px 6px;
 }
