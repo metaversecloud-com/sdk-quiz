@@ -2,31 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment-timezone";
 import { ClipLoader } from "react-spinners";
-import {
-  getDroppedAsset,
-  getVisitor,
-  getLeaderboard,
-  getQuestionsStatistics,
-} from "../redux/actions/session";
+import { getLeaderboard } from "../redux/actions/session";
 import "./LeaderboardAssetView.scss";
 
 function Leaderboard() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
-  const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
-  const visitor = useSelector((state) => state?.session?.visitor);
   const leaderboard = useSelector((state) => state?.session?.leaderboard);
-  const totalNumberOfQuestionsInQuiz = useSelector(
-    (state) => state?.session?.questionsAnswered?.totalNumberOfQuestionsInQuiz
+  const startDroppedAsset = useSelector(
+    (state) => state?.session?.startDroppedAsset
   );
+
+  console.log("startDroppedAsset", startDroppedAsset);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
-      await dispatch(getDroppedAsset());
-      await dispatch(getVisitor());
       await dispatch(getLeaderboard());
-      await dispatch(getQuestionsStatistics());
       setLoading(false);
     };
 
@@ -57,7 +49,8 @@ function Leaderboard() {
               <td>{entry?.username}</td>
               <td>
                 <span className="hug">
-                  {entry?.score}/{totalNumberOfQuestionsInQuiz}
+                  {entry?.score}/
+                  {startDroppedAsset?.dataObject?.quiz?.results?.length}
                 </span>
               </td>
               <td>

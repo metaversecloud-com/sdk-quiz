@@ -1,5 +1,5 @@
 import { DroppedAsset, Visitor } from "../topiaInit.js";
-import { getQuestionsAndLeaderboardStartAndAssets } from "./utils.js";
+import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
 
 export const resetGame = async (req, res) => {
   try {
@@ -27,6 +27,9 @@ export const resetGame = async (req, res) => {
     startAsset.dataObject.quiz = {};
     startAsset.dataObject.quiz.numberOfQuestionsThatBelongToQuiz =
       questionAssets.length;
+
+    startAsset.dataObject.quiz.results = new Array(questionAssets.length);
+
     await startAsset.updateDataObject();
 
     for (const question of questionAssets) {

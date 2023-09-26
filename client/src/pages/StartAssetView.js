@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import {
-  getVisitor,
   startClock,
-  getQuestionsStatistics,
-  getTimestamp,
   getDroppedAsset,
+  getStartDroppedAsset,
+  updateStartTimestamp,
 } from "../redux/actions/session";
 import "./StartAssetView.scss";
 import Timer from "../components/timer/Timer.js";
@@ -17,23 +16,12 @@ function StartAssetView() {
   const [loading, setLoading] = useState(true);
   const [isStartButtonClicked, setIsStartButtonClicked] = useState(false);
 
-  const profileId = useSelector(
-    (state) => state?.session?.visitor?.profile.profileId
-  );
-
-  const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
-
-  const totalNumberOfQuestionsInQuiz =
-    droppedAsset?.dataObject?.quiz?.numberOfQuestionsThatBelongToQuiz;
-
-  const numberOfQuestionsAnswered =
-    droppedAsset?.dataObject?.quiz?.[profileId]?.numberOfQuestionsAnswered || 0;
-
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
+  const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
-      await dispatch(getDroppedAsset());
+      await dispatch(getStartDroppedAsset());
 
       setLoading(false);
     };
@@ -49,16 +37,19 @@ function StartAssetView() {
     );
   }
 
-  function isQuizOngoing() {
-    return (
-      numberOfQuestionsAnswered >= 0 &&
-      numberOfQuestionsAnswered < totalNumberOfQuestionsInQuiz &&
-      startTimestamp
-    );
+  function quizStatus() {
+    if (!startTimestamp) {
+      return "NOT_STARTED";
+    } else if (startTimestamp && !endTimestamp) {
+      return "ONGOING";
+    } else if (startTimestamp && endTimestamp) {
+      return "ENDED";
+    }
+    return false;
   }
 
   // is quiz ongoing?
-  if (isQuizOngoing()) {
+  if (quizStatus() === "ONGOING") {
     return (
       <div>
         <div style={{ textAlign: "center", margin: "24px 0px" }}>
@@ -72,7 +63,7 @@ function StartAssetView() {
         {startScreen()}
       </div>
     );
-  } else if (numberOfQuestionsAnswered === totalNumberOfQuestionsInQuiz) {
+  } else if (quizStatus() === "ENDED") {
     return (
       <div className="quiz-completed-container center-content">
         <h3>Hooray, quiz complete!</h3>
@@ -119,7 +110,7 @@ function StartAssetView() {
           </div>
         </div>
         <div className="footer-fixed">
-          {isQuizOngoing() ? (
+          {quizStatus() === "ONGOING" ? (
             <div className="balloon-dialog">
               This quiz is currently in progress
             </div>
@@ -130,11 +121,15 @@ function StartAssetView() {
           <button
             onClick={() => {
               setIsStartButtonClicked(true);
-              dispatch(startClock());
+              dispatch(updateStartTimestamp());
             }}
             className="start-btn"
             style={{ width: "90%" }}
-            disabled={isQuizOngoing() || isStartButtonClicked}
+            disabled={
+              quizStatus() === "ONGOING" ||
+              quizStatus() === "ENDED" ||
+              isStartButtonClicked
+            }
           >
             Start Quiz
           </button>

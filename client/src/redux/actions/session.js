@@ -12,8 +12,10 @@ export const {
   setDroppedAssets,
   setLeaderboard,
   setQuestionsAnswered,
-  setTimestamp,
+  setStartTimestamp,
+  setEndTimestamp,
   setStartDroppedAsset,
+  setQuestionDroppedAsset,
   setError,
 } = session.actions;
 
@@ -58,11 +60,62 @@ export const getDroppedAsset = () => async (dispatch) => {
       const startTimestamp =
         response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
           ?.startTimestamp;
+      const endTimestamp =
+        response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
+          ?.endTimestamp;
 
       console.log("startTimestamp", startTimestamp);
       dispatch(setDroppedAsset(droppedAsset));
       dispatch(setVisitor(visitor));
-      dispatch(setTimestamp(startTimestamp));
+      dispatch(setStartTimestamp(startTimestamp));
+      dispatch(setEndTimestamp(endTimestamp));
+    }
+  } catch (error) {
+    console.error("error", error);
+    if (error.response && error.response.data) {
+    } else {
+    }
+  }
+};
+
+export const getStartDroppedAsset = () => async (dispatch) => {
+  try {
+    const queryParams = getQueryParams();
+    const url = `backend/start-dropped-asset?${queryParams}`;
+
+    const response = await axios.get(url);
+    if (response.status === 200) {
+      const droppedAsset = response?.data?.droppedAsset;
+      const visitor = response?.data?.visitor;
+      const startTimestamp =
+        response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
+          ?.startTimestamp;
+      const endTimestamp =
+        response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
+          ?.endTimestamp;
+
+      dispatch(setStartDroppedAsset(droppedAsset));
+      dispatch(setVisitor(visitor));
+      dispatch(setStartTimestamp(startTimestamp));
+      dispatch(setEndTimestamp(endTimestamp));
+    }
+  } catch (error) {
+    console.error("error", error);
+    if (error.response && error.response.data) {
+    } else {
+    }
+  }
+};
+
+export const updateStartTimestamp = () => async (dispatch) => {
+  try {
+    const queryParams = getQueryParams();
+    const url = `backend/start-timestamp?${queryParams}`;
+
+    const response = await axios.put(url);
+    if (response.status === 200) {
+      console.log("timestp response.data", response.data);
+      dispatch(setStartTimestamp(response?.data?.startTimestamp));
     }
   } catch (error) {
     console.error("error", error);
@@ -79,8 +132,17 @@ export const registerUserAnswer =
       const url = `backend/registerUserAnswer?${queryParams}`;
 
       const response = await axios.post(url, { isCorrect, selectedOption });
+
+      const startDroppedAsset = response?.data?.startDroppedAsset;
+      const questionDroppedAsset = response?.data?.questionDroppedAsset;
+      const visitor = response?.data?.visitor;
+      const endTimestamp =
+        startDroppedAsset?.dataObject?.quiz[visitor?.profileId]?.endTimestamp;
+
       if (response.status === 200) {
-        dispatch(setDroppedAsset(response?.data?.droppedAsset));
+        dispatch(setDroppedAsset(startDroppedAsset));
+        dispatch(setQuestionDroppedAsset(questionDroppedAsset));
+        dispatch(setEndTimestamp(endTimestamp));
       }
     } catch (error) {
       console.error("error", error);
@@ -149,6 +211,19 @@ export const getLeaderboard = () => async (dispatch) => {
 
     const response = await axios.get(url);
     if (response.status === 200) {
+      const startDroppedAsset = response?.data?.startDroppedAsset;
+      const visitor = response?.data?.visitor;
+      const startTimestamp =
+        response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
+          ?.startTimestamp;
+      const endTimestamp =
+        response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
+          ?.endTimestamp;
+
+      dispatch(setVisitor(visitor));
+      dispatch(setStartDroppedAsset(startDroppedAsset));
+      dispatch(setStartTimestamp(startTimestamp));
+      dispatch(setEndTimestamp(endTimestamp));
       dispatch(setLeaderboard(response?.data?.leaderboard));
     }
   } catch (error) {
@@ -200,7 +275,7 @@ export const getTimestamp = () => async (dispatch) => {
 
     const response = await axios.get(url);
     if (response.status === 200) {
-      dispatch(setTimestamp(response?.data?.startTimestamp));
+      dispatch(setStartTimestamp(response?.data?.startTimestamp));
     }
   } catch (error) {
     console.error("error", error);
@@ -210,23 +285,30 @@ export const getTimestamp = () => async (dispatch) => {
   }
 };
 
-export const getStartDroppedAsset = () => async (dispatch) => {
+export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/start-dropped-asset?${queryParams}`;
+    const url = `backend/question/start-dropped-asset?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
       const startDroppedAsset = response?.data?.startDroppedAsset;
+      const questionDroppedAsset = response?.data?.questionDroppedAsset;
       const visitor = response?.data?.visitor;
       const startTimestamp =
         response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
           ?.startTimestamp;
+      const endTimestamp =
+        response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
+          ?.endTimestamp;
 
-      console.log("startTimestamp", startTimestamp);
+      console.log("endTimestamp", endTimestamp);
+
       dispatch(setStartDroppedAsset(startDroppedAsset));
+      dispatch(setQuestionDroppedAsset(questionDroppedAsset));
       dispatch(setVisitor(visitor));
-      dispatch(setTimestamp(startTimestamp));
+      dispatch(setStartTimestamp(startTimestamp));
+      dispatch(setEndTimestamp(endTimestamp));
     }
   } catch (error) {
     console.error("error", error);

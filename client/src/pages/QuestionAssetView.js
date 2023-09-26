@@ -2,46 +2,59 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import {
-  getDroppedAsset,
-  getVisitor,
   registerUserAnswer,
-  getTimestamp,
-  getQuestionsStatistics,
+  getStartDroppedAssetFromQuestionAsset,
 } from "../redux/actions/session";
 import "./QuestionAssetView.scss";
 import info from "../assets/info.png";
 import Timer from "../components/timer/Timer.js";
+
+function extractQuestionNumber(str) {
+  if (!str) {
+    return null;
+  }
+
+  const parts = str.split("-");
+
+  if (parts?.length > 2 && !isNaN(parts?.[1])) {
+    return parseInt(parts[1], 10);
+  }
+
+  return null;
+}
 
 function Quiz() {
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
+  const startDroppedAsset = useSelector(
+    (state) => state?.session?.startDroppedAsset
+  );
+  const questionDroppedAsset = useSelector(
+    (state) => state?.session?.questionDroppedAsset
+  );
+
+  const questionNumber = extractQuestionNumber(
+    questionDroppedAsset?.uniqueName
+  );
+
   const visitor = useSelector((state) => state?.session?.visitor);
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
+  const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
 
-  const totalNumberOfQuestionsInQuiz = useSelector(
-    (state) => state?.session?.questionsAnswered?.totalNumberOfQuestionsInQuiz
-  );
-  const numberOfQuestionsAnswered = useSelector(
-    (state) => state?.session?.questionsAnswered?.numberOfQuestionsAnswered
-  );
-
-  const data = droppedAsset?.dataObject;
+  const data = questionDroppedAsset?.dataObject;
 
   const quizResults =
-    droppedAsset?.dataObject?.quiz?.results?.[visitor?.profileId];
+    startDroppedAsset?.dataObject?.quiz?.results?.[questionNumber]?.[
+      visitor?.profileId
+    ];
 
   const userAnswer = quizResults?.userAnswer;
 
   useEffect(() => {
     const fetchDroppedAsset = () => {
-      dispatch(getDroppedAsset());
-      // dispatch(getVisitor());
-      // dispatch(getTimestamp());
-      // dispatch(getQuestionsStatistics());
-
+      dispatch(getStartDroppedAssetFromQuestionAsset());
       setLoading(false);
     };
     fetchDroppedAsset();
@@ -59,18 +72,6 @@ function Quiz() {
     }
   };
 
-  function hasAnsweredAllQuestions() {
-    console.log(
-      "numberOfQuestionsAnswered totalNumberOfQuestionsInQuiz",
-      numberOfQuestionsAnswered,
-      totalNumberOfQuestionsInQuiz
-    );
-    if (!numberOfQuestionsAnswered || !totalNumberOfQuestionsInQuiz) {
-      return false;
-    }
-    return numberOfQuestionsAnswered == totalNumberOfQuestionsInQuiz;
-  }
-
   if (loading || startTimestamp === null) {
     return (
       <div className="loader">
@@ -79,7 +80,6 @@ function Quiz() {
     );
   }
 
-  console.log("startTimestamp", startTimestamp, startTimestamp === undefined);
   if (startTimestamp === undefined) {
     return (
       <div className="center-content">
@@ -99,14 +99,9 @@ function Quiz() {
     return (
       <div className="quiz-container">
         <div style={{ marginTop: "24px" }}>
-          {console.log("hasAnsweredAllQuestions()", hasAnsweredAllQuestions())}
-          {hasAnsweredAllQuestions() ? (
-            ""
-          ) : (
-            <div style={{ textAlign: "center" }}>
-              <Timer />
-            </div>
-          )}
+          <div style={{ textAlign: "center" }}>
+            <Timer />
+          </div>
         </div>
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           <h1>❓</h1>
@@ -115,7 +110,7 @@ function Quiz() {
           <h1 style={{ color: "#0A2540" }}>{data?.question}</h1>
         </div>
         <div className="quiz-content">
-          {data?.options.map((option, index) => (
+          {data?.options?.map((option, index) => (
             <button
               key={index}
               className={`option-button ${
@@ -149,7 +144,7 @@ function Quiz() {
             )}
           </div>
         )}
-        {hasAnsweredAllQuestions() ? (
+        {endTimestamp ? (
           <p>Congratulations, you answered all questions!</p>
         ) : (
           ""

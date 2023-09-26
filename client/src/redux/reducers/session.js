@@ -24,11 +24,17 @@ const reducers = {
   setQuestionsAnswered: (state, action) => {
     state.questionsAnswered = action.payload;
   },
-  setTimestamp: (state, action) => {
+  setStartTimestamp: (state, action) => {
     state.startTimestamp = action.payload;
+  },
+  setEndTimestamp: (state, action) => {
+    state.endTimestamp = action.payload;
   },
   setStartDroppedAsset: (state, action) => {
     state.startDroppedAsset = action.payload;
+  },
+  setQuestionDroppedAsset: (state, action) => {
+    state.questionDroppedAsset = action.payload;
   },
   setError: (state, action) => {
     state.error = action.payload;

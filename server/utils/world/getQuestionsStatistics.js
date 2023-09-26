@@ -1,5 +1,5 @@
 import { DroppedAsset, Visitor, World } from "../topiaInit.js";
-import { getQuestionsAndLeaderboardStartAndAssets } from "./utils.js";
+import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
 
 export const getQuestionsStatistics = async (req, res) => {
   try {

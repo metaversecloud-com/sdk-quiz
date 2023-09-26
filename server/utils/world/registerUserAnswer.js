@@ -2,7 +2,7 @@ import { DroppedAsset, Visitor } from "../topiaInit.js";
 import {
   getHasAnsweredAllQuestions,
   getQuestionsAndLeaderboardStartAndAssets,
-} from "./utils.js";
+} from "../utils.js";
 
 export const registerUserAnswer = async (req, res) => {
   try {
@@ -23,15 +23,25 @@ export const registerUserAnswer = async (req, res) => {
 
     const { isCorrect, selectedOption } = req.body;
 
-    const visitor = await Visitor.get(visitorId, urlSlug, {
+    const droppedAssetPromise = DroppedAsset.get(assetId, urlSlug, {
       credentials,
     });
+
+    const visitorPromise = Visitor.get(visitorId, urlSlug, {
+      credentials: {
+        assetId,
+        interactiveNonce,
+        interactivePublicKey,
+        visitorId,
+      },
+    });
+
+    const result = await Promise.all([droppedAssetPromise, visitorPromise]);
+
+    const droppedAsset = result?.[0];
+    const visitor = result?.[1];
 
     const profileId = visitor?.profileId;
-
-    const droppedAsset = await DroppedAsset.get(assetId, urlSlug, {
-      credentials,
-    });
 
     await droppedAsset.fetchDataObject();
 

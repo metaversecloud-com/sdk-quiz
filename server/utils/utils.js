@@ -1,4 +1,4 @@
-import { Visitor, DroppedAsset, World } from "../topiaInit.js";
+import { Visitor, DroppedAsset, World } from "./topiaInit.js";
 export const getQuestionsAndLeaderboardStartAndAssets = async (queryParams) => {
   try {
     const {
@@ -160,34 +160,3 @@ function checkAllAnswered(droppedAssets) {
   }
   return true;
 }
-
-export const getMainQuizAsset = async (queryParams) => {
-  // try {
-  //   const {
-  //     visitorId,
-  //     interactiveNonce,
-  //     assetId,
-  //     interactivePublicKey,
-  //     urlSlug,
-  //   } = queryParams;
-  //   const credentials = {
-  //     assetId,
-  //     interactiveNonce,
-  //     interactivePublicKey,
-  //     visitorId,
-  //   };
-  //   const world = await World.create(urlSlug, { credentials });
-  //   const { startAsset, leaderboardAsset, questionAssets } =
-  //     await getQuestionsAndLeaderboardStartAndAssets(queryParams);
-  //   const hasAnsweredAllQuestions = checkAllAnswered(questionAssets);
-  //   return {
-  //     hasAnsweredAllQuestions,
-  //     startAsset,
-  //     leaderboardAsset,
-  //     questionAssets,
-  //   };
-  // } catch (error) {
-  //   console.error("Error getting the visitor", error);
-  //   return res.status(500).send({ error, success: false });
-  // }
-};
