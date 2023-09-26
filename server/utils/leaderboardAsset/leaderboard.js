@@ -1,23 +1,7 @@
-import { DroppedAsset, Visitor, World } from "../topiaInit.js";
 import { getStartAsset } from "../questionAsset/utils.js";
 
 export const leaderboard = async (req, res) => {
   try {
-    const {
-      visitorId,
-      interactiveNonce,
-      assetId,
-      interactivePublicKey,
-      urlSlug,
-    } = req.query;
-
-    const credentials = {
-      assetId,
-      interactiveNonce,
-      interactivePublicKey,
-      visitorId,
-    };
-
     const { startDroppedAsset, visitor } = await getStartAsset(req.query);
 
     const leaderboard = calculateLeaderboard(startDroppedAsset);
@@ -30,7 +14,9 @@ export const leaderboard = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating the leaderboard", error);
-    return res.status(500).send({ error, success: false });
+    return res
+      .status(500)
+      .send({ error: JSON.stringify(error), success: false });
   }
 };
 

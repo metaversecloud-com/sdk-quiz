@@ -52,6 +52,8 @@ export const updateStartTimestamp = async (req, res) => {
     });
   } catch (error) {
     console.error("Error getting the visitor", error);
-    return res.status(500).send({ error, success: false });
+    return res
+      .status(500)
+      .send({ error: JSON.stringify(error), success: false });
   }
 };

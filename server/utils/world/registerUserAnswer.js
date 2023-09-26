@@ -1,8 +1,5 @@
 import { DroppedAsset, Visitor } from "../topiaInit.js";
-import {
-  getHasAnsweredAllQuestions,
-  getQuestionsAndLeaderboardStartAndAssets,
-} from "../utils.js";
+import { getHasAnsweredAllQuestions } from "../utils.js";
 
 export const registerUserAnswer = async (req, res) => {
   try {
@@ -83,6 +80,8 @@ export const registerUserAnswer = async (req, res) => {
     });
   } catch (error) {
     console.error("Error selecting the answer", error);
-    return res.status(500).send({ error, success: false });
+    return res
+      .status(500)
+      .send({ error: JSON.stringify(error), success: false });
   }
 };

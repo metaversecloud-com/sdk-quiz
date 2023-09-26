@@ -26,9 +26,6 @@ export const getQuestionsAndLeaderboardStartAndAssets = async (queryParams) => {
 
     const quizName = getQuizName(droppedAsset?.uniqueName);
 
-    // Use partial search to get all the assets the belongs to the quiz
-    // world.fetchDroppedAssetsWithUniqueName("math_quiz1_", true)
-
     const allAssetsThatBelongToQuiz = await getAllAssetsThatBelongsToQuiz(
       quizName,
       urlSlug,

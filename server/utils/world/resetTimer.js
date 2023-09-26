@@ -1,4 +1,4 @@
-import { DroppedAsset, Visitor } from "../topiaInit.js";
+import { DroppedAsset } from "../topiaInit.js";
 export const resetTimer = async (req, res) => {
   try {
     const {
@@ -26,6 +26,8 @@ export const resetTimer = async (req, res) => {
     return res.json({ droppedAsset });
   } catch (error) {
     console.error("Error getting the visitor", error);
-    return res.status(500).send({ error, success: false });
+    return res
+      .status(500)
+      .send({ error: JSON.stringify(error), success: false });
   }
 };

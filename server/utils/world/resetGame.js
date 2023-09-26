@@ -1,4 +1,3 @@
-import { DroppedAsset, Visitor } from "../topiaInit.js";
 import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
 
 export const resetGame = async (req, res) => {
@@ -10,13 +9,6 @@ export const resetGame = async (req, res) => {
       interactivePublicKey,
       urlSlug,
     } = req.query;
-
-    const credentials = {
-      assetId,
-      interactiveNonce,
-      interactivePublicKey,
-      visitorId,
-    };
 
     const { questionAssets, startAsset } =
       await getQuestionsAndLeaderboardStartAndAssets(req.query);

@@ -1,4 +1,4 @@
-import { DroppedAsset, Visitor, World } from "../topiaInit.js";
+import { Visitor } from "../topiaInit.js";
 import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
 
 export const getQuestionsStatistics = async (req, res) => {
@@ -10,13 +10,6 @@ export const getQuestionsStatistics = async (req, res) => {
       interactivePublicKey,
       urlSlug,
     } = req.query;
-
-    const credentials = {
-      assetId,
-      interactiveNonce,
-      interactivePublicKey,
-      visitorId,
-    };
 
     const visitor = await Visitor.get(visitorId, urlSlug, {
       credentials: {
@@ -44,7 +37,9 @@ export const getQuestionsStatistics = async (req, res) => {
     });
   } catch (error) {
     console.error("Error selecting the answer", error);
-    return res.status(500).send({ error, success: false });
+    return res
+      .status(500)
+      .send({ error: JSON.stringify(error), success: false });
   }
 };
 

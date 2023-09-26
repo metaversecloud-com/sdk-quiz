@@ -51,6 +51,6 @@ export async function getStartAsset(queryParams) {
 }
 
 function getQuizName(str) {
-  const parts = str.split("-");
+  const parts = str?.split("-");
   return parts[parts.length - 1];
 }

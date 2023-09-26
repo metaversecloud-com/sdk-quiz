@@ -1,10 +1,4 @@
-/**
- * This module provides an endpoint function `updateTimestamp` that updates or fetches
- * the start timestamp of a quiz associated with a specific dropped asset in the Topia platform.
- * The timestamp is used to track the time that each user spends on the quiz
- */
-
-import { Visitor, DroppedAsset, World } from "../topiaInit.js";
+import { Visitor, World } from "../topiaInit.js";
 import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
 export const getTimestamp = async (req, res) => {
   try {
@@ -37,17 +31,14 @@ export const getTimestamp = async (req, res) => {
     });
   } catch (error) {
     console.error("Error getting the visitor", error);
-    return res.status(500).send({ error, success: false });
+    return res
+      .status(500)
+      .send({ error: JSON.stringify(error), success: false });
   }
 };
 
 function isStartAsset(str) {
-  return str.startsWith("start-");
-}
-
-function getLastWord(str) {
-  const parts = str.split("-");
-  return parts[parts.length - 1];
+  return str?.startsWith("start-");
 }
 
 function belongsToQuiz(assetUniqueName, quizUniqueName) {
