@@ -40,6 +40,8 @@ export const resetGame = async (req, res) => {
     return res.json({ message: "Game Reset", sucess: true });
   } catch (error) {
     console.error("Error getting the visitor", error);
-    return res.status(500).send({ error, success: false });
+    return res
+      .status(500)
+      .json({ error: JSON.stringify(error), success: false });
   }
 };
