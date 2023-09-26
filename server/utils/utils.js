@@ -53,7 +53,7 @@ export const getQuestionsAndLeaderboardStartAndAssets = async (queryParams) => {
     };
   } catch (error) {
     console.error("Error getQuestionsAndLeaderboardStartAndAssets", error);
-    return res.status(500).send({ error, success: false });
+    throw new Error("Error in getQuestionsAndLeaderboardStartAndAssets");
   }
 };
 

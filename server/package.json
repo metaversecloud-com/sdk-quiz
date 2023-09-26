@@ -1,7 +1,7 @@
 {
-  "name": "@sdk-calendar/calendar-server",
+  "name": "@sdk-quiz/quiz-server",
   "version": "0.1.0",
-  "description": "SDK Calendar Server",
+  "description": "SDK Quiz Server",
   "main": "index.js",
   "type": "module",
   "scripts": {

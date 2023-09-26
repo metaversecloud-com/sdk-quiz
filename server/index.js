@@ -10,7 +10,7 @@ dotenv.config();
 import { fileURLToPath } from "url";
 
 checkEnvVariables();
-const version = "1.0";
+const version = "1.1";
 const PORT = process.env.PORT || 3000;
 const app = express();
 

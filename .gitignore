@@ -1,6 +1,6 @@
 node_modules
 
-ignore .env in all directories
 **/.env
 .env
 client/.env
+server/.env
