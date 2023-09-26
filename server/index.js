@@ -10,6 +10,7 @@ dotenv.config();
 import { fileURLToPath } from "url";
 
 checkEnvVariables();
+const version = "1.0";
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -18,6 +19,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use("/backend", router);
+
+app.get("/", (req, res) => {
+  return res.send(`Server is running... ${version} 09/25/2023 DD/MM/YYYY`);
+});
 
 if (process.env.NODE_ENV === "production") {
   // Node serves the files for the React app
@@ -32,5 +37,5 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.listen(PORT, () => {
-  console.info(`Server listening on ${PORT}`);
+  console.info(`Server listening on ${PORT}, version: ${version}`);
 });
