@@ -48,7 +48,7 @@ export const registerUserAnswer = async (req, res) => {
     });
   } catch (error) {
     console.error(
-      "❌ ⛏️ Error selecting the answer: ",
+      "❌ ⛏️ Error in registerUserAnswer the answer: ",
       { requestId: req.id, reqQuery: req.query, reqBody: req.body },
       JSON.stringify(error)
     );
@@ -57,10 +57,10 @@ export const registerUserAnswer = async (req, res) => {
 };
 
 function extractQuestionNumber(str) {
-  const parts = str?.split("-");
+  const parts = str.split("-");
 
-  if (parts?.length > 2 && !isNaN(parts?.[1])) {
-    return parseInt(parts?.[1], 10);
+  if (parts?.length > 2 && !isNaN(parts[1])) {
+    return parseInt(parts[1], 10);
   }
 
   return null;
