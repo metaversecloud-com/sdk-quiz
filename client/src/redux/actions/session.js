@@ -64,7 +64,6 @@ export const getDroppedAsset = () => async (dispatch) => {
         response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
 
-      console.log("startTimestamp", startTimestamp);
       dispatch(setDroppedAsset(droppedAsset));
       dispatch(setVisitor(visitor));
       dispatch(setStartTimestamp(startTimestamp));
@@ -114,7 +113,6 @@ export const updateStartTimestamp = () => async (dispatch) => {
 
     const response = await axios.put(url);
     if (response.status === 200) {
-      console.log("timestp response.data", response.data);
       dispatch(setStartTimestamp(response?.data?.startTimestamp));
     }
   } catch (error) {
@@ -192,7 +190,6 @@ export const resetTimer = () => async (dispatch) => {
     const url = `backend/resetTimer?${queryParams}`;
 
     const response = await axios.post(url);
-    console.log("res", response);
     if (response.status === 200) {
       dispatch(getDroppedAsset());
     }
@@ -301,8 +298,6 @@ export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
       const endTimestamp =
         response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
-
-      console.log("endTimestamp", endTimestamp);
 
       dispatch(setStartDroppedAsset(startDroppedAsset));
       dispatch(setQuestionDroppedAsset(questionDroppedAsset));

@@ -14,8 +14,6 @@ function Leaderboard() {
     (state) => state?.session?.startDroppedAsset
   );
 
-  console.log("startDroppedAsset", startDroppedAsset);
-
   useEffect(() => {
     const fetchDroppedAsset = async () => {
       await dispatch(getLeaderboard());
