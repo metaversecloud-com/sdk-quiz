@@ -13,10 +13,12 @@ export const leaderboard = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.error("Error creating the leaderboard", error);
-    return res
-      .status(500)
-      .send({ error: JSON.stringify(error), success: false });
+    console.error(
+      "❌ 🏗️ Error while getting the leaderboard: ",
+      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
+      JSON.stringify(error)
+    );
+    return res.status(500).json({ error: error?.message, success: false });
   }
 };
 

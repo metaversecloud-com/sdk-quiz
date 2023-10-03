@@ -21,9 +21,11 @@ export const getVisitor = async (req, res) => {
 
     return res.json({ visitor, success: true });
   } catch (error) {
-    console.error("Error getting the visitor", error);
-    return res
-      .status(500)
-      .send({ error: JSON.stringify(error), success: false });
+    console.error(
+      "❌ 🏗️ Error while getting the visitor: ",
+      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
+      JSON.stringify(error)
+    );
+    return res.status(500).json({ error: error?.message, success: false });
   }
 };

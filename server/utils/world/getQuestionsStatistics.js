@@ -36,10 +36,12 @@ export const getQuestionsStatistics = async (req, res) => {
       numberOfQuestionsAnswered,
     });
   } catch (error) {
-    console.error("Error selecting the answer", error);
-    return res
-      .status(500)
-      .send({ error: JSON.stringify(error), success: false });
+    console.error(
+      "❌ 📈 Error while getQuestionsStatistics: ",
+      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
+      JSON.stringify(error)
+    );
+    return res.status(500).json({ error: error?.message, success: false });
   }
 };
 

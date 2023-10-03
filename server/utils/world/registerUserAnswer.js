@@ -79,9 +79,11 @@ export const registerUserAnswer = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.error("Error selecting the answer", error);
-    return res
-      .status(500)
-      .send({ error: JSON.stringify(error), success: false });
+    console.error(
+      "❌ 📃 Error while registerUserAnswer: ",
+      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
+      JSON.stringify(error)
+    );
+    return res.status(500).json({ error: error?.message, success: false });
   }
 };

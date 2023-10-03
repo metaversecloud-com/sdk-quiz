@@ -15,6 +15,8 @@ import {
   getStartAssetFromQuestionAsset,
 } from "./utils/index.js";
 
+import { validationMiddleware } from "./middlware/validation.js";
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -22,21 +24,31 @@ router.get("/", (req, res) => {
 });
 
 // Endpoints for Start Asset
-router.get("/start-dropped-asset", getStartDroppedAsset);
-router.put("/start-timestamp", updateStartTimestamp);
+router.get("/start-dropped-asset", validationMiddleware, getStartDroppedAsset);
+router.put("/start-timestamp", validationMiddleware, updateStartTimestamp);
+router.post("/registerUserAnswer", validationMiddleware, registerUserAnswer);
+router.post("/resetGame", validationMiddleware, resetGame);
+router.put("/timestamp", validationMiddleware, updateTimestamp);
 
 // Endpoints for Question Asset
-router.get("/question/start-dropped-asset", getStartAssetFromQuestionAsset);
+router.get(
+  "/question/start-dropped-asset",
+  validationMiddleware,
+  getStartAssetFromQuestionAsset
+);
 
-router.get("/dropped-asset", getDroppedAssets);
-router.get("/visitor", getVisitor);
-router.get("/leaderboard", leaderboard);
-router.put("/timestamp", updateTimestamp);
-router.get("/timestamp", getTimestamp);
-router.post("/registerUserAnswer", registerUserAnswer);
-router.get("/questionsStatistics", getQuestionsStatistics);
-router.post("/clear", clear);
-router.post("/resetTimer", resetTimer);
-router.post("/resetGame", resetGame);
+// Deprecated endpoints
+router.get("/dropped-asset", validationMiddleware, getDroppedAssets);
+router.get("/visitor", validationMiddleware, getVisitor);
+router.get("/leaderboard", validationMiddleware, leaderboard);
+router.get("/timestamp", validationMiddleware, getTimestamp);
+
+router.get(
+  "/questionsStatistics",
+  validationMiddleware,
+  getQuestionsStatistics
+);
+router.post("/clear", validationMiddleware, clear);
+router.post("/resetTimer", validationMiddleware, resetTimer);
 
 export default router;

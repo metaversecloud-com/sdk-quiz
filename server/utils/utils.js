@@ -22,8 +22,6 @@ export const getQuestionsAndLeaderboardStartAndAssets = async (queryParams) => {
       droppedAsset.fetchDataObject(),
     ]);
 
-    console.log(droppedAsset.uniqueName, droppedAsset.dataObject);
-
     const quizName = getQuizName(droppedAsset?.uniqueName);
 
     const allAssetsThatBelongToQuiz = await getAllAssetsThatBelongsToQuiz(
