@@ -24,9 +24,14 @@ export const resetGame = async (req, res) => {
     return res.json({ startAsset, sucess: true });
   } catch (error) {
     console.error(
-      "❌ 🧹 Error while resetting the game: ",
-      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ 🧹 Error while resetting the game",
+          functionName: "resetGame",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }

@@ -14,9 +14,14 @@ export const leaderboard = async (req, res) => {
     });
   } catch (error) {
     console.error(
-      "❌ 🏆 Error getting the leaderboard: ",
-      { requestId: req.id, reqQuery: req.query },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ 🏆 Error getting the leaderboard: ",
+          functionName: "leaderboard",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }

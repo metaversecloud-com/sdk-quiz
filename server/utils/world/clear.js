@@ -38,7 +38,16 @@ export const clear = async (req, res) => {
 
     return res.json({ droppedAsset });
   } catch (error) {
-    console.error("Error getting the visitor", error);
+    console.error(
+      JSON.stringify({
+        errorContext: {
+          message: "❌ Error while cleaning the game",
+          functionName: "clear",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
+    );
     return res.status(500).send({ error, success: false });
   }
 };

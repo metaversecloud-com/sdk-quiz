@@ -22,9 +22,14 @@ export const getVisitor = async (req, res) => {
     return res.json({ visitor, success: true });
   } catch (error) {
     console.error(
-      "❌ 🏗️ Error while getting the visitor: ",
-      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ 🏗️ Error while getting the visitor",
+          functionName: "getVisitor",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }

@@ -52,9 +52,14 @@ export const updateStartTimestamp = async (req, res) => {
     });
   } catch (error) {
     console.error(
-      "❌ ⌛ Error while updating the timestamp: ",
-      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ ⌛ Error while updating the timestamp",
+          functionName: "updateStartTimestamp",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }

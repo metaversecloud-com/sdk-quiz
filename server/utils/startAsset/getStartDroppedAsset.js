@@ -37,9 +37,14 @@ export const getStartDroppedAsset = async (req, res) => {
     return res.json({ droppedAsset, visitor });
   } catch (error) {
     console.error(
-      "❌ 🏃‍♂️ Error getting the getStartDroppedAsset: ",
-      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ 🏃‍♂️ Error getting the getStartDroppedAsset",
+          functionName: "getStartDroppedAsset",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }

@@ -8,9 +8,14 @@ export const getStartAssetFromQuestionAsset = async (req, res) => {
     return res.json({ startDroppedAsset, visitor, questionDroppedAsset });
   } catch (error) {
     console.error(
-      "❌ 📪 Error getting the getStartAssetFromQuestionAsset: ",
-      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ 📪 Error getting the getStartAssetFromQuestionAsset",
+          functionName: "getStartAssetFromQuestionAsset",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }

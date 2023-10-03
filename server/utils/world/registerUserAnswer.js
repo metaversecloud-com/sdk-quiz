@@ -80,9 +80,14 @@ export const registerUserAnswer = async (req, res) => {
     });
   } catch (error) {
     console.error(
-      "❌ 📃 Error while registerUserAnswer: ",
-      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ 📃 Error while registerUserAnswer",
+          functionName: "registerUserAnswer",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }

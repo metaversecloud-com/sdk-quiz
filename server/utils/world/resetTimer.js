@@ -26,9 +26,14 @@ export const resetTimer = async (req, res) => {
     return res.json({ droppedAsset });
   } catch (error) {
     console.error(
-      "❌ ⌛ Error while resetting the timer: ",
-      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ ⌛ Error while resetting the timer",
+          functionName: "resetTimer",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }

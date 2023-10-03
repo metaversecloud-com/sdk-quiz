@@ -37,9 +37,14 @@ export const getQuestionsStatistics = async (req, res) => {
     });
   } catch (error) {
     console.error(
-      "❌ 📈 Error while getQuestionsStatistics: ",
-      { requestId: req.id, reqQuery: req.query, reqBody: req.body },
-      JSON.stringify(error)
+      JSON.stringify({
+        errorContext: {
+          message: "❌ 📈 Error while getQuestionsStatistics",
+          functionName: "getQuestionsStatistics",
+        },
+        requestContext: { requestId: req.id, reqQuery: req.query },
+        error: JSON.stringify(error),
+      })
     );
     return res.status(500).json({ error: error?.message, success: false });
   }
