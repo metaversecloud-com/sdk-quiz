@@ -1,4 +1,6 @@
 import { Visitor } from "../topiaInit.js";
+import { logger } from "../../logs/logger.js";
+
 import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
 export const updateTimestamp = async (req, res) => {
   try {
@@ -42,16 +44,12 @@ export const updateTimestamp = async (req, res) => {
         startAsset?.dataObject.quiz[visitor?.profileId].startTimestamp,
     });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ ⌛ Error while updating the timestamp",
-          functionName: "updateTimestamp",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ ⌛ Error while updating the timestamp",
+      functionName: "updateTimestamp",
+      req,
+    });
     return res.status(500).json({ error: error?.message, success: false });
   }
 };

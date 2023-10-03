@@ -1,5 +1,7 @@
 import { Visitor, World } from "../topiaInit.js";
 import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
+import { logger } from "../../logs/logger.js";
+
 export const getTimestamp = async (req, res) => {
   try {
     const {
@@ -30,16 +32,12 @@ export const getTimestamp = async (req, res) => {
         startAsset?.dataObject?.quiz?.[visitor?.profileId]?.startTimestamp,
     });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ ⌛ Error while getTimestamp",
-          functionName: "getTimestamp",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ ⌛ Error while getTimestamp",
+      functionName: "getTimestamp",
+      req,
+    });
     return res.status(500).json({ error: error?.message, success: false });
   }
 };

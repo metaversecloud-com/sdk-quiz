@@ -1,4 +1,6 @@
 import { DroppedAsset } from "../topiaInit.js";
+import { logger } from "../../logs/logger.js";
+
 export const resetTimer = async (req, res) => {
   try {
     const {
@@ -25,16 +27,12 @@ export const resetTimer = async (req, res) => {
 
     return res.json({ droppedAsset });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ ⌛ Error while resetting the timer",
-          functionName: "resetTimer",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ ⌛ Error while resetting the timer",
+      functionName: "resetTimer",
+      req,
+    });
     return res.status(500).json({ error: error?.message, success: false });
   }
 };

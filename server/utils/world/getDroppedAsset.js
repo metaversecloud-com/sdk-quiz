@@ -1,4 +1,6 @@
 import { DroppedAsset, Visitor } from "../topiaInit.js";
+import { logger } from "../../logs/logger.js";
+
 export const getDroppedAssets = async (req, res) => {
   try {
     const {
@@ -36,16 +38,12 @@ export const getDroppedAssets = async (req, res) => {
 
     return res.json({ droppedAsset, visitor });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ 📪 Error while getDroppedAsset",
-          functionName: "getDroppedAsset",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ 📪 Error while getDroppedAsset",
+      functionName: "getDroppedAsset",
+      req,
+    });
     return res.status(500).json({ error: error?.message, success: false });
   }
 };

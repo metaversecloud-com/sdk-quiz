@@ -1,5 +1,6 @@
 import { DroppedAsset, Visitor } from "../topiaInit.js";
 import { getHasAnsweredAllQuestions } from "../utils.js";
+import { logger } from "../../logs/logger.js";
 
 export const registerUserAnswer = async (req, res) => {
   try {
@@ -79,16 +80,12 @@ export const registerUserAnswer = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ 📃 Error while registerUserAnswer",
-          functionName: "registerUserAnswer",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ 📃 Error while registerUserAnswer",
+      functionName: "registerUserAnswer",
+      req,
+    });
     return res.status(500).json({ error: error?.message, success: false });
   }
 };

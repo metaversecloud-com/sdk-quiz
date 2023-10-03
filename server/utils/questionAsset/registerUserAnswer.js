@@ -1,4 +1,5 @@
 import { getStartAsset } from "./utils.js";
+import { logger } from "../../logs/logger.js";
 
 export const registerUserAnswer = async (req, res) => {
   try {
@@ -47,16 +48,12 @@ export const registerUserAnswer = async (req, res) => {
       visitor,
     });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ ⛏️ Error in registerUserAnswer the answer",
-          functionName: "registerUserAnswer",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ ⛏️ Error in registerUserAnswer the answer",
+      functionName: "registerUserAnswer",
+      req,
+    });
     return res.status(500).json({ error: error?.message, success: false });
   }
 };

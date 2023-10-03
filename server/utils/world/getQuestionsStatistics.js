@@ -1,5 +1,6 @@
 import { Visitor } from "../topiaInit.js";
 import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
+import { logger } from "../../logs/logger.js";
 
 export const getQuestionsStatistics = async (req, res) => {
   try {
@@ -36,16 +37,12 @@ export const getQuestionsStatistics = async (req, res) => {
       numberOfQuestionsAnswered,
     });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ 📈 Error while getQuestionsStatistics",
-          functionName: "getQuestionsStatistics",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ 📈 Error while getQuestionsStatistics",
+      functionName: "getQuestionsStatistics",
+      req,
+    });
     return res.status(500).json({ error: error?.message, success: false });
   }
 };

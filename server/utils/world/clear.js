@@ -1,4 +1,6 @@
 import { DroppedAsset, Visitor } from "../topiaInit.js";
+import { logger } from "../../logs/logger.js";
+
 export const clear = async (req, res) => {
   try {
     const {
@@ -38,16 +40,12 @@ export const clear = async (req, res) => {
 
     return res.json({ droppedAsset });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ Error while cleaning the game",
-          functionName: "clear",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ Error while cleaning the game",
+      functionName: "clear",
+      req,
+    });
     return res.status(500).send({ error, success: false });
   }
 };

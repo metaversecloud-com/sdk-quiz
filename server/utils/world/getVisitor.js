@@ -1,4 +1,6 @@
 import { Visitor } from "../topiaInit.js";
+import { logger } from "../../logs/logger.js";
+
 export const getVisitor = async (req, res) => {
   try {
     const {
@@ -21,16 +23,12 @@ export const getVisitor = async (req, res) => {
 
     return res.json({ visitor, success: true });
   } catch (error) {
-    console.error(
-      JSON.stringify({
-        errorContext: {
-          message: "❌ 🏗️ Error while getting the visitor",
-          functionName: "getVisitor",
-        },
-        requestContext: { requestId: req.id, reqQuery: req.query },
-        error: JSON.stringify(error),
-      })
-    );
+    logger.error({
+      error,
+      message: "❌ 🏗️ Error while getting the visitor",
+      functionName: "getVisitor",
+      req,
+    });
     return res.status(500).json({ error: error?.message, success: false });
   }
 };
