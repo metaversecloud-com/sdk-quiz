@@ -47,7 +47,7 @@ function calculateLeaderboard(startAsset) {
       }
 
       if (result?.[profileId].isCorrect) {
-        scoreData?.[profileId].score++;
+        scoreData[profileId].score++;
       }
     }
   }
