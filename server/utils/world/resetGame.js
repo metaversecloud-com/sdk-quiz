@@ -2,14 +2,6 @@ import { getQuestionsAndLeaderboardStartAndAssets } from "../utils.js";
 
 export const resetGame = async (req, res) => {
   try {
-    const {
-      visitorId,
-      interactiveNonce,
-      assetId,
-      interactivePublicKey,
-      urlSlug,
-    } = req.query;
-
     const { questionAssets, startAsset } =
       await getQuestionsAndLeaderboardStartAndAssets(req.query);
 
@@ -29,7 +21,7 @@ export const resetGame = async (req, res) => {
       await question.updateDataObject();
     }
 
-    return res.json({ message: "Game Reset", sucess: true });
+    return res.json({ startAsset, sucess: true });
   } catch (error) {
     console.error(
       "❌ 🧹 Error while resetting the game: ",

@@ -5,14 +5,31 @@ import "./LeaderboardAssetView.scss";
 
 function AdminView() {
   const dispatch = useDispatch();
+  const [resetButtonClicked, setResetButtonClicked] = useState(false);
+
+  const startDroppedAsset = useSelector(
+    (state) => state?.session?.startDroppedAsset
+  );
 
   return (
     <div className="center-content">
       <h2>Admin Panel</h2>
 
-      <button onClick={() => dispatch(resetGame())} className="start-btn">
-        Reset Game
-      </button>
+      {console.log("startDroppedAsset", startDroppedAsset)}
+      {startDroppedAsset ? (
+        "The game restarted."
+      ) : (
+        <button
+          onClick={() => {
+            setResetButtonClicked(true);
+            dispatch(resetGame());
+          }}
+          className="start-btn"
+          disabled={resetButtonClicked}
+        >
+          {resetButtonClicked ? "Restarting game..." : "Restart Game"}
+        </button>
+      )}
     </div>
   );
 }

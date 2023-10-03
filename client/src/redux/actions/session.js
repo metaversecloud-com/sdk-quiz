@@ -174,7 +174,9 @@ export const resetGame = () => async (dispatch) => {
 
     const response = await axios.post(url);
     if (response.status === 200) {
-      dispatch(getDroppedAsset());
+      console.log("res", response);
+      const startDroppedAsset = response?.data?.startAsset;
+      dispatch(setStartDroppedAsset(startDroppedAsset));
     }
   } catch (error) {
     console.error("error", error);
