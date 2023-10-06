@@ -4,9 +4,10 @@ import { resetGame } from "../../redux/actions/session";
 import penToSquareSvg from "../../assets/pen-to-square-regular.svg";
 import EditQuestionView from "./EditQuestionView";
 import { getAllQuestions } from "../../redux/actions/session";
+import backArrow from "../../assets/backArrow.svg";
 import "./AdminView.scss";
 
-function AdminView() {
+function AdminView({ setShowSettings }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [resetButtonClicked, setResetButtonClicked] = useState(false);
@@ -18,6 +19,7 @@ function AdminView() {
   );
 
   const allQuestions = useSelector((state) => state?.session?.allQuestions);
+  const gameResetFlag = useSelector((state) => state?.session?.gameResetFlag);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
@@ -28,7 +30,20 @@ function AdminView() {
     fetchDroppedAsset();
   }, [dispatch]);
 
-  console.log("selectEditQuestionNumber", selectEditQuestionNumber);
+  function getBackArrow() {
+    return (
+      <div
+        style={{ position: "absolute", left: "16px" }}
+        className="icon-with-rounded-border"
+        onClick={() => {
+          setShowSettings(false);
+        }}
+      >
+        <img src={backArrow} />
+      </div>
+    );
+  }
+
   if (selectEditQuestionNumber || selectEditQuestionNumber === 0) {
     return (
       <EditQuestionView
@@ -40,6 +55,7 @@ function AdminView() {
 
   return (
     <div className="admin-view-wrapper">
+      {getBackArrow()}
       <h2>Settings</h2>
 
       {loading ? (
@@ -60,8 +76,9 @@ function AdminView() {
         ))
       )}
 
+      {console.log("gameResetFlag", gameResetFlag)}
       <div className="footer-fixed">
-        {startDroppedAsset ? (
+        {gameResetFlag ? (
           "The quiz has reset."
         ) : (
           <button

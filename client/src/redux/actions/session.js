@@ -18,6 +18,7 @@ export const {
   setQuestionDroppedAsset,
   setAllQuestions,
   setQuestionAsset,
+  setGameResetFlag,
   setError,
 } = session.actions;
 
@@ -177,7 +178,9 @@ export const resetGame = () => async (dispatch) => {
     const response = await axios.post(url);
     if (response.status === 200) {
       const startDroppedAsset = response?.data?.startAsset;
+      const gameResetFlag = response?.data?.gameResetFlag;
       dispatch(setStartDroppedAsset(startDroppedAsset));
+      dispatch(setGameResetFlag(gameResetFlag));
     }
   } catch (error) {
     console.error("error", error);

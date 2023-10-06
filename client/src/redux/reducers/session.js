@@ -10,6 +10,7 @@ const initialState = {
   allQuestionAssets: null,
   questionsAnswered: null,
   startTimestamp: null,
+  setGameResetFlag: null,
   error: null,
 };
 
@@ -43,6 +44,9 @@ const reducers = {
   },
   setQuestionAsset: (state, action) => {
     state.questionAsset = action.payload;
+  },
+  setGameResetFlag: (state, action) => {
+    state.gameResetFlag = action.payload;
   },
   setError: (state, action) => {
     state.error = action.payload;

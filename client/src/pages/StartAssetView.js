@@ -10,14 +10,18 @@ import {
 import "./StartAssetView.scss";
 import Timer from "../components/timer/Timer.js";
 import TotalQuestionsAnsweredView from "../components/totalQuestionsAnsweredView/TotalQuestionsAnsweredView.js";
+import gear from "../assets/gear.svg";
+import AdminView from "./Admin/AdminView";
 
 function StartAssetView() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [isStartButtonClicked, setIsStartButtonClicked] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
+  const visitor = useSelector((state) => state?.session?.visitor);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
@@ -48,6 +52,20 @@ function StartAssetView() {
     return false;
   }
 
+  function getGear() {
+    return (
+      <div
+        style={{ position: "absolute", left: "16px" }}
+        className="icon-with-rounded-border"
+        onClick={() => {
+          setShowSettings(true);
+        }}
+      >
+        <img src={gear} />
+      </div>
+    );
+  }
+
   // is quiz ongoing?
   if (quizStatus() === "ONGOING") {
     return (
@@ -72,11 +90,19 @@ function StartAssetView() {
     );
   }
 
+  if (showSettings) {
+    return <AdminView setShowSettings={setShowSettings} />;
+  }
+
   function startScreen() {
     return (
       <div>
-        <div style={{ textAlign: "left", margin: "24px 0px" }}>
-          <h4 style={{ textAlign: "left" }}>🏎️ Welcome to Quiz Race!</h4>
+        {visitor.isAdmin ? getGear() : <></>}
+        <div
+          style={{ textAlign: "left", margin: "24px 0px" }}
+          className={visitor?.isAdmin ? "pt-5" : ""}
+        >
+          <h4 style={{ textAlign: "center" }}>🏎️ Welcome to Quiz Race!</h4>
         </div>
         <div className="instructions">
           <div className="title" style={{ fontWeight: "600" }}>

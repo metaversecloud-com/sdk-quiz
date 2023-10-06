@@ -22,7 +22,7 @@ export const resetGame = async (req, res) => {
       await question.updateDataObject();
     }
 
-    return res.json({ startAsset, sucess: true });
+    return res.json({ startAsset, sucess: true, gameResetFlag: true });
   } catch (error) {
     logger.error({
       error,
