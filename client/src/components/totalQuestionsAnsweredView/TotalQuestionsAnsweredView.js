@@ -12,9 +12,6 @@ function TotalQuestionsAnsweredView() {
     (state) => state?.session?.visitor?.profile.profileId
   );
 
-  const totalNumberOfQuestionsInQuiz =
-    droppedAsset?.dataObject?.quiz?.numberOfQuestionsThatBelongToQuiz;
-
   const numberOfQuestionsAnswered =
     droppedAsset?.dataObject?.quiz?.[profileId]?.numberOfQuestionsAnswered || 0;
 

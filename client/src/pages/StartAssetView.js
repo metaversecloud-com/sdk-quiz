@@ -66,6 +66,10 @@ function StartAssetView() {
     );
   }
 
+  if (showSettings) {
+    return <AdminView setShowSettings={setShowSettings} />;
+  }
+
   // is quiz ongoing?
   if (quizStatus() === "ONGOING") {
     return (
@@ -83,15 +87,14 @@ function StartAssetView() {
     );
   } else if (quizStatus() === "ENDED") {
     return (
-      <div className="quiz-completed-container center-content">
-        <h3>Hooray, quiz complete!</h3>
-        <p>See how you stack up against others on the leaderboard!</p>
+      <div>
+        {visitor.isAdmin ? getGear() : <></>}
+        <div className="quiz-completed-container center-content">
+          <h3>Hooray, quiz complete!</h3>
+          <p>See how you stack up against others on the leaderboard!</p>
+        </div>
       </div>
     );
-  }
-
-  if (showSettings) {
-    return <AdminView setShowSettings={setShowSettings} />;
   }
 
   function startScreen() {
