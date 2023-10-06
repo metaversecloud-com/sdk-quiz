@@ -7,7 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import QuestionAssetView from "./QuestionAssetView";
 import LeaderboardAssetView from "./LeaderboardAssetView";
 import StartAssetView from "./StartAssetView";
-import AdminView from "./AdminView";
+import AdminView from "./Admin/AdminView";
 
 const PageRoutes = () => {
   return (

@@ -86,7 +86,11 @@ export const getHasAnsweredAllQuestions = async (queryParams) => {
   }
 };
 
-async function getAllAssetsThatBelongsToQuiz(quizName, urlSlug, credentials) {
+export async function getAllAssetsThatBelongsToQuiz(
+  quizName,
+  urlSlug,
+  credentials
+) {
   const world = await World.create(urlSlug, { credentials });
 
   await world.fetchDroppedAssets();
@@ -106,39 +110,39 @@ async function getAllAssetsThatBelongsToQuiz(quizName, urlSlug, credentials) {
   return result;
 }
 
-function doesStrBelongsToQuiz(assetUniqueName, quizUniqueName) {
+export function doesStrBelongsToQuiz(assetUniqueName, quizUniqueName) {
   const regex = new RegExp(
-    `^start-${quizUniqueName}$|^question-.*-${quizUniqueName}$|^leaderboard-${quizUniqueName}$`
+    `^${quizUniqueName}-start$|^${quizUniqueName}-question-.*$|^${quizUniqueName}-leaderboard$`
   );
 
   return regex.test(assetUniqueName);
 }
 
-function getQuizName(str) {
+export function getQuizName(str) {
   const parts = str.split("-");
-  return parts[parts.length - 1];
+  return parts[0];
 }
 
 function getStartAsset(droppedAssets, quizName) {
   return droppedAssets.find((asset) => {
-    return asset.uniqueName.startsWith(`start-${quizName}`);
+    return asset.uniqueName.startsWith(`${quizName}-start`);
   });
 }
 
-function getLeaderboardAsset(droppedAssets, quizName) {
+export function getLeaderboardAsset(droppedAssets, quizName) {
   return droppedAssets.find((asset) => {
-    return asset.uniqueName.startsWith(`leaderboard-${quizName}`);
+    return asset.uniqueName.startsWith(`${quizName}-leaderboard`);
   });
 }
 
-function getQuestionAssets(droppedAssets, quizName) {
-  const regex = new RegExp(`^question-.*-${quizName}$`);
+export function getQuestionAssets(droppedAssets, quizName) {
+  const regex = new RegExp(`^${quizName}-question-.*`);
   return droppedAssets.filter((asset) => {
     return regex.test(asset.uniqueName);
   });
 }
 
-function checkAllAnswered(droppedAssets) {
+export function checkAllAnswered(droppedAssets) {
   for (let asset of droppedAssets) {
     if (!asset.dataObject.quiz) {
       return false;

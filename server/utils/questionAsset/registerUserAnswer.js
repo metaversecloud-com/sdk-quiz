@@ -61,8 +61,8 @@ export const registerUserAnswer = async (req, res) => {
 function extractQuestionNumber(str) {
   const parts = str.split("-");
 
-  if (parts?.length > 2 && !isNaN(parts[1])) {
-    return parseInt(parts[1], 10);
+  if (parts?.length > 2 && !isNaN(parts[2])) {
+    return parseInt(parts[2], 10);
   }
 
   return null;

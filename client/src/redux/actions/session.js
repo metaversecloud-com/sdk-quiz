@@ -16,6 +16,8 @@ export const {
   setEndTimestamp,
   setStartDroppedAsset,
   setQuestionDroppedAsset,
+  setAllQuestions,
+  setQuestionAsset,
   setError,
 } = session.actions;
 
@@ -174,7 +176,6 @@ export const resetGame = () => async (dispatch) => {
 
     const response = await axios.post(url);
     if (response.status === 200) {
-      console.log("res", response);
       const startDroppedAsset = response?.data?.startAsset;
       dispatch(setStartDroppedAsset(startDroppedAsset));
     }
@@ -314,3 +315,48 @@ export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
     }
   }
 };
+
+export const getAllQuestions = () => async (dispatch) => {
+  try {
+    const queryParams = getQueryParams();
+    const url = `backend/all-question-assets?${queryParams}`;
+
+    const response = await axios.get(url);
+    if (response.status === 200) {
+      const allQuestions = response?.data?.allQuestions;
+      const visitor = response?.data?.visitor;
+
+      dispatch(setAllQuestions(allQuestions));
+      dispatch(setVisitor(visitor));
+    }
+  } catch (error) {
+    console.error("error", error);
+    if (error.response && error.response.data) {
+    } else {
+    }
+  }
+};
+
+export const editQuestion =
+  (questionNumber, updatedQuestion) => async (dispatch) => {
+    try {
+      const queryParams = getQueryParams();
+      const url = `backend/question?${queryParams}`;
+
+      const response = await axios.put(url, {
+        questionNumber,
+        updatedQuestion,
+      });
+      if (response.status === 200) {
+        const allQuestionAssets = response?.data?.allQuestionAssets;
+        const questionAsset = response?.data?.questionAsset;
+        dispatch(setQuestionAsset(questionAsset));
+        dispatch(setAllQuestions(allQuestionAssets));
+      }
+    } catch (error) {
+      console.error("error", error);
+      if (error.response && error.response.data) {
+      } else {
+      }
+    }
+  };

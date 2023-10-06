@@ -1,0 +1,30 @@
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 98vh;
+  width: 100%;
+}
+
+.question-box {
+  background-color: white;
+  border: 1px solid #EBEDEF;
+  padding: 15px;
+  margin: 10px 0;
+  text-align: left;
+  transition: background-color 0.3s;
+  color: #0A2540;
+  border-radius: 16px;
+  background: var(--colors-primary-0, #FFF);
+}
+
+.question-box-img {
+  float: right;
+}
+
+.admin-view-wrapper {
+  width: 330px;
+  margin: 0 auto;
+  margin-top: 24px
+}

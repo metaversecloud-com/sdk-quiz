@@ -5,7 +5,9 @@ const initialState = {
   visitor: null,
   droppedAsset: null,
   startDroppedAsset: null,
+  questionAsset: null,
   leaderboard: null,
+  allQuestionAssets: null,
   questionsAnswered: null,
   startTimestamp: null,
   error: null,
@@ -35,6 +37,12 @@ const reducers = {
   },
   setQuestionDroppedAsset: (state, action) => {
     state.questionDroppedAsset = action.payload;
+  },
+  setAllQuestions: (state, action) => {
+    state.allQuestions = action.payload;
+  },
+  setQuestionAsset: (state, action) => {
+    state.questionAsset = action.payload;
   },
   setError: (state, action) => {
     state.error = action.payload;

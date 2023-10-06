@@ -1,6 +1,4 @@
-import { DroppedAsset, Visitor, World } from "../topiaInit.js";
-
-export async function getStartAsset(queryParams) {
+export async function getAllQuestionAssets(queryParams) {
   const {
     visitorId,
     interactiveNonce,
@@ -48,9 +46,4 @@ export async function getStartAsset(queryParams) {
   const startDroppedAsset = startAssetArr?.[0];
 
   return { startDroppedAsset, visitor, questionDroppedAsset };
-}
-
-function getQuizName(str) {
-  const parts = str?.split("-");
-  return parts[0];
 }

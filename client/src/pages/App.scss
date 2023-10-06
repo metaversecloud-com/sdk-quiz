@@ -39,7 +39,7 @@ p .description {
 }
 
 h2 {
-  color: #123abc;
+  color: #0A2540;
   margin-bottom: 1em;
 }
 
@@ -72,4 +72,15 @@ h4 {
 
 button {
   cursor: pointer
+}
+
+.icon-with-rounded-border {
+  border-radius: 50px;
+  border: 1px solid #EBEDEF;
+  display: flex;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
