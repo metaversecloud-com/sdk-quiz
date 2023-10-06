@@ -3,14 +3,10 @@ import { useSelector } from "react-redux";
 import "./TotalQuestionsAnsweredView.scss";
 
 function TotalQuestionsAnsweredView() {
-  // const totalNumberOfQuestionsInQuiz = useSelector(
-  //   (state) => state?.session?.questionsAnswered?.totalNumberOfQuestionsInQuiz
-  // );
-  // const numberOfQuestionsAnswered = useSelector(
-  //   (state) => state?.session?.questionsAnswered?.numberOfQuestionsAnswered
-  // );
-
   const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
+  const startDroppedAsset = useSelector(
+    (state) => state?.session?.startDroppedAsset
+  );
 
   const profileId = useSelector(
     (state) => state?.session?.visitor?.profile.profileId
@@ -25,7 +21,8 @@ function TotalQuestionsAnsweredView() {
   return (
     <div className="totalQuestionsAnsweredView">
       <p>
-        {numberOfQuestionsAnswered}/{totalNumberOfQuestionsInQuiz}
+        {numberOfQuestionsAnswered}/
+        {startDroppedAsset?.dataObject?.quiz?.results?.length}
       </p>
     </div>
   );
