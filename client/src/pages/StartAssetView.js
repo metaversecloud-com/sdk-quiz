@@ -22,6 +22,7 @@ function StartAssetView() {
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
   const visitor = useSelector((state) => state?.session?.visitor);
+  const inPrivateZone = useSelector((state) => state?.session?.inPrivateZone);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
@@ -68,6 +69,19 @@ function StartAssetView() {
 
   if (showSettings) {
     return <AdminView setShowSettings={setShowSettings} />;
+  }
+
+  function showModal() {
+    return (
+      <>
+        <div class={`modal-container ${!inPrivateZone ? "visible" : ""}`}>
+          <div class="modal">
+            <h4>Outside start zone</h4>
+            <p2>Please walk inside the start zone to start the quiz race.</p2>
+          </div>
+        </div>
+      </>
+    );
   }
 
   // is quiz ongoing?
@@ -163,6 +177,7 @@ function StartAssetView() {
             Start Quiz
           </button>
         </div>
+        {showModal()}
       </div>
     );
   }

@@ -36,7 +36,11 @@ export const getStartDroppedAsset = async (req, res) => {
     const droppedAsset = result?.[0];
     const visitor = result?.[1];
 
-    return res.json({ droppedAsset, visitor });
+    return res.json({
+      droppedAsset,
+      visitor,
+      inPrivateZone: visitor?.privateZoneId == droppedAsset?.id,
+    });
   } catch (error) {
     logger.error({
       error,

@@ -42,6 +42,7 @@ function Quiz() {
   const visitor = useSelector((state) => state?.session?.visitor);
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
+  const inPrivateZone = useSelector((state) => state?.session?.inPrivateZone);
 
   const data = questionDroppedAsset?.dataObject;
 
@@ -71,6 +72,21 @@ function Quiz() {
       dispatch(registerUserAnswer(isCorrectCondition, option));
     }
   };
+
+  function showModal() {
+    return (
+      <>
+        <div class={`modal-container ${!inPrivateZone ? "visible" : ""}`}>
+          <div class="modal">
+            <h4>Outside the question zone</h4>
+            <p2>
+              Please step inside the question zone to answer the question.
+            </p2>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   if (loading || startTimestamp === null) {
     return (
@@ -149,6 +165,7 @@ function Quiz() {
         ) : (
           ""
         )}
+        {showModal()}
       </div>
     );
   }

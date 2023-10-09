@@ -6,7 +6,12 @@ export const getStartAssetFromQuestionAsset = async (req, res) => {
     const { startDroppedAsset, visitor, questionDroppedAsset } =
       await getStartAsset(req.query);
 
-    return res.json({ startDroppedAsset, visitor, questionDroppedAsset });
+    return res.json({
+      startDroppedAsset,
+      visitor,
+      questionDroppedAsset,
+      inPrivateZone: visitor?.privateZoneId == questionDroppedAsset?.id,
+    });
   } catch (error) {
     logger.error({
       error,
