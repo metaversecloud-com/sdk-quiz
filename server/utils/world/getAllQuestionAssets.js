@@ -62,7 +62,7 @@ export const getAllQuestionAssets = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error,
+      error: JSON.stringify(error),
       message: "❌ Error getting getAllQuestionAssetsFromStart",
       functionName: "getAllQuestionAssetsFromStart",
       req,

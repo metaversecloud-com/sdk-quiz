@@ -43,7 +43,7 @@ export const getStartDroppedAsset = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error,
+      error: JSON.stringify(error),
       message: "❌ 🏃‍♂️ Error getting the getStartDroppedAsset",
       functionName: "getStartDroppedAsset",
       req,

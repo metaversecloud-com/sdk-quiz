@@ -24,7 +24,7 @@ export const getVisitor = async (req, res) => {
     return res.json({ visitor, success: true });
   } catch (error) {
     logger.error({
-      error,
+      error: JSON.stringify(error),
       message: "❌ 🏗️ Error while getting the visitor",
       functionName: "getVisitor",
       req,
