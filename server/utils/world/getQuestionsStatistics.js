@@ -38,7 +38,7 @@ export const getQuestionsStatistics = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ 📈 Error while getQuestionsStatistics",
       functionName: "getQuestionsStatistics",
       req,

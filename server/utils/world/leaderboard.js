@@ -15,7 +15,7 @@ export const leaderboard = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ 🏗️ Error while getting the leaderboard",
       functionName: "leaderboard",
       req,

@@ -81,7 +81,7 @@ export const registerUserAnswer = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ 📃 Error while registerUserAnswer",
       functionName: "registerUserAnswer",
       req,

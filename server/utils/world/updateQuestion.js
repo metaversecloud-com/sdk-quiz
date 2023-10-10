@@ -87,7 +87,7 @@ export const updateQuestion = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ Unexpected Error in updateQuestion",
       functionName: "updateQuestion",
       req,

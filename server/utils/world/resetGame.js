@@ -51,7 +51,7 @@ export const resetGame = async (req, res) => {
     return res.json({ startAsset, sucess: true, gameResetFlag: true });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ 🧹 Error while resetting the game",
       functionName: "resetGame",
       req,

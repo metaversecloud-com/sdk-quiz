@@ -39,7 +39,7 @@ export const getDroppedAssets = async (req, res) => {
     return res.json({ droppedAsset, visitor });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ 📪 Error while getDroppedAsset",
       functionName: "getDroppedAsset",
       req,

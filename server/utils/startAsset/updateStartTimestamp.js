@@ -54,7 +54,7 @@ export const updateStartTimestamp = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ ⌛ Error while updating the timestamp",
       functionName: "updateStartTimestamp",
       req,

@@ -14,7 +14,7 @@ export const getStartAssetFromQuestionAsset = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ 📪 Error getting the getStartAssetFromQuestionAsset",
       functionName: "getStartAssetFromQuestionAsset",
       req,

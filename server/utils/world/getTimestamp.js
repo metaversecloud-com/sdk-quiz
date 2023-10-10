@@ -33,7 +33,7 @@ export const getTimestamp = async (req, res) => {
     });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ ⌛ Error while getTimestamp",
       functionName: "getTimestamp",
       req,

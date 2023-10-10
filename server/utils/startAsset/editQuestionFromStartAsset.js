@@ -49,7 +49,7 @@ export const editQuestionFromStartAsset = async (req, res) => {
     return res.json({ droppedAsset, visitor });
   } catch (error) {
     logger.error({
-      error: JSON.stringify(error),
+      error,
       message: "❌ 🏃‍♂️ Error getting the getStartDroppedAsset",
       functionName: "getStartDroppedAsset",
       req,
