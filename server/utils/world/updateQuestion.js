@@ -45,14 +45,15 @@ export const updateQuestion = async (req, res) => {
     const droppedAsset = result?.[0];
     const visitor = result?.[1];
 
+    if (!visitor?.isAdmin) {
+      return res
+        .status(401)
+        .json({ error: { message: "User is not an admin" } });
+    }
+
     const quizName = getQuizName(droppedAsset?.uniqueName);
 
     const world = await World.create(urlSlug, { credentials });
-
-    // const question = await world.fetchDroppedAssetsWithUniqueName({
-    //   uniqueName: `${quizName}-question-${questionNumber}`,
-    //   isPartial: false,
-    // });
 
     const allQuestionAssets = await world.fetchDroppedAssetsWithUniqueName({
       uniqueName: `${quizName}-question-`,

@@ -46,22 +46,6 @@ export const editQuestionFromStartAsset = async (req, res) => {
       isPartial: true,
     });
 
-    /*
-      DataObjectForQuestion
-      {
-        "question": "1 + 2?",
-        "answer": "3",
-        "options": [
-          "1",
-          "2",
-          "3",
-          "4"
-        ],
-        "dataObjectType": "asset",
-        "quiz": null
-      }
-    */
-
     return res.json({ droppedAsset, visitor });
   } catch (error) {
     logger.error({
