@@ -101,7 +101,7 @@ function EditQuestionView({
       <h2>Edit Question</h2>
 
       <div>
-        <h4>Edit</h4>
+        <h4>Question</h4>
       </div>
 
       <div className="question-edit-container" style={{ marginTop: "24px" }}>
@@ -115,6 +115,10 @@ function EditQuestionView({
           style={{ width: "302px" }}
           className={error.questionText ? "input-error" : ""}
         />
+      </div>
+
+      <div style={{ marginTop: "36px" }}>
+        <h4>Answer(s)</h4>
       </div>
 
       {answers?.map((answer, index) => (

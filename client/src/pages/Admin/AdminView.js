@@ -11,6 +11,7 @@ function AdminView({ setShowSettings }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [resetButtonClicked, setResetButtonClicked] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [selectEditQuestionNumber, setSelectEditQuestionNumber] =
     useState(false);
 
@@ -29,6 +30,13 @@ function AdminView({ setShowSettings }) {
 
     fetchDroppedAsset();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (gameResetFlag) {
+      setResetButtonClicked(false);
+      setShowModal(false);
+    }
+  }, [gameResetFlag]);
 
   function getBackArrow() {
     return (
@@ -53,11 +61,54 @@ function AdminView({ setShowSettings }) {
     );
   }
 
+  function renderModal() {
+    return (
+      <>
+        <div class={`modal-container visible`}>
+          <div class="modal">
+            <h4>Reset the quiz race?</h4>
+            <p2>
+              Players who have finished the current quiz will be able to start
+              the new quiz.
+            </p2>
+            <div class="actions">
+              <button
+                class="btn-outline"
+                onClick={() => {
+                  setShowModal(false);
+                }}
+              >
+                Close
+              </button>
+              <button
+                class="btn-danger"
+                onClick={() => {
+                  setResetButtonClicked(true);
+                  dispatch(resetGame());
+                }}
+                className="start-btn btn-danger"
+                disabled={resetButtonClicked}
+              >
+                {resetButtonClicked ? "Resetting..." : "Reset"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <div className="admin-view-wrapper">
+      {showModal ? renderModal() : ""}
       {getBackArrow()}
       <h2>Settings</h2>
 
+      <div>
+        <p style={{ textAlign: "left", marginLeft: "5px" }}>
+          <b>Questions</b>
+        </p>
+      </div>
       {loading ? (
         <p>Loading questions...</p>
       ) : (
@@ -76,15 +127,13 @@ function AdminView({ setShowSettings }) {
         ))
       )}
 
-      {console.log("gameResetFlag", gameResetFlag)}
       <div className="footer-fixed">
         {gameResetFlag ? (
           "The quiz has reset."
         ) : (
           <button
             onClick={() => {
-              setResetButtonClicked(true);
-              dispatch(resetGame());
+              setShowModal(true);
             }}
             className="start-btn btn-danger"
             disabled={resetButtonClicked}
