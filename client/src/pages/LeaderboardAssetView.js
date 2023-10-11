@@ -5,7 +5,7 @@ import { ClipLoader } from "react-spinners";
 import { getLeaderboard } from "../redux/actions/session";
 import "./LeaderboardAssetView.scss";
 
-function Leaderboard() {
+function Leaderboard({ originAsset }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +16,7 @@ function Leaderboard() {
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
-      await dispatch(getLeaderboard());
+      await dispatch(getLeaderboard(originAsset));
       setLoading(false);
     };
 
@@ -40,6 +40,9 @@ function Leaderboard() {
         <h3>Leaderboard</h3>
       </div>
       <table className="leaderboard-table">
+        <p style={{ textAlign: "center" }}>
+          {leaderboard?.length == 0 ? "There are no race finishes yet." : ""}
+        </p>
         <tbody>
           {leaderboard?.map((entry, index) => (
             <tr key={index}>

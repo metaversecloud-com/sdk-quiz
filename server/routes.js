@@ -15,6 +15,7 @@ import {
   getStartAssetFromQuestionAsset,
   getAllQuestionAssets,
   updateQuestion,
+  getLeaderboardFromStartAsset,
 } from "./utils/index.js";
 
 import { validationMiddleware } from "./middlware/validation.js";
@@ -32,6 +33,11 @@ router.put("/start-timestamp", validationMiddleware, updateStartTimestamp);
 router.post("/registerUserAnswer", validationMiddleware, registerUserAnswer);
 router.post("/resetGame", validationMiddleware, resetGame);
 router.put("/timestamp", validationMiddleware, updateTimestamp);
+router.get(
+  "/leaderboard-from-start-asset",
+  validationMiddleware,
+  getLeaderboardFromStartAsset
+);
 
 // Endpoints for Question Asset
 router.get(

@@ -210,10 +210,17 @@ export const resetTimer = () => async (dispatch) => {
   }
 };
 
-export const getLeaderboard = () => async (dispatch) => {
+export const getLeaderboard = (originAsset) => async (dispatch) => {
   try {
+    console.log("helooo");
     const queryParams = getQueryParams();
-    const url = `backend/leaderboard?${queryParams}`;
+    let url;
+
+    if (originAsset) {
+      url = `backend/leaderboard-from-start-asset?${queryParams}`;
+    } else {
+      url = `backend/leaderboard?${queryParams}`;
+    }
 
     const response = await axios.get(url);
     if (response.status === 200) {
