@@ -87,7 +87,6 @@ function StartAssetView() {
   }
 
   if (showLeaderboard) {
-    dispatch(getLeaderboard("startAsset"));
     return <Leaderboard originAsset="startAsset" />;
   }
 
@@ -154,7 +153,10 @@ function StartAssetView() {
           <div style={{ width: "100%" }}>
             <button
               className="btn-outline"
-              onClick={() => setShowLeaderboard(true)}
+              onClick={() => {
+                dispatch(getLeaderboard("startAsset"));
+                setShowLeaderboard(true);
+              }}
             >
               View Leaderboard
             </button>
