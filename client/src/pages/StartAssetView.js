@@ -56,7 +56,7 @@ function StartAssetView() {
   function getGear() {
     return (
       <div
-        style={{ position: "absolute", left: "16px" }}
+        style={{ position: "absolute", left: "16px", top: "24px" }}
         className="icon-with-rounded-border"
         onClick={() => {
           setShowSettings(true);
@@ -113,72 +113,74 @@ function StartAssetView() {
 
   function startScreen() {
     return (
-      <div>
+      <>
         {visitor.isAdmin ? getGear() : <></>}
-        <div
-          style={{ textAlign: "left", margin: "24px 0px" }}
-          className={visitor?.isAdmin ? "pt-5" : ""}
-        >
-          <h4 style={{ textAlign: "center" }}>🏎️ Welcome to Quiz Race!</h4>
-        </div>
-        <div className="instructions">
-          <div className="title" style={{ fontWeight: "600" }}>
-            How to play:
-          </div>
-          <ol style={{ marginTop: "5px" }}>
-            <li>
-              Click <b style={{ color: "green" }}>Start Quiz</b>.
-            </li>
-            <li>
-              Run to each ⭕️ question zone, and click the❓question mark.
-            </li>
-            <li>Answer all questions (there are 4).</li>
-            <li>Run back to the 🏁 start zone.</li>
-          </ol>
-
-          <div className="tips">
-            <div className="title" style={{ fontWeight: "600" }}>
-              Helpful Tips:
-            </div>
-            <ul style={{ marginTop: "5px" }}>
-              <li>
-                You must be in the ⭕️ question zone to answer the question.
-              </li>
-              <li>
-                ⌛️ Time starts when you click{" "}
-                <b style={{ color: "green" }}>Start Quiz</b>.
-              </li>
-              <li>Click the 🏆 leaderboard to check your rank.</li>
-            </ul>
-          </div>
-        </div>
-        <div className="footer-fixed">
-          {quizStatus() === "ONGOING" ? (
-            <div className="balloon-dialog">
-              This quiz is currently in progress
-            </div>
-          ) : isStartButtonClicked ? (
-            <div className="balloon-dialog">Starting Quiz...</div>
-          ) : null}
-
-          <button
-            onClick={() => {
-              setIsStartButtonClicked(true);
-              dispatch(updateStartTimestamp());
-            }}
-            className="start-btn"
-            style={{ width: "90%" }}
-            disabled={
-              quizStatus() === "ONGOING" ||
-              quizStatus() === "ENDED" ||
-              isStartButtonClicked
-            }
-          >
-            Start Quiz
-          </button>
-        </div>
         {showModal()}
-      </div>
+        <div>
+          <div
+            style={{ textAlign: "left", margin: "24px 0px" }}
+            className={visitor?.isAdmin ? "pt-5" : ""}
+          >
+            <h4 style={{ textAlign: "center" }}>🏎️ Welcome to Quiz Race!</h4>
+          </div>
+          <div className="instructions">
+            <div className="title" style={{ fontWeight: "600" }}>
+              How to play:
+            </div>
+            <ol style={{ marginTop: "5px" }}>
+              <li>
+                Click <b style={{ color: "green" }}>Start Quiz</b>.
+              </li>
+              <li>
+                Run to each ⭕️ question zone, and click the❓question mark.
+              </li>
+              <li>Answer all questions (there are 4).</li>
+              <li>Run back to the 🏁 start zone.</li>
+            </ol>
+
+            <div className="tips">
+              <div className="title" style={{ fontWeight: "600" }}>
+                Helpful Tips:
+              </div>
+              <ul style={{ marginTop: "5px" }}>
+                <li>
+                  You must be in the ⭕️ question zone to answer the question.
+                </li>
+                <li>
+                  ⌛️ Time starts when you click{" "}
+                  <b style={{ color: "green" }}>Start Quiz</b>.
+                </li>
+                <li>Click the 🏆 leaderboard to check your rank.</li>
+              </ul>
+            </div>
+          </div>
+          <div className="footer-fixed">
+            {quizStatus() === "ONGOING" ? (
+              <div className="balloon-dialog">
+                This quiz is currently in progress
+              </div>
+            ) : isStartButtonClicked ? (
+              <div className="balloon-dialog">Starting Quiz...</div>
+            ) : null}
+
+            <button
+              onClick={() => {
+                setIsStartButtonClicked(true);
+                dispatch(updateStartTimestamp());
+              }}
+              className="start-btn"
+              style={{ width: "90%" }}
+              disabled={
+                quizStatus() === "ONGOING" ||
+                quizStatus() === "ENDED" ||
+                isStartButtonClicked
+              }
+            >
+              Start Quiz
+            </button>
+          </div>
+        </div>
+      </>
     );
   }
 
