@@ -113,7 +113,7 @@ function Quiz() {
 
   function questionStartScreen() {
     return (
-      <div className="quiz-container">
+      <div className="question-container">
         <div style={{ marginTop: "24px" }}>
           <div style={{ textAlign: "center" }}>
             <Timer />

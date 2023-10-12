@@ -107,7 +107,13 @@ function StartAssetView() {
   if (quizStatus() === "ONGOING") {
     return (
       <div>
-        <div style={{ textAlign: "center", margin: "24px 0px" }}>
+        <div
+          style={{
+            textAlign: "center",
+            margin: "24px 0px",
+            paddingTop: visitor.isAdmin ? "50px" : "0px",
+          }}
+        >
           <div style={{ textAlign: "center" }}>
             <Timer />
           </div>
@@ -173,7 +179,10 @@ function StartAssetView() {
         {showModal()}
         <div>
           <div
-            style={{ textAlign: "left", margin: "24px 0px" }}
+            style={{
+              textAlign: "left",
+              margin: "24px 0px",
+            }}
             className={visitor?.isAdmin ? "pt-5" : ""}
           >
             <h4 style={{ textAlign: "center" }}>🏎️ Welcome to Quiz Race!</h4>
