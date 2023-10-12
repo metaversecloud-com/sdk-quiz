@@ -1,17 +1,18 @@
-import { getStartAsset } from "../questionAsset/utils.js";
+import { getStartAsset } from "./utils.js";
 import { logger } from "../../logs/logger.js";
 
 export const getStartAssetFromQuestionAsset = async (req, res) => {
   try {
-    const { startDroppedAsset, visitor } = await getStartAsset(req.query);
+    const { startDroppedAsset, visitor, questionDroppedAsset } =
+      await getStartAsset(req.query);
 
     const leaderboard = calculateLeaderboard(startDroppedAsset);
 
     return res.json({
-      leaderboard,
       startDroppedAsset,
       visitor,
-      success: true,
+      questionDroppedAsset,
+      inPrivateZone: visitor?.privateZoneId == questionDroppedAsset?.id,
     });
   } catch (error) {
     logger.error({
