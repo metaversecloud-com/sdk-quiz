@@ -16,26 +16,36 @@ p .description {
   text-align: center;
 }
 
-.balloon-dialog {
-  position: relative;
+
+
+.footer-fixed .btn-success:hover .balloon-dialog {
+  display: block;
+  position: absolute;
+  top: -60px; /* ajuste conforme necessário */
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #0a2540;
   padding: 10px 20px;
   color: white;
   border-radius: 5px 5px 0 0;
-  // margin-bottom: 10px;
   width: max-content;
-  margin: 20px auto;
+  margin: 0 auto;
+  z-index: 1;
+}
 
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid #0a2540;
-  }
+.balloon-dialog::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #0a2540;
+}
+
+.balloon-dialog {
+  display: none;
 }
 
 h2 {

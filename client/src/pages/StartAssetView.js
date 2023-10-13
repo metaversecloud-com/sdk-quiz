@@ -219,14 +219,6 @@ function StartAssetView() {
             </div>
           </div>
           <div className="footer-fixed">
-            {quizStatus() === "ONGOING" ? (
-              <div className="balloon-dialog">
-                This quiz is currently in progress
-              </div>
-            ) : isStartButtonClicked ? (
-              <div className="balloon-dialog">Starting Quiz...</div>
-            ) : null}
-
             <button
               onClick={() => {
                 setIsStartButtonClicked(true);
@@ -241,6 +233,13 @@ function StartAssetView() {
               }
             >
               Start Quiz
+              {quizStatus() === "ONGOING" ? (
+                <div className="balloon-dialog">
+                  This quiz is currently in progress
+                </div>
+              ) : isStartButtonClicked ? (
+                <div className="balloon-dialog">Starting Quiz...</div>
+              ) : null}
             </button>
           </div>
         </div>
