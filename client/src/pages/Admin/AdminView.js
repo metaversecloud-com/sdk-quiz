@@ -127,7 +127,7 @@ function AdminView({ setShowSettings }) {
         ))
       )}
 
-      <div className="footer-fixed">
+      <div className="footer-fixed" style={{ color: "#00A76F" }}>
         {gameResetFlag ? (
           "The quiz has reset."
         ) : (

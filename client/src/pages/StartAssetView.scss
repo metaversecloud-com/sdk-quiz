@@ -17,4 +17,8 @@ p {
   width: 100%;
 }
 
-
+.btn-success:disabled:hover {
+  background-color: var(--colors-primary-400) !important;
+  border-color: var(--colors-primary-400) !important;
+  
+}

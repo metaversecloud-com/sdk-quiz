@@ -232,7 +232,7 @@ function StartAssetView() {
                 setIsStartButtonClicked(true);
                 dispatch(updateStartTimestamp());
               }}
-              className="start-btn"
+              className="btn-success"
               style={{ width: "90%" }}
               disabled={
                 quizStatus() === "ONGOING" ||
