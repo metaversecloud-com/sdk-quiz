@@ -8,6 +8,8 @@ import {
 import "./QuestionAssetView.scss";
 import info from "../assets/info.png";
 import Timer from "../components/timer/Timer.js";
+import AdminView from "./Admin/AdminView";
+import gear from "../assets/gear.svg";
 
 function extractQuestionNumber(str) {
   if (!str) {
@@ -27,6 +29,7 @@ function Quiz() {
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
 
   const startDroppedAsset = useSelector(
     (state) => state?.session?.startDroppedAsset
@@ -73,6 +76,24 @@ function Quiz() {
     }
   };
 
+  function getGear() {
+    return (
+      <div
+        style={{ position: "absolute", left: "16px", top: "24px" }}
+        className="icon-with-rounded-border"
+        onClick={() => {
+          setShowSettings(true);
+        }}
+      >
+        <img src={gear} />
+      </div>
+    );
+  }
+
+  if (showSettings) {
+    return <AdminView setShowSettings={setShowSettings} />;
+  }
+
   function showModal() {
     return (
       <>
@@ -98,75 +119,84 @@ function Quiz() {
 
   if (startTimestamp === undefined) {
     return (
-      <div className="center-content">
-        <img
-          src={info}
-          style={{ width: "48px", height: "48px", marginBottom: "15px" }}
-        ></img>
-        <h3 style={{ marginBotton: "0px" }}>Quiz race not started</h3>
-        <p className="description">
-          Please go to the start zone and start the quiz race.
-        </p>
-      </div>
+      <>
+        {visitor.isAdmin ? getGear() : <></>}
+        <div className="center-content">
+          <img
+            src={info}
+            style={{ width: "48px", height: "48px", marginBottom: "15px" }}
+          ></img>
+          <h3 style={{ marginBotton: "0px" }}>Quiz race not started</h3>
+          <p className="description">
+            Please go to the start zone and start the quiz race.
+          </p>
+        </div>
+      </>
     );
   }
 
   function questionStartScreen() {
     return (
-      <div className="question-container">
-        <div style={{ marginTop: "24px" }}>
-          <div style={{ textAlign: "center" }}>
-            <Timer />
-          </div>
-        </div>
-        <div style={{ textAlign: "center", marginTop: "50px" }}>
-          <h1>❓</h1>
-        </div>
-        <div style={{ textAlign: "center" }}>
-          <h1 style={{ color: "#0A2540" }}>{data?.question}</h1>
-        </div>
-        <div className="quiz-content">
-          {data?.options?.map((option, index) => (
-            <button
-              key={index}
-              className={`option-button ${
-                selectedOption === option
-                  ? data?.answer === option
-                    ? "correct"
-                    : "incorrect"
-                  : ""
-              } ${selectedOption ? "disabled" : ""}`}
-              onClick={() => handleOptionClick(option)}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-        {selectedOption && (
+      <>
+        {visitor.isAdmin ? getGear() : <></>}
+        <div className="question-container">
           <div
-            className={
-              selectedOption === data?.answer
-                ? "feedback correct-feedback"
-                : "feedback incorrect-feedback"
-            }
+            style={{ marginTop: "24px" }}
+            className={visitor?.isAdmin ? "pt-46" : ""}
           >
-            {selectedOption === data?.answer ? (
-              <p>You're a genius! 🧠</p>
-            ) : (
-              <>
-                <p>Nice try! Mistakes help us learn and grow! 🌱</p>
-                <p>The correct answer is: {data?.answer}</p>
-              </>
-            )}
+            <div style={{ textAlign: "center" }}>
+              <Timer />
+            </div>
           </div>
-        )}
-        {endTimestamp ? (
-          <p>Congratulations, you answered all questions!</p>
-        ) : (
-          ""
-        )}
-        {showModal()}
-      </div>
+          <div style={{ textAlign: "center", marginTop: "50px" }}>
+            <h1>❓</h1>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <h1 style={{ color: "#0A2540" }}>{data?.question}</h1>
+          </div>
+          <div className="quiz-content">
+            {data?.options?.map((option, index) => (
+              <button
+                key={index}
+                className={`option-button ${
+                  selectedOption === option
+                    ? data?.answer === option
+                      ? "correct"
+                      : "incorrect"
+                    : ""
+                } ${selectedOption ? "disabled" : ""}`}
+                onClick={() => handleOptionClick(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          {selectedOption && (
+            <div
+              className={
+                selectedOption === data?.answer
+                  ? "feedback correct-feedback"
+                  : "feedback incorrect-feedback"
+              }
+            >
+              {selectedOption === data?.answer ? (
+                <p>You're a genius! 🧠</p>
+              ) : (
+                <>
+                  <p>Nice try! Mistakes help us learn and grow! 🌱</p>
+                  <p>The correct answer is: {data?.answer}</p>
+                </>
+              )}
+            </div>
+          )}
+          {endTimestamp ? (
+            <p>Congratulations, you answered all questions!</p>
+          ) : (
+            ""
+          )}
+          {showModal()}
+        </div>
+      </>
     );
   }
 

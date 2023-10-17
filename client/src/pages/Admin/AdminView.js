@@ -99,50 +99,52 @@ function AdminView({ setShowSettings }) {
   }
 
   return (
-    <div className="admin-view-wrapper">
-      {showModal ? renderModal() : ""}
+    <>
       {getBackArrow()}
-      <h2>Settings</h2>
+      <div className="admin-view-wrapper pt-46">
+        {showModal ? renderModal() : ""}
+        <h2>Settings</h2>
 
-      <div>
-        <p style={{ textAlign: "left", marginLeft: "5px" }}>
-          <b>Questions</b>
-        </p>
-      </div>
-      {loading ? (
-        <p>Loading questions...</p>
-      ) : (
-        allQuestions?.map((question, index) => (
-          <div className="question-box" key={index}>
-            <span>Question {index + 1}</span>
-            <span
-              style={{ cursor: "pointer" }}
-              onClick={() => {
-                setSelectEditQuestionNumber(index);
-              }}
-            >
-              <img src={penToSquareSvg} className="question-box-img" />
-            </span>
-          </div>
-        ))
-      )}
-
-      <div className="footer-fixed" style={{ color: "#00A76F" }}>
-        {gameResetFlag ? (
-          "The quiz has reset."
+        <div>
+          <p style={{ textAlign: "left", marginLeft: "5px" }}>
+            <b>Questions</b>
+          </p>
+        </div>
+        {loading ? (
+          <p>Loading questions...</p>
         ) : (
-          <button
-            onClick={() => {
-              setShowModal(true);
-            }}
-            className="start-btn btn-danger"
-            disabled={resetButtonClicked}
-          >
-            {resetButtonClicked ? "Resetting the quiz..." : "Reset Quiz"}
-          </button>
+          allQuestions?.map((question, index) => (
+            <div className="question-box" key={index}>
+              <span>Question {index + 1}</span>
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setSelectEditQuestionNumber(index);
+                }}
+              >
+                <img src={penToSquareSvg} className="question-box-img" />
+              </span>
+            </div>
+          ))
         )}
+
+        <div className="footer-fixed" style={{ color: "#00A76F" }}>
+          {gameResetFlag ? (
+            "The quiz has reset."
+          ) : (
+            <button
+              onClick={() => {
+                setShowModal(true);
+              }}
+              className="start-btn btn-danger"
+              disabled={resetButtonClicked}
+            >
+              {resetButtonClicked ? "Resetting the quiz..." : "Reset Quiz"}
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

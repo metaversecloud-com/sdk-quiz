@@ -19,7 +19,7 @@ export const getVisitor = async (req, res) => {
       },
     });
 
-    await visitor.fetchDataObject();
+    await visitor.fetchDataObject(visitor.inPrivateZone);
 
     return res.json({ visitor, success: true });
   } catch (error) {
