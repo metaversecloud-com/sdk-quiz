@@ -195,29 +195,28 @@ function StartAssetView() {
               <li>
                 Click <b style={{ color: "green" }}>Start Quiz</b>.
               </li>
-              <li>
-                Run to each ⭕️ question zone, and click the ❓ question mark.
-              </li>
+              <li>Run to each question zone, and click the question mark.</li>
               <li>Answer all questions (there are 4).</li>
-              <li>Run back to the 🏁 start zone.</li>
+              <li>Run back to the start zone.</li>
             </ol>
 
-            <div className="tips">
+            <div className="rules">
               <div className="title" style={{ fontWeight: "600" }}>
-                Helpful Tips:
+                Important Rules:
               </div>
               <ul style={{ marginTop: "5px" }}>
                 <li>
-                  You must be in the ⭕️ question zone to answer the question.
+                  You must be in the question zone to answer the question.
                 </li>
                 <li>
-                  ⌛️ Time starts when you click{" "}
+                  <b>Time</b> starts when you click{" "}
                   <b style={{ color: "green" }}>Start Quiz</b>.
                 </li>
-                <li>Click the 🏆 leaderboard to check your rank.</li>
+                <li>Check your rank by clicking the 🏆 leaderboard.</li>
               </ul>
             </div>
           </div>
+
           <div className="footer-fixed">
             {quizStatus() === "ONGOING" ? (
               <div
