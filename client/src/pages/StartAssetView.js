@@ -219,6 +219,19 @@ function StartAssetView() {
             </div>
           </div>
           <div className="footer-fixed">
+            {quizStatus() === "ONGOING" ? (
+              <div
+                style={{
+                  color: "#00875A",
+                  fontWeight: "600",
+                  padding: "16px 0px",
+                }}
+              >
+                Quiz has started!
+              </div>
+            ) : (
+              ""
+            )}
             <button
               onClick={() => {
                 setIsStartButtonClicked(true);

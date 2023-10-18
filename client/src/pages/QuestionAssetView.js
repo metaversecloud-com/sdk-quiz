@@ -152,7 +152,12 @@ function Quiz() {
             <h1>❓</h1>
           </div>
           <div style={{ textAlign: "center" }}>
-            <h1 style={{ color: "#0A2540" }}>{data?.question}</h1>
+            <h1
+              style={{ color: "#0A2540", fontSize: "24px", margin: "14px 0px" }}
+              className="question-text"
+            >
+              {data?.question}
+            </h1>
           </div>
           <div className="quiz-content">
             {data?.options?.map((option, index) => (

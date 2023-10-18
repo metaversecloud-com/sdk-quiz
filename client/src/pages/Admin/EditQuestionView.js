@@ -98,7 +98,7 @@ function EditQuestionView({
       >
         <img src={backArrow} />
       </div>
-      <h2>Edit Question</h2>
+      <h2>{`Edit Q${selectEditQuestionNumber + 1}`}</h2>
 
       <div>
         <h4>Question</h4>
