@@ -12,6 +12,9 @@ function EditQuestionView({
 
   const allQuestions = useSelector((state) => state?.session?.allQuestions);
   const questionAsset = useSelector((state) => state?.session?.questionAsset);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
+  const [showSavedMessage, setShowSavedMessage] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState({
     questionText: false,
@@ -36,6 +39,37 @@ function EditQuestionView({
       setSelectedAnswer(currentQuestion.answer);
     }
   }, [currentQuestion]);
+
+  // When Question is modified
+  useEffect(() => {
+    if (currentQuestion && currentQuestion.question !== questionText) {
+      setHasUnsavedChanges(true);
+    } else {
+      setHasUnsavedChanges(false);
+    }
+  }, [questionText]);
+
+  useEffect(() => {
+    if (
+      currentQuestion &&
+      !currentQuestion.options.every(
+        (option, index) => option === answers[index]
+      )
+    ) {
+      setHasUnsavedChanges(true);
+    } else {
+      setHasUnsavedChanges(false);
+    }
+  }, [answers]);
+
+  // When radio button (selectedAnswer) is modified
+  useEffect(() => {
+    if (currentQuestion && currentQuestion.answer !== selectedAnswer) {
+      setHasUnsavedChanges(true);
+    } else {
+      setHasUnsavedChanges(false);
+    }
+  }, [selectedAnswer]);
 
   const validateForm = () => {
     let hasError = false;
@@ -81,11 +115,51 @@ function EditQuestionView({
     setIsSaving(true);
     try {
       await dispatch(editQuestion(selectEditQuestionNumber, updatedQuestion));
+      setShowSavedMessage(true);
     } catch (error) {
     } finally {
       setIsSaving(false);
     }
   };
+
+  const handleCancel = () => {
+    if (hasUnsavedChanges) {
+      setShowModal(true);
+    } else {
+      setSelectEditQuestionNumber(false);
+    }
+  };
+
+  function renderModal() {
+    return (
+      <>
+        <div class={`modal-container visible`}>
+          <div class="modal">
+            <h4>You have unsaved changes.</h4>
+            <p2>Click "Keep editing" to go back and save your changes.</p2>
+            <div class="actions">
+              <button
+                class="btn-outline"
+                onClick={() => {
+                  setShowModal(false);
+                  setSelectEditQuestionNumber(false);
+                }}
+              >
+                Close without saving
+              </button>
+              <button
+                class="btn-danger"
+                onClick={() => {}}
+                className="start-btn"
+              >
+                Keep Editing
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <div className="edit-question-view-wrapper">
@@ -135,9 +209,9 @@ function EditQuestionView({
               value={answer}
               onChange={(e) => {
                 setSelectedAnswer(null);
-                setAnswers((prev) =>
-                  prev?.map((a, i) => (i === index ? e.target.value : a))
-                );
+                const newAnswers = [...answers];
+                newAnswers[index] = e.target.value;
+                setAnswers(newAnswers);
               }}
               className={error.answers[index] ? "input-error" : ""}
             />
@@ -153,6 +227,14 @@ function EditQuestionView({
         </div>
       ))}
 
+      {showSavedMessage && (
+        <div
+          style={{ color: "green", marginBottom: "60px" }}
+          className="footer-fixed"
+        >
+          Changes Saved
+        </div>
+      )}
       <div
         className="footer-fixed"
         style={{ display: "flex", justifyContent: "space-between" }}
@@ -161,7 +243,8 @@ function EditQuestionView({
           className="btn-outline"
           style={{ marginRight: "8px" }}
           onClick={() => {
-            setSelectEditQuestionNumber(false);
+            // setSelectEditQuestionNumber(false);
+            handleCancel();
           }}
         >
           Cancel
@@ -174,6 +257,8 @@ function EditQuestionView({
         >
           {isSaving ? "Saving..." : "Save Changes"}{" "}
         </button>
+
+        {showModal && renderModal()}
       </div>
     </div>
   );

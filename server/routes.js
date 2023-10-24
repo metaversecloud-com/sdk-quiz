@@ -16,6 +16,8 @@ import {
   getAllQuestionAssets,
   updateQuestion,
   getLeaderboardFromStartAsset,
+  openStartIframe,
+  reloadIframe,
 } from "./utils/index.js";
 
 import { validationMiddleware } from "./middlware/validation.js";
@@ -38,6 +40,10 @@ router.get(
   validationMiddleware,
   getLeaderboardFromStartAsset
 );
+
+// Webhooks
+router.post("/start/open-iframe", openStartIframe);
+router.post("/reload-iframe", reloadIframe);
 
 // Endpoints for Question Asset
 router.get(
