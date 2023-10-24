@@ -10,3 +10,4 @@ export { resetGame } from "./resetGame.js";
 export { getQuestionsStatistics } from "./getQuestionsStatistics.js";
 export { getAllQuestionAssets } from "./getAllQuestionAssets.js";
 export { updateQuestion } from "./updateQuestion.js";
+export { reloadIframe } from "./reloadIframe.js";

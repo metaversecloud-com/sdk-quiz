@@ -1,33 +1,27 @@
 import { Visitor } from "../topiaInit.js";
-export const openStartIframe = async (req, res) => {
+export const reloadIframe = async (req, res) => {
   try {
-    // const {
-    //   visitorId,
-    //   interactiveNonce,
-    //   assetId,
-    //   interactivePublicKey,
-    //   urlSlug,
-    // } = req.query;
-
     const {
       assetId,
       interactiveNonce,
       interactivePublicKey,
       urlSlug,
-      playerId,
+      visitorId,
     } = req.body;
-    const visitorId = playerId;
 
     const visitor = await Visitor.get(visitorId, urlSlug, {
       credentials: {
-        assetId,
         interactiveNonce,
         interactivePublicKey,
         visitorId,
       },
     });
+
+    // await visitor.reloadIframe(assetId);
+    await visitor.closeIframe(assetId);
+
     const base_url = `https://${req.get("host")}`;
-    const link = `${base_url}/start?visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
+    const link = `${base_url}/questions?visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
 
     await visitor.openIframe({
       droppedAssetId: assetId,
