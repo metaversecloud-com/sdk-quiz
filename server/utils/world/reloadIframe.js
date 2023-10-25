@@ -17,7 +17,6 @@ export const reloadIframe = async (req, res) => {
       },
     });
 
-    // await visitor.reloadIframe(assetId);
     await visitor.closeIframe(assetId);
 
     const base_url = `https://${req.get("host")}`;

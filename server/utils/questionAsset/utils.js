@@ -21,12 +21,7 @@ export async function getStartAsset(queryParams) {
   });
 
   const visitorPromise = Visitor.get(visitorId, urlSlug, {
-    credentials: {
-      assetId,
-      interactiveNonce,
-      interactivePublicKey,
-      visitorId,
-    },
+    credentials,
   });
 
   const result = await Promise.all([droppedAssetPromise, visitorPromise]);

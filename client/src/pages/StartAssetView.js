@@ -28,16 +28,16 @@ function StartAssetView() {
   const visitor = useSelector((state) => state?.session?.visitor);
   const inPrivateZone = useSelector((state) => state?.session?.inPrivateZone);
 
-  const startDroppedAsset = useSelector(
-    (state) => state?.session?.startDroppedAsset
-  );
-  const profileId = useSelector(
-    (state) => state?.session?.visitor?.profile.profileId
-  );
+  // const startDroppedAsset = useSelector(
+  //   (state) => state?.session?.startDroppedAsset
+  // );
+  // const profileId = useSelector(
+  //   (state) => state?.session?.visitor?.profile.profileId
+  // );
 
-  const numberOfQuestionsAnswered =
-    startDroppedAsset?.dataObject?.quiz?.[profileId]
-      ?.numberOfQuestionsAnswered || 0;
+  // const numberOfQuestionsAnswered =
+  //   startDroppedAsset?.dataObject?.quiz?.[profileId]
+  //     ?.numberOfQuestionsAnswered || 0;
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
@@ -111,7 +111,7 @@ function StartAssetView() {
           style={{
             textAlign: "center",
             margin: "24px 0px",
-            paddingTop: visitor.isAdmin ? "50px" : "0px",
+            paddingTop: visitor?.isAdmin ? "50px" : "0px",
           }}
         >
           <div style={{ textAlign: "center" }}>
@@ -127,7 +127,7 @@ function StartAssetView() {
   } else if (quizStatus() === "ENDED") {
     return (
       <div style={{ margin: "0px 14px" }}>
-        {visitor.isAdmin ? getGear() : <></>}
+        {visitor?.isAdmin ? getGear() : <></>}
         <div className="quiz-completed-container center-content">
           <p style={{ fontSize: "40px", margin: "0px" }}>🏆</p>
           <h3>Hooray, quiz complete!</h3>
@@ -175,7 +175,7 @@ function StartAssetView() {
   function startScreen() {
     return (
       <>
-        {visitor.isAdmin ? getGear() : <></>}
+        {visitor?.isAdmin ? getGear() : <></>}
         {showModal()}
         <div>
           <div
@@ -183,7 +183,7 @@ function StartAssetView() {
               textAlign: "left",
               margin: "24px 0px",
             }}
-            className={visitor?.isAdmin ? "pt-5" : ""}
+            className={visitor?.isAdmin ? "pt-50" : ""}
           >
             <h4 style={{ textAlign: "center" }}>🏎️ Welcome to Quiz Race!</h4>
           </div>
@@ -197,7 +197,6 @@ function StartAssetView() {
               </li>
               <li>Run to each question zone, and click the question mark.</li>
               <li>Answer all questions (there are 4).</li>
-              <li>Run back to the start zone.</li>
             </ol>
 
             <div className="rules">

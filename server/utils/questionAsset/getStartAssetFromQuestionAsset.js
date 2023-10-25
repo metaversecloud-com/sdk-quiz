@@ -6,8 +6,6 @@ export const getStartAssetFromQuestionAsset = async (req, res) => {
     const { startDroppedAsset, visitor, questionDroppedAsset } =
       await getStartAsset(req.query);
 
-    const leaderboard = calculateLeaderboard(startDroppedAsset);
-
     return res.json({
       startDroppedAsset,
       visitor,
@@ -17,8 +15,8 @@ export const getStartAssetFromQuestionAsset = async (req, res) => {
   } catch (error) {
     logger.error({
       error,
-      message: "❌ 🏆 Error getting the leaderboard",
-      functionName: "leaderboard",
+      message: "❌ 🏆 Error getting the getStartAssetFromQuestionAsset",
+      functionName: "getStartAssetFromQuestionAsset",
       req,
     });
     return res.status(500).json({ error: error?.message, success: false });

@@ -102,3 +102,13 @@ button {
 .pt-46 {
   padding-top: 46px;
 }
+
+.pt-50 {
+  padding-top: 50px;
+}
+
+.btn-danger:disabled {
+  background: var(--colors-primary-400);
+  border-color: var(--colors-primary-400);
+  cursor: not-allowed;
+}
