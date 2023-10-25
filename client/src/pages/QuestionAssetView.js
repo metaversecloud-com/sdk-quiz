@@ -11,6 +11,7 @@ import Timer from "../components/timer/Timer.js";
 import AdminView from "./Admin/AdminView";
 import gear from "../assets/gear.svg";
 import QuizEnded from "../components/quizEnded/QuizEnded";
+import Leaderboard from "./LeaderboardAssetView";
 
 function extractQuestionNumber(str) {
   if (!str) {
@@ -111,12 +112,16 @@ function Quiz() {
     );
   }
 
-  console.log("endTimestamp", endTimestamp);
+  if (showLeaderboard) {
+    return <Leaderboard originAsset="questionAsset" />;
+  }
+
   if (endTimestamp) {
     return (
       <QuizEnded
         setShowSettings={setShowSettings}
         setShowLeaderboard={setShowLeaderboard}
+        originAsset="questionAsset"
       />
     );
   }

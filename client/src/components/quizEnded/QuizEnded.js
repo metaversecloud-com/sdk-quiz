@@ -5,7 +5,7 @@ import YourResult from "../yourResult/YourResult.js";
 import { getLeaderboard } from "../../redux/actions/session.js";
 import gear from "../../assets/gear.svg";
 
-function QuizEnded({ setShowSettings, setShowLeaderboard }) {
+function QuizEnded({ setShowSettings, setShowLeaderboard, originAsset }) {
   const dispatch = useDispatch();
   const visitor = useSelector((state) => state?.session?.visitor);
 
@@ -58,7 +58,8 @@ function QuizEnded({ setShowSettings, setShowLeaderboard }) {
           <button
             className="btn-outline"
             onClick={() => {
-              dispatch(getLeaderboard("startAsset"));
+              // console.log("originAsset", originAsset);
+              dispatch(getLeaderboard(originAsset));
               setShowLeaderboard(true);
             }}
           >

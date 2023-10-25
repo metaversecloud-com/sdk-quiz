@@ -55,7 +55,7 @@ function Leaderboard({ originAsset }) {
 
   return (
     <>
-      {visitor.isAdmin ? getGear() : <></>}
+      {visitor?.isAdmin ? getGear() : <></>}
       <div className="leaderboard-container">
         <div
           style={{ textAlign: "center" }}

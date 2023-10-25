@@ -212,12 +212,16 @@ export const resetTimer = () => async (dispatch) => {
 
 export const getLeaderboard = (originAsset) => async (dispatch) => {
   try {
-    console.log("helooo");
+    console.log("getLeaderboard originAsset ", originAsset);
     const queryParams = getQueryParams();
     let url;
 
-    if (originAsset) {
+    if (originAsset == "startAsset") {
+      console.log("entered startAsset");
       url = `backend/leaderboard-from-start-asset?${queryParams}`;
+    } else if (originAsset == "questionAsset") {
+      console.log("entered questionAsset");
+      url = `backend/leaderboard-from-question-asset?${queryParams}`;
     } else {
       url = `backend/leaderboard?${queryParams}`;
     }
