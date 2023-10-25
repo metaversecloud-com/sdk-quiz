@@ -10,6 +10,7 @@ import info from "../assets/info.png";
 import Timer from "../components/timer/Timer.js";
 import AdminView from "./Admin/AdminView";
 import gear from "../assets/gear.svg";
+import QuizEnded from "../components/quizEnded/QuizEnded";
 
 function extractQuestionNumber(str) {
   if (!str) {
@@ -30,6 +31,7 @@ function Quiz() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const startDroppedAsset = useSelector(
     (state) => state?.session?.startDroppedAsset
@@ -106,6 +108,16 @@ function Quiz() {
           </div>
         </div>
       </>
+    );
+  }
+
+  console.log("endTimestamp", endTimestamp);
+  if (endTimestamp) {
+    return (
+      <QuizEnded
+        setShowSettings={setShowSettings}
+        setShowLeaderboard={setShowLeaderboard}
+      />
     );
   }
 
@@ -195,7 +207,7 @@ function Quiz() {
             </div>
           )}
           {endTimestamp ? (
-            <p>Congratulations, you answered all questions!</p>
+            <p>Congratulations, you answered all questions!!</p>
           ) : (
             ""
           )}
