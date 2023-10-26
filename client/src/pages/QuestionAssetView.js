@@ -10,7 +10,6 @@ import info from "../assets/info.png";
 import Timer from "../components/timer/Timer.js";
 import AdminView from "./Admin/AdminView";
 import gear from "../assets/gear.svg";
-import QuizEnded from "../components/quizEnded/QuizEnded";
 import Leaderboard from "./LeaderboardAssetView";
 
 function extractQuestionNumber(str) {
@@ -114,16 +113,6 @@ function Quiz() {
 
   if (showLeaderboard) {
     return <Leaderboard originAsset="questionAsset" />;
-  }
-
-  if (endTimestamp) {
-    return (
-      <QuizEnded
-        setShowSettings={setShowSettings}
-        setShowLeaderboard={setShowLeaderboard}
-        originAsset="questionAsset"
-      />
-    );
   }
 
   if (loading || startTimestamp === null) {
