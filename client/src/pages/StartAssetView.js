@@ -12,6 +12,7 @@ import gear from "../assets/gear.svg";
 import AdminView from "./Admin/AdminView";
 import QuizEnded from "../components/quizEnded/QuizEnded";
 import Leaderboard from "./LeaderboardAssetView";
+import instructionsImg from "../assets/instructions-start.png";
 
 function StartAssetView() {
   const dispatch = useDispatch();
@@ -133,9 +134,15 @@ function StartAssetView() {
             }}
             className={visitor?.isAdmin ? "pt-50" : ""}
           >
+            <div
+              style={{ marginBottom: "24px", padding: "0px 12px" }}
+              className={visitor?.isAdmin ? "mt-24" : ""}
+            >
+              <img src={instructionsImg} style={{ width: "100%" }} />
+            </div>
             <h4 style={{ textAlign: "center" }}>🏎️ Welcome to Quiz Race!</h4>
           </div>
-          <div className="instructions">
+          <div className="instructions" style={{ padding: "0px 16px" }}>
             <div className="title" style={{ fontWeight: "600" }}>
               How to play:
             </div>
@@ -164,7 +171,7 @@ function StartAssetView() {
             </div>
           </div>
 
-          <div className="footer-fixed">
+          <div className="footer-fixed" style={{ width: "95%" }}>
             {quizStatus() === "ONGOING" ? (
               <div
                 style={{
@@ -206,7 +213,7 @@ function StartAssetView() {
     );
   }
 
-  return startScreen();
+  return <div>{startScreen()}</div>;
 }
 
 export default StartAssetView;

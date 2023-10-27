@@ -186,7 +186,7 @@ function EditQuestionView({
           type="text"
           value={questionText}
           onChange={(e) => setQuestionText(e.target.value)}
-          style={{ width: "302px" }}
+          style={{ width: "328px" }}
           className={error.questionText ? "input-error" : ""}
         />
       </div>

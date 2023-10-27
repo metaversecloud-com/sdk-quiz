@@ -127,7 +127,7 @@ function Quiz() {
     return (
       <>
         {visitor.isAdmin ? getGear() : <></>}
-        <div className="center-content">
+        <div className="center-content" style={{ padding: "0px 16px" }}>
           <img
             src={info}
             style={{ width: "48px", height: "48px", marginBottom: "15px" }}

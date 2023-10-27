@@ -51,6 +51,13 @@ p .description {
 h2 {
   color: #0A2540;
   margin-bottom: 1em;
+  text-align: center;
+  font-family: Quicksand;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%;
+  letter-spacing: 0.06px;
 }
 
 h3 {
@@ -111,4 +118,8 @@ button {
   background: var(--colors-primary-400);
   border-color: var(--colors-primary-400);
   cursor: not-allowed;
+}
+
+.mt-24 {
+  margin-top: 24px;
 }
