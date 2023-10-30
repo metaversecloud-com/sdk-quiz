@@ -126,13 +126,15 @@ function StartAssetView() {
       <>
         {visitor?.isAdmin ? getGear() : <></>}
         {showModal()}
-        <div>
+        <div style={{ marginBottom: "150px" }}>
           <div
             style={{
               textAlign: "left",
               margin: "24px 0px",
             }}
-            className={visitor?.isAdmin ? "pt-50" : ""}
+            className={
+              visitor?.isAdmin && quizStatus() != "ONGOING" ? "pt-50" : ""
+            }
           >
             <div
               style={{ marginBottom: "24px", padding: "0px 12px" }}
@@ -171,7 +173,10 @@ function StartAssetView() {
             </div>
           </div>
 
-          <div className="footer-fixed" style={{ width: "95%" }}>
+          <div
+            className="footer-fixed"
+            style={{ width: "95%", backgroundColor: "white" }}
+          >
             {quizStatus() === "ONGOING" ? (
               <div
                 style={{
