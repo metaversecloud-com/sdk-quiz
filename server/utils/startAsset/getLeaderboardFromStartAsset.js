@@ -70,6 +70,8 @@ function calculateLeaderboard(startAsset) {
       const startTimestamp = quizMetaData?.[profileId]?.startTimestamp;
       const endTimestamp = quizMetaData?.[profileId]?.endTimestamp;
 
+      if (!endTimestamp) continue;
+
       if (!scoreData[profileId]) {
         scoreData[profileId] = {};
         scoreData[profileId].score = 0;

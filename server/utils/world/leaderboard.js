@@ -37,6 +37,8 @@ function calculateLeaderboard(questions, startAsset) {
       const endTimestamp =
         startAsset?.dataObject?.quiz?.[profileId]?.endTimestamp;
 
+      if (!endTimestamp) continue;
+
       if (!scoreData[profileId]) {
         scoreData[profileId] = {};
         scoreData[profileId].score = 0;
