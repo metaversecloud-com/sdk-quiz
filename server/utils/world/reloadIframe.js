@@ -17,18 +17,7 @@ export const reloadIframe = async (req, res) => {
       },
     });
 
-    // await visitor.reloadIframe(assetId);
-    await visitor.closeIframe(assetId);
-
-    const base_url = `https://${req.get("host")}`;
-    const link = `${base_url}/questions?visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
-
-    await visitor.openIframe({
-      droppedAssetId: assetId,
-      link,
-      shouldOpenInDrawer: true,
-      title: "Quiz Race",
-    });
+    await visitor.reloadIframe(assetId);
 
     return res.json({ visitor, success: true });
   } catch (error) {

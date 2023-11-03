@@ -10,6 +10,7 @@ import info from "../assets/info.png";
 import Timer from "../components/timer/Timer.js";
 import AdminView from "./Admin/AdminView";
 import gear from "../assets/gear.svg";
+import Leaderboard from "./LeaderboardAssetView";
 
 function extractQuestionNumber(str) {
   if (!str) {
@@ -30,6 +31,7 @@ function Quiz() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const startDroppedAsset = useSelector(
     (state) => state?.session?.startDroppedAsset
@@ -109,6 +111,10 @@ function Quiz() {
     );
   }
 
+  if (showLeaderboard) {
+    return <Leaderboard originAsset="questionAsset" />;
+  }
+
   if (loading || startTimestamp === null) {
     return (
       <div className="loader">
@@ -121,7 +127,7 @@ function Quiz() {
     return (
       <>
         {visitor.isAdmin ? getGear() : <></>}
-        <div className="center-content">
+        <div className="center-content" style={{ padding: "0px 16px" }}>
           <img
             src={info}
             style={{ width: "48px", height: "48px", marginBottom: "15px" }}
@@ -195,7 +201,7 @@ function Quiz() {
             </div>
           )}
           {endTimestamp ? (
-            <p>Congratulations, you answered all questions!</p>
+            <p>Congratulations, you answered all questions!!</p>
           ) : (
             ""
           )}

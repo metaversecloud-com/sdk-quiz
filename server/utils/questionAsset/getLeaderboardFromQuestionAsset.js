@@ -1,7 +1,8 @@
 import { DroppedAsset, Visitor } from "../topiaInit.js";
 import { logger } from "../../logs/logger.js";
+import { getStartAsset } from "./utils.js";
 
-export const getLeaderboardFromStartAsset = async (req, res) => {
+export const getLeaderboardFromQuestionAsset = async (req, res) => {
   try {
     const {
       visitorId,
@@ -18,23 +19,8 @@ export const getLeaderboardFromStartAsset = async (req, res) => {
       visitorId,
     };
 
-    const droppedAssetPromise = DroppedAsset.get(assetId, urlSlug, {
-      credentials,
-    });
-
-    const visitorPromise = Visitor.get(visitorId, urlSlug, {
-      credentials: {
-        assetId,
-        interactiveNonce,
-        interactivePublicKey,
-        visitorId,
-      },
-    });
-
-    const result = await Promise.all([droppedAssetPromise, visitorPromise]);
-
-    const startDroppedAsset = result?.[0];
-    const visitor = result?.[1];
+    const { startDroppedAsset, visitor, questionDroppedAsset } =
+      await getStartAsset(req.query);
 
     const leaderboard = calculateLeaderboard(startDroppedAsset);
 

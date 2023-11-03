@@ -26,6 +26,9 @@ export const openStartIframe = async (req, res) => {
         visitorId,
       },
     });
+
+    await visitor.closeIframe(assetId);
+
     const base_url = `https://${req.get("host")}`;
     const link = `${base_url}/start?visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
 

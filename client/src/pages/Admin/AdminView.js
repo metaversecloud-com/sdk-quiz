@@ -130,18 +130,19 @@ function AdminView({ setShowSettings }) {
 
         <div className="footer-fixed" style={{ color: "#00A76F" }}>
           {gameResetFlag ? (
-            "The quiz has reset."
+            <p style={{ color: "#00875A" }}>The quiz has reset.</p>
           ) : (
-            <button
-              onClick={() => {
-                setShowModal(true);
-              }}
-              className="start-btn btn-danger"
-              disabled={resetButtonClicked}
-            >
-              {resetButtonClicked ? "Resetting the quiz..." : "Reset Quiz"}
-            </button>
+            <></>
           )}
+          <button
+            onClick={() => {
+              setShowModal(true);
+            }}
+            className="start-btn btn-danger"
+            disabled={resetButtonClicked || gameResetFlag}
+          >
+            {resetButtonClicked ? "Resetting the quiz..." : "Reset Quiz"}
+          </button>
         </div>
       </div>
     </>
