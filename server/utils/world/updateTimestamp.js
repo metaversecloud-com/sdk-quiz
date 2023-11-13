@@ -37,7 +37,7 @@ export const updateTimestamp = async (req, res) => {
 
     startAsset.dataObject.quiz[visitor.profileId] = {};
     startAsset.dataObject.quiz[visitor.profileId].startTimestamp = now;
-    startAsset.updateDataObject();
+    await startAsset.updateDataObject();
 
     return res.json({
       startTimestamp:
