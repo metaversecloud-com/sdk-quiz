@@ -11,7 +11,7 @@ dotenv.config();
 import { fileURLToPath } from "url";
 
 checkEnvVariables();
-const version = "1.2";
+const version = "11/13/2023";
 const PORT = process.env.PORT || 3000;
 const app = express();
 
