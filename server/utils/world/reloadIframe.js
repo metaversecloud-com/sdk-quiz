@@ -1,4 +1,5 @@
 import { Visitor } from "../topiaInit.js";
+import { logger } from "../../logs/logger.js";
 export const reloadIframe = async (req, res) => {
   try {
     const {
@@ -21,7 +22,12 @@ export const reloadIframe = async (req, res) => {
 
     return res.json({ visitor, success: true });
   } catch (error) {
-    console.error("Error getting the visitor", error);
+    logger.error({
+      error,
+      message: "❌ 📃 Error while reloading the iFrame with the webhook",
+      functionName: "reloadIframe",
+      req,
+    });
     return res.status(500).send({ error, success: false });
   }
 };
