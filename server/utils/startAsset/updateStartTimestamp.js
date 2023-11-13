@@ -50,7 +50,7 @@ export const updateStartTimestamp = async (req, res) => {
 
     return res.json({
       startTimestamp:
-        startAsset?.dataObject.quiz[visitor?.profileId].startTimestamp,
+        startAsset?.dataObject.quiz?.[visitor?.profileId].startTimestamp,
     });
   } catch (error) {
     logger.error({

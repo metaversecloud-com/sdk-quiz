@@ -17,7 +17,7 @@ export const reloadIframe = async (req, res) => {
       },
     });
 
-    await visitor.reloadIframe(assetId);
+    await visitor?.reloadIframe(assetId);
 
     return res.json({ visitor, success: true });
   } catch (error) {

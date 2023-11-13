@@ -27,12 +27,12 @@ export const openStartIframe = async (req, res) => {
       },
     });
 
-    await visitor.closeIframe(assetId);
+    await visitor?.closeIframe(assetId);
 
     const base_url = `https://${req.get("host")}`;
     const link = `${base_url}/start?visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
 
-    await visitor.openIframe({
+    await visitor?.openIframe({
       droppedAssetId: assetId,
       link,
       shouldOpenInDrawer: true,
