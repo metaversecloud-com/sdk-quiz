@@ -15,10 +15,6 @@ function AdminView({ setShowSettings }) {
   const [selectEditQuestionNumber, setSelectEditQuestionNumber] =
     useState(false);
 
-  const startDroppedAsset = useSelector(
-    (state) => state?.session?.startDroppedAsset
-  );
-
   const allQuestions = useSelector((state) => state?.session?.allQuestions);
   const gameResetFlag = useSelector((state) => state?.session?.gameResetFlag);
 
