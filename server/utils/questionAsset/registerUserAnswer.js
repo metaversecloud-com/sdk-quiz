@@ -61,15 +61,6 @@ function checkAllAnswered(startDroppedAsset, profileId) {
     return false;
   }
 
-  // for (let question of questions) {
-  //   if (!question) {
-  //     return false;
-  //   }
-
-  //   if (!question[profileId]) {
-  //     return false;
-  //   }
-  // }
   return true;
 }
 
