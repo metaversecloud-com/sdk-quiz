@@ -12,20 +12,6 @@ import AdminView from "./Admin/AdminView";
 import gear from "../assets/gear.svg";
 import Leaderboard from "./LeaderboardAssetView";
 
-function extractQuestionNumber(str) {
-  if (!str) {
-    return null;
-  }
-
-  const parts = str.split("-");
-
-  if (parts?.length > 2 && !isNaN(parts?.[2])) {
-    return parseInt(parts[2], 10);
-  }
-
-  return null;
-}
-
 function Quiz() {
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState(null);
@@ -40,10 +26,6 @@ function Quiz() {
     (state) => state?.session?.questionDroppedAsset
   );
 
-  const questionNumber = extractQuestionNumber(
-    questionDroppedAsset?.uniqueName
-  );
-
   const visitor = useSelector((state) => state?.session?.visitor);
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
@@ -51,10 +33,27 @@ function Quiz() {
 
   const data = questionDroppedAsset?.dataObject;
 
+  const questionNumber = extractQuestionNumber(
+    questionDroppedAsset?.uniqueName
+  );
+
+  // console.log("questionNumber", questionNumber);
+  // console.log("questionDroppedAsset", questionDroppedAsset);
+
+  function extractQuestionNumber(str) {
+    const parts = str?.split("-");
+    if (parts?.length > 2 && !isNaN(parts[2])) {
+      return parseInt(parts[2], 10);
+    }
+    return null;
+  }
+
   const quizResults =
-    startDroppedAsset?.dataObject?.quiz?.results?.[questionNumber]?.[
-      visitor?.profileId
+    startDroppedAsset?.dataObject?.quiz?.results?.[visitor?.profileId][
+      `question-${questionNumber}`
     ];
+
+  console.log("quizResults", startDroppedAsset?.dataObject?.quiz?.results);
 
   const userAnswer = quizResults?.userAnswer;
 

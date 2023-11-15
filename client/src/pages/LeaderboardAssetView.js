@@ -13,6 +13,7 @@ function Leaderboard({ originAsset }) {
   const [showSettings, setShowSettings] = useState(false);
 
   const leaderboard = useSelector((state) => state?.session?.leaderboard);
+  console.log("leaderboard", leaderboard);
   const startDroppedAsset = useSelector(
     (state) => state?.session?.startDroppedAsset
   );
@@ -78,7 +79,10 @@ function Leaderboard({ originAsset }) {
                 <td>
                   <span className="hug">
                     {entry?.score}/
-                    {startDroppedAsset?.dataObject?.quiz?.results?.length}
+                    {
+                      startDroppedAsset?.dataObject?.quiz
+                        ?.numberOfQuestionsThatBelongToQuiz
+                    }
                   </span>
                 </td>
                 <td>

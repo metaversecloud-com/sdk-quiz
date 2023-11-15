@@ -39,14 +39,13 @@ export const resetGame = async (req, res) => {
     startAsset.dataObject.quiz.numberOfQuestionsThatBelongToQuiz =
       questionAssets.length;
 
-    startAsset.dataObject.quiz.results = new Array(questionAssets.length);
+    startAsset.dataObject.quiz.results = {};
 
     await startAsset.updateDataObject();
 
-    for (const question of questionAssets) {
-      question.dataObject.quiz = null;
-      await question.updateDataObject();
-    }
+    // for (const question of questionAssets) {
+    //   await question.updateDataObject();
+    // }
 
     return res.json({ startAsset, sucess: true, gameResetFlag: true });
   } catch (error) {

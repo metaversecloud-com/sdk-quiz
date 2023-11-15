@@ -11,7 +11,8 @@ function YourResult() {
     (state) => state?.session?.visitor?.profile.profileId
   );
 
-  const allResults = startDroppedAsset?.dataObject?.quiz?.results;
+  const allResults = startDroppedAsset?.dataObject?.quiz?.results || [];
+  console.log(allResults?.[profileId]);
 
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
@@ -30,8 +31,8 @@ function YourResult() {
   function countCorrectAnswers() {
     let correctAnswersCount = 0;
 
-    allResults?.forEach((item) => {
-      if (item?.[profileId] && item?.[profileId]?.isCorrect) {
+    Object.values(allResults?.[profileId])?.forEach((item) => {
+      if (item && item?.isCorrect) {
         correctAnswersCount++;
       }
     });
@@ -55,7 +56,10 @@ function YourResult() {
       >
         <div className="">
           {countCorrectAnswers()}/
-          {startDroppedAsset?.dataObject?.quiz?.results?.length}
+          {
+            startDroppedAsset?.dataObject?.quiz
+              ?.numberOfQuestionsThatBelongToQuiz
+          }
         </div>
       </div>
       <div
