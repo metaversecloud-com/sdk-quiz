@@ -24,7 +24,7 @@ app.use("/backend", router);
 
 app.get("/", (req, res) => {
   return res.send(
-    `Server is running... ${version} 09/25/2023 DD/MM/YYYY alfa1`
+    `Server is running... ${version} 09/25/2023 DD/MM/YYYY alfa2`
   );
 });
 
