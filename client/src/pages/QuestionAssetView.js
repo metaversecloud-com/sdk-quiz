@@ -122,7 +122,7 @@ function Quiz() {
     );
   }
 
-  if (startTimestamp === undefined) {
+  if (!startTimestamp || startTimestamp === undefined) {
     return (
       <>
         {visitor.isAdmin ? getGear() : <></>}
