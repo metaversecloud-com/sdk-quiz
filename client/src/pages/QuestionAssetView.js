@@ -10,36 +10,20 @@ import info from "../assets/info.png";
 import Timer from "../components/timer/Timer.js";
 import AdminView from "./Admin/AdminView";
 import gear from "../assets/gear.svg";
-
-function extractQuestionNumber(str) {
-  if (!str) {
-    return null;
-  }
-
-  const parts = str.split("-");
-
-  if (parts?.length > 2 && !isNaN(parts?.[2])) {
-    return parseInt(parts[2], 10);
-  }
-
-  return null;
-}
+import Leaderboard from "./LeaderboardAssetView";
 
 function Quiz() {
   const dispatch = useDispatch();
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const startDroppedAsset = useSelector(
     (state) => state?.session?.startDroppedAsset
   );
   const questionDroppedAsset = useSelector(
     (state) => state?.session?.questionDroppedAsset
-  );
-
-  const questionNumber = extractQuestionNumber(
-    questionDroppedAsset?.uniqueName
   );
 
   const visitor = useSelector((state) => state?.session?.visitor);
@@ -49,10 +33,27 @@ function Quiz() {
 
   const data = questionDroppedAsset?.dataObject;
 
+  const questionNumber = extractQuestionNumber(
+    questionDroppedAsset?.uniqueName
+  );
+
+  // console.log("questionNumber", questionNumber);
+  // console.log("questionDroppedAsset", questionDroppedAsset);
+
+  function extractQuestionNumber(str) {
+    const parts = str?.split("-");
+    if (parts?.length > 2 && !isNaN(parts[2])) {
+      return parseInt(parts[2], 10);
+    }
+    return null;
+  }
+
   const quizResults =
-    startDroppedAsset?.dataObject?.quiz?.results?.[questionNumber]?.[
-      visitor?.profileId
+    startDroppedAsset?.dataObject?.quiz?.results?.[visitor?.profileId][
+      `question-${questionNumber}`
     ];
+
+  console.log("quizResults", startDroppedAsset?.dataObject?.quiz?.results);
 
   const userAnswer = quizResults?.userAnswer;
 
@@ -109,6 +110,10 @@ function Quiz() {
     );
   }
 
+  if (showLeaderboard) {
+    return <Leaderboard originAsset="questionAsset" />;
+  }
+
   if (loading || startTimestamp === null) {
     return (
       <div className="loader">
@@ -117,11 +122,11 @@ function Quiz() {
     );
   }
 
-  if (startTimestamp === undefined) {
+  if (!startTimestamp || startTimestamp === undefined) {
     return (
       <>
         {visitor.isAdmin ? getGear() : <></>}
-        <div className="center-content">
+        <div className="center-content" style={{ padding: "0px 16px" }}>
           <img
             src={info}
             style={{ width: "48px", height: "48px", marginBottom: "15px" }}
@@ -195,7 +200,7 @@ function Quiz() {
             </div>
           )}
           {endTimestamp ? (
-            <p>Congratulations, you answered all questions!</p>
+            <p>Congratulations, you answered all questions!!</p>
           ) : (
             ""
           )}

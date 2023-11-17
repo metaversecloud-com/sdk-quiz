@@ -8,39 +8,29 @@ export const registerUserAnswer = async (req, res) => {
     const { startDroppedAsset, visitor, questionDroppedAsset } =
       await getStartAsset(req.query);
 
-    const questionUniqueName = questionDroppedAsset?.uniqueName;
-    const questionNumber = extractQuestionNumber(questionUniqueName);
-
     const profileId = visitor?.profileId;
-
-    if (!startDroppedAsset?.dataObject?.quiz) {
-      startDroppedAsset.dataObject.quiz = {};
-    }
-
-    if (!startDroppedAsset?.dataObject?.quiz?.results) {
-      startDroppedAsset.dataObject.quiz.results = [];
-    }
-
-    if (!startDroppedAsset?.dataObject?.quiz?.results?.[questionNumber]) {
-      startDroppedAsset.dataObject.quiz.results[questionNumber] = {};
-    }
-
-    startDroppedAsset.dataObject.quiz.results[questionNumber][profileId] = {
-      isCorrect,
-      userAnswer: selectedOption,
-      username: visitor?.username,
-    };
 
     const hasAnsweredAllQuestions = checkAllAnswered(
       startDroppedAsset,
       profileId
     );
 
-    if (hasAnsweredAllQuestions) {
-      startDroppedAsset.dataObject.quiz[profileId].endTimestamp = Date.now();
-    }
+    const questionUniqueName = questionDroppedAsset?.uniqueName;
+    const questionNumber = extractQuestionNumber(questionUniqueName);
 
-    await startDroppedAsset.updateDataObject();
+    const updateObject = {};
+
+    updateObject[`quiz.results.${profileId}.question-${questionNumber}`] = {
+      isCorrect,
+      userAnswer: selectedOption,
+      username: visitor?.username,
+    };
+
+    updateObject[`quiz.${profileId}.endTimestamp`] = hasAnsweredAllQuestions
+      ? Date.now()
+      : null;
+
+    await startDroppedAsset.updateDataObject(updateObject);
 
     return res.json({
       startDroppedAsset,
@@ -58,29 +48,26 @@ export const registerUserAnswer = async (req, res) => {
   }
 };
 
+function checkAllAnswered(startDroppedAsset, profileId) {
+  const questions = Object.values(
+    startDroppedAsset?.dataObject?.quiz?.results[profileId]
+  );
+
+  if (
+    !questions ||
+    questions.length <
+      startDroppedAsset.dataObject.quiz.numberOfQuestionsThatBelongToQuiz - 1
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 function extractQuestionNumber(str) {
   const parts = str.split("-");
-
   if (parts?.length > 2 && !isNaN(parts[2])) {
     return parseInt(parts[2], 10);
   }
-
   return null;
-}
-
-function checkAllAnswered(startDroppedAsset, profileId) {
-  const questions = startDroppedAsset?.dataObject?.quiz?.results;
-
-  if (!questions) return false;
-
-  for (let question of questions) {
-    if (!question) {
-      return false;
-    }
-
-    if (!question[profileId]) {
-      return false;
-    }
-  }
-  return true;
 }

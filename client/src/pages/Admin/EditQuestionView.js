@@ -106,10 +106,13 @@ function EditQuestionView({
       return;
     }
 
+    // TODO: implement to remove everybody's answers if a question is edited
+    // Reset quiz when question is edited. Make "Are you sure.. bla bla" screen to confirm
     const updatedQuestion = {
       question: questionText,
       answer: selectedAnswer,
       options: answers,
+      results: {},
     };
 
     setIsSaving(true);
@@ -186,7 +189,7 @@ function EditQuestionView({
           type="text"
           value={questionText}
           onChange={(e) => setQuestionText(e.target.value)}
-          style={{ width: "302px" }}
+          style={{ width: "328px" }}
           className={error.questionText ? "input-error" : ""}
         />
       </div>

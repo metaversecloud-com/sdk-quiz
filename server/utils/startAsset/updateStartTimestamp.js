@@ -46,11 +46,14 @@ export const updateStartTimestamp = async (req, res) => {
 
     startAsset.dataObject.quiz[visitor.profileId] = {};
     startAsset.dataObject.quiz[visitor.profileId].startTimestamp = now;
-    startAsset.updateDataObject();
+    await startAsset.updateDataObject({
+      [`quiz.${visitor.profileId}`]: { startTimestamp: now },
+      [`quiz.results.${visitor.profileId}`]: {},
+    });
 
     return res.json({
       startTimestamp:
-        startAsset?.dataObject.quiz[visitor?.profileId].startTimestamp,
+        startAsset?.dataObject.quiz?.[visitor?.profileId].startTimestamp,
     });
   } catch (error) {
     logger.error({

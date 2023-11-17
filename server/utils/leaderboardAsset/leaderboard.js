@@ -34,42 +34,36 @@ function calculateLeaderboard(startAsset) {
     return null;
   }
 
-  for (const result of quizResults) {
-    for (const profileId in result) {
-      const startTimestamp = quizMetaData?.[profileId]?.startTimestamp;
-      const endTimestamp = quizMetaData?.[profileId]?.endTimestamp;
+  for (const [profileId, results] of Object.entries(quizResults)) {
+    const startTimestamp = quizMetaData?.[profileId]?.startTimestamp;
+    const endTimestamp = quizMetaData?.[profileId]?.endTimestamp;
 
-      if (!scoreData[profileId]) {
-        scoreData[profileId] = {};
-        scoreData[profileId].score = 0;
-        scoreData[profileId].username = result[profileId].username;
-        scoreData[profileId].timeElapsed = endTimestamp
-          ? endTimestamp - startTimestamp
-          : null;
-      }
+    if (!endTimestamp) continue;
 
-      if (result?.[profileId].isCorrect) {
+    if (!scoreData[profileId]) {
+      const username = results[Object.keys(results)[0]].username;
+      scoreData[profileId] = {
+        score: 0,
+        username: username,
+        timeElapsed: endTimestamp - startTimestamp,
+      };
+    }
+
+    for (const questionId in results) {
+      if (results[questionId].isCorrect) {
         scoreData[profileId].score++;
       }
     }
   }
 
-  const leaderboardArray = Object.keys(scoreData)?.map((profileId) => ({
-    profileId: profileId,
-    score: scoreData[profileId].score,
-    username: scoreData[profileId].username,
-    timeElapsed: scoreData[profileId].timeElapsed,
-  }));
-
-  const sortedLeaderboard = leaderboardArray?.sort((a, b) => {
+  const leaderboardArray = Object.values(scoreData);
+  const sortedLeaderboard = leaderboardArray.sort((a, b) => {
     const scoreDifference = b.score - a.score;
     if (scoreDifference === 0) {
-      const aTime = a.timeElapsed === null ? Infinity : a.timeElapsed;
-      const bTime = b.timeElapsed === null ? Infinity : b.timeElapsed;
-
+      const aTime = a.timeElapsed || Infinity;
+      const bTime = b.timeElapsed || Infinity;
       return aTime - bTime;
     }
-
     return scoreDifference;
   });
 

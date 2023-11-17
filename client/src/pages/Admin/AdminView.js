@@ -15,10 +15,6 @@ function AdminView({ setShowSettings }) {
   const [selectEditQuestionNumber, setSelectEditQuestionNumber] =
     useState(false);
 
-  const startDroppedAsset = useSelector(
-    (state) => state?.session?.startDroppedAsset
-  );
-
   const allQuestions = useSelector((state) => state?.session?.allQuestions);
   const gameResetFlag = useSelector((state) => state?.session?.gameResetFlag);
 
@@ -130,18 +126,19 @@ function AdminView({ setShowSettings }) {
 
         <div className="footer-fixed" style={{ color: "#00A76F" }}>
           {gameResetFlag ? (
-            "The quiz has reset."
+            <p style={{ color: "#00875A" }}>The quiz has reset.</p>
           ) : (
-            <button
-              onClick={() => {
-                setShowModal(true);
-              }}
-              className="start-btn btn-danger"
-              disabled={resetButtonClicked}
-            >
-              {resetButtonClicked ? "Resetting the quiz..." : "Reset Quiz"}
-            </button>
+            <></>
           )}
+          <button
+            onClick={() => {
+              setShowModal(true);
+            }}
+            className="start-btn btn-danger"
+            disabled={resetButtonClicked || gameResetFlag}
+          >
+            {resetButtonClicked ? "Resetting the quiz..." : "Reset Quiz"}
+          </button>
         </div>
       </div>
     </>

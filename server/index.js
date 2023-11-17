@@ -11,7 +11,7 @@ dotenv.config();
 import { fileURLToPath } from "url";
 
 checkEnvVariables();
-const version = "1.2";
+const version = "11/15/2023";
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -23,7 +23,7 @@ app.use(requestID());
 app.use("/backend", router);
 
 app.get("/", (req, res) => {
-  return res.send(`Server is running... ${version} 09/25/2023 DD/MM/YYYY`);
+  return res.send(`Server is running... ${version} DD/MM/YYYY alfa3`);
 });
 
 if (process.env.NODE_ENV === "production") {

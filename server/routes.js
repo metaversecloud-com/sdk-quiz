@@ -18,6 +18,7 @@ import {
   getLeaderboardFromStartAsset,
   openStartIframe,
   reloadIframe,
+  getLeaderboardFromQuestionAsset,
 } from "./utils/index.js";
 
 import { validationMiddleware } from "./middlware/validation.js";
@@ -50,6 +51,12 @@ router.get(
   "/question/start-dropped-asset",
   validationMiddleware,
   getStartAssetFromQuestionAsset
+);
+
+router.get(
+  "/leaderboard-from-question-asset",
+  validationMiddleware,
+  getLeaderboardFromQuestionAsset
 );
 
 // Leaderboard Endpoints
