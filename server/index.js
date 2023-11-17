@@ -23,7 +23,7 @@ app.use(requestID());
 app.use("/backend", router);
 
 app.get("/", (req, res) => {
-  return res.send(`Server is running... ${version} DD/MM/YYYY alfa4`);
+  return res.send(`Server is running... ${version} DD/MM/YYYY alfa5`);
 });
 
 if (process.env.NODE_ENV === "production") {
