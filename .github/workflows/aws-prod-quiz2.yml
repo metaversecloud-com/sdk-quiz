@@ -1,4 +1,4 @@
-name: AWS-Deploy-Push-Prod
+name: AWS-Deploy-Quiz2-Push-Prod
 
 on:
   workflow_dispatch:
