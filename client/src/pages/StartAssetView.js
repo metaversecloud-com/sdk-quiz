@@ -9,7 +9,7 @@ import "./StartAssetView.scss";
 import Timer from "../components/timer/Timer.js";
 import TotalQuestionsAnsweredView from "../components/totalQuestionsAnsweredView/TotalQuestionsAnsweredView.js";
 import gear from "../assets/gear.svg";
-import AdminView from "./Admin/AdminView";
+import AdminView from "./Admin/AdminView.js";
 import QuizEnded from "../components/quizEnded/QuizEnded";
 import Leaderboard from "./LeaderboardAssetView";
 import instructionsImg from "../assets/instructions-start.png";

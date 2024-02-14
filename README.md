@@ -26,9 +26,36 @@
 
 - Node.js
 - React
-- Any modern web browser
 
-## Run Locally
+## Getting Started 🚀
 
-- Fill all the environment variables specified in the .env.example
-- Run the npm start for client and server
+Make sure to fill all environment variables. The model is in .env-example file
+
+### Production Mode
+
+1. Install dependencies
+
+   ```
+   npm install
+   ```
+
+2. Start the server
+   ```
+   npm start
+   ```
+
+### Development Mode
+
+1. Start Server
+
+   ```
+   npm start
+   ```
+
+2. Start Client
+
+   ```
+   cd client && npm start
+   ```
+
+3. Visit `http://localhost:3001` and start your quiz experience!
