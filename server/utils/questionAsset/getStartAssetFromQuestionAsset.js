@@ -10,7 +10,7 @@ export const getStartAssetFromQuestionAsset = async (req, res) => {
       startDroppedAsset,
       visitor,
       questionDroppedAsset,
-      inPrivateZone: visitor?.landmarkZonesString == questionDroppedAsset?.id,
+      inZone: visitor?.landmarkZonesString == questionDroppedAsset?.id,
     });
   } catch (error) {
     logger.error({

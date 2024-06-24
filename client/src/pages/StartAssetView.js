@@ -24,7 +24,7 @@ function StartAssetView() {
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
   const visitor = useSelector((state) => state?.session?.visitor);
-  const inPrivateZone = useSelector((state) => state?.session?.inPrivateZone);
+  const inZone = useSelector((state) => state?.session?.inZone);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
@@ -80,10 +80,10 @@ function StartAssetView() {
   function showModal() {
     return (
       <>
-        <div class={`modal-container ${!inPrivateZone ? "visible" : ""}`}>
-          <div class="modal">
+        <div className={`modal-container ${!inZone ? "visible" : ""}`}>
+          <div className="modal">
             <h4>Outside start zone</h4>
-            <p2>Please walk inside the start zone to start the quiz race.</p2>
+            <p>Please walk inside the start zone to start the quiz race.</p>
           </div>
         </div>
       </>

@@ -48,8 +48,8 @@ const reducers = {
   setGameResetFlag: (state, action) => {
     state.gameResetFlag = action.payload;
   },
-  setInPrivateZone: (state, action) => {
-    state.inPrivateZone = action.payload;
+  setinZone: (state, action) => {
+    state.inZone = action.payload;
   },
   setError: (state, action) => {
     state.error = action.payload;

@@ -19,7 +19,7 @@ export const {
   setAllQuestions,
   setQuestionAsset,
   setGameResetFlag,
-  setInPrivateZone,
+  setinZone,
   setError,
 } = session.actions;
 
@@ -98,13 +98,13 @@ export const getStartDroppedAsset = () => async (dispatch) => {
       const endTimestamp =
         response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
-      const inPrivateZone = response?.data?.inPrivateZone;
+      const inZone = response?.data?.inZone;
 
       dispatch(setStartDroppedAsset(droppedAsset));
       dispatch(setVisitor(visitor));
       dispatch(setStartTimestamp(startTimestamp));
       dispatch(setEndTimestamp(endTimestamp));
-      dispatch(setInPrivateZone(inPrivateZone));
+      dispatch(setinZone(inZone));
     }
   } catch (error) {
     console.error("error", error);
@@ -317,14 +317,14 @@ export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
       const endTimestamp =
         response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
-      const inPrivateZone = response?.data?.inPrivateZone;
+      const inZone = response?.data?.inZone;
 
       dispatch(setStartDroppedAsset(startDroppedAsset));
       dispatch(setQuestionDroppedAsset(questionDroppedAsset));
       dispatch(setVisitor(visitor));
       dispatch(setStartTimestamp(startTimestamp));
       dispatch(setEndTimestamp(endTimestamp));
-      dispatch(setInPrivateZone(inPrivateZone));
+      dispatch(setinZone(inZone));
     }
   } catch (error) {
     console.error("error", error);
