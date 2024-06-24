@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(requestID());
 
-app.use("/backend", router);
+app.use("/api", router);
 
 app.get("/", (req, res) => {
   return res.send(`Server is running... ${version} DD/MM/YYYY alfa5`);

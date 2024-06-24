@@ -23,10 +23,42 @@ import {
 
 import { validationMiddleware } from "./middlware/validation.js";
 
+const SERVER_START_DATE = new Date();
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
   res.json({ message: "Hello from server!" });
+});
+
+router.get("/api/system/health", (req, res) => {
+  return res.json({
+    NODE_ENV: process.env.NODE_ENV,
+    DEPLOYMENT_DATE: SERVER_START_DATE,
+    COMMIT_HASH: process.env.COMMIT_HASH ? process.env.COMMIT_HASH : "NOT SET",
+    SHOWCASE_WORLDS_URLS: ["https://topia.io/quiz-prod"],
+    INSTANCE_DOMAIN: process.env.INSTANCE_DOMAIN
+      ? process.env.INSTANCE_DOMAIN
+      : "NOT SET",
+    INSTANCE_PROTOCOL: process.env.INSTANCE_PROTOCOL
+      ? process.env.INSTANCE_PROTOCOL
+      : "NOT SET",
+    INTERACTIVE_KEY: process.env.INTERACTIVE_KEY
+      ? process.env.INTERACTIVE_KEY
+      : "NOT SET",
+    IMG_ASSET_ID: process.env.IMG_ASSET_ID
+      ? process.env.IMG_ASSET_ID
+      : "NOT SET",
+    GOOGLESHEETS_CLIENT_EMAIL: process.env.GOOGLESHEETS_CLIENT_EMAIL
+      ? "SET"
+      : "NOT SET",
+    GOOGLESHEETS_SHEET_ID: process.env.GOOGLESHEETS_SHEET_ID
+      ? "SET"
+      : "NOT SET",
+    GOOGLESHEETS_PRIVATE_KEY: process.env.GOOGLESHEETS_PRIVATE_KEY
+      ? "SET"
+      : "NOT SET",
+  });
 });
 
 // Endpoints for Start Asset
