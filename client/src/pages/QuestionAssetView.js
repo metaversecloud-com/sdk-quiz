@@ -46,7 +46,7 @@ function Quiz() {
   }
 
   const quizResults =
-    startDroppedAsset?.dataObject?.quiz?.results?.[visitor?.profileId][
+    startDroppedAsset?.dataObject?.quiz?.results?.[visitor?.profileId]?.[
       `question-${questionNumber}`
     ];
 
