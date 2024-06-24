@@ -30,8 +30,10 @@ const getQueryParams = () => {
   const assetId = queryParameters.get("assetId");
   const interactivePublicKey = queryParameters.get("interactivePublicKey");
   const urlSlug = queryParameters.get("urlSlug");
+  const profileId = queryParameters.get("profileId");
+  const sceneDropId = queryParameters.get("sceneDropId");
 
-  return `visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
+  return `visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}&profileId=${profileId}&sceneDropId=${sceneDropId}`;
 };
 
 export const getVisitor = () => async (dispatch) => {
