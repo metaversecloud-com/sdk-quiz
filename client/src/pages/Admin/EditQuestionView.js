@@ -102,7 +102,7 @@ function EditQuestionView({
 
   const handleSaveChanges = async () => {
     if (!validateForm()) {
-      console.log("Didn't pass validation");
+      console.error("Didn't pass validation");
       return;
     }
 

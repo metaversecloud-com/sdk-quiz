@@ -12,8 +12,6 @@ function YourResult() {
   );
 
   const allResults = startDroppedAsset?.dataObject?.quiz?.results || [];
-  console.log(allResults?.[profileId]);
-
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
 

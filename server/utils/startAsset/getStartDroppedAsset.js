@@ -1,4 +1,4 @@
-import { DroppedAsset, Visitor, World, WorldActivity } from "../topiaInit.js";
+import { DroppedAsset, Visitor, World } from "../topiaInit.js";
 import { logger } from "../../logs/logger.js";
 
 export const getStartDroppedAsset = async (req, res) => {
@@ -9,7 +9,6 @@ export const getStartDroppedAsset = async (req, res) => {
       assetId,
       interactivePublicKey,
       urlSlug,
-      sceneDropId,
     } = req.query;
 
     const credentials = {
@@ -44,26 +43,6 @@ export const getStartDroppedAsset = async (req, res) => {
         visitorId,
       },
     });
-
-    // const droppedAssets = await world.fetchDroppedAssetsBySceneDropId({
-    //   sceneDropId,
-    // });
-
-    // const visitors = await worldActivity.fetchVisitorsInZone({ droppedAssetId: keyAsset.dataObject.landmarkZoneId });
-
-    // const landmarkZone = droppedAssets.find((asset) => {
-    //   return assetId == asset.assetId;
-    // });
-
-    // const worldActivity = WorldActivity.create(credentials.urlSlug, {
-    //   credentials,
-    // });
-
-    // const visitors = await worldActivity.fetchVisitorsInZone({
-    //   droppedAssetId: assetId,
-    // });
-
-    // const visitors = await worldActivity.fetchVisitorsInZone(assetId);
 
     return res.json({
       droppedAsset,

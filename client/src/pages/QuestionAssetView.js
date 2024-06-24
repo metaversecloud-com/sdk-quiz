@@ -37,9 +37,6 @@ function Quiz() {
     questionDroppedAsset?.uniqueName
   );
 
-  // console.log("questionNumber", questionNumber);
-  // console.log("questionDroppedAsset", questionDroppedAsset);
-
   function extractQuestionNumber(str) {
     const parts = str?.split("-");
     if (parts?.length > 2 && !isNaN(parts[2])) {
@@ -52,8 +49,6 @@ function Quiz() {
     startDroppedAsset?.dataObject?.quiz?.results?.[visitor?.profileId][
       `question-${questionNumber}`
     ];
-
-  console.log("quizResults", startDroppedAsset?.dataObject?.quiz?.results);
 
   const userAnswer = quizResults?.userAnswer;
 

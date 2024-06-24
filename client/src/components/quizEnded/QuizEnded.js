@@ -58,7 +58,6 @@ function QuizEnded({ setShowSettings, setShowLeaderboard, originAsset }) {
           <button
             className="btn-outline"
             onClick={() => {
-              // console.log("originAsset", originAsset);
               dispatch(getLeaderboard(originAsset));
               setShowLeaderboard(true);
             }}
