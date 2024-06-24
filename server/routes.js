@@ -31,7 +31,7 @@ router.get("/", (req, res) => {
   res.json({ message: "Hello from server!" });
 });
 
-router.get("/api/system/health", (req, res) => {
+router.get("/system/health", (req, res) => {
   return res.json({
     NODE_ENV: process.env.NODE_ENV,
     DEPLOYMENT_DATE: SERVER_START_DATE,
