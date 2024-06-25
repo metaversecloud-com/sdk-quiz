@@ -13,7 +13,6 @@ function Leaderboard({ originAsset }) {
   const [showSettings, setShowSettings] = useState(false);
 
   const leaderboard = useSelector((state) => state?.session?.leaderboard);
-  console.log("leaderboard", leaderboard);
   const startDroppedAsset = useSelector(
     (state) => state?.session?.startDroppedAsset
   );

@@ -60,16 +60,16 @@ function AdminView({ setShowSettings }) {
   function renderModal() {
     return (
       <>
-        <div class={`modal-container visible`}>
-          <div class="modal">
+        <div className={`modal-container visible`}>
+          <div className="modal">
             <h4>Reset the quiz race?</h4>
-            <p2>
+            <p>
               Players who have finished the current quiz will be able to start
               the new quiz.
-            </p2>
-            <div class="actions">
+            </p>
+            <div className="actions">
               <button
-                class="btn-outline"
+                className="btn-outline"
                 onClick={() => {
                   setShowModal(false);
                 }}
@@ -77,7 +77,7 @@ function AdminView({ setShowSettings }) {
                 Close
               </button>
               <button
-                class="btn-danger"
+                className="btn-danger"
                 onClick={() => {
                   setResetButtonClicked(true);
                   dispatch(resetGame());

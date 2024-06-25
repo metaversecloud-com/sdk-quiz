@@ -1,4 +1,4 @@
-import { DroppedAsset, Visitor } from "../topiaInit.js";
+import { DroppedAsset, Visitor, World } from "../topiaInit.js";
 import { logger } from "../../logs/logger.js";
 
 export const getStartDroppedAsset = async (req, res) => {
@@ -36,10 +36,18 @@ export const getStartDroppedAsset = async (req, res) => {
     const droppedAsset = result?.[0];
     const visitor = result?.[1];
 
+    const world = World.create(urlSlug, {
+      credentials: {
+        interactiveNonce,
+        interactivePublicKey,
+        visitorId,
+      },
+    });
+
     return res.json({
       droppedAsset,
       visitor,
-      inPrivateZone: visitor?.privateZoneId == droppedAsset?.id,
+      inZone: visitor?.landmarkZonesString == droppedAsset?.id,
     });
   } catch (error) {
     logger.error({

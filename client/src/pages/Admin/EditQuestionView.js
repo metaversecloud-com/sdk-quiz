@@ -102,7 +102,7 @@ function EditQuestionView({
 
   const handleSaveChanges = async () => {
     if (!validateForm()) {
-      console.log("Didn't pass validation");
+      console.error("Didn't pass validation");
       return;
     }
 
@@ -136,13 +136,13 @@ function EditQuestionView({
   function renderModal() {
     return (
       <>
-        <div class={`modal-container visible`}>
-          <div class="modal">
+        <div className={`modal-container visible`}>
+          <div className="modal">
             <h4>You have unsaved changes.</h4>
-            <p2>Click "Keep editing" to go back and save your changes.</p2>
-            <div class="actions">
+            <p>Click "Keep editing" to go back and save your changes.</p>
+            <div className="actions">
               <button
-                class="btn-outline"
+                className="btn-outline"
                 onClick={() => {
                   setShowModal(false);
                   setSelectEditQuestionNumber(false);
@@ -150,11 +150,7 @@ function EditQuestionView({
               >
                 Close without saving
               </button>
-              <button
-                class="btn-danger"
-                onClick={() => {}}
-                className="start-btn"
-              >
+              <button onClick={() => {}} className="start-btn">
                 Keep Editing
               </button>
             </div>

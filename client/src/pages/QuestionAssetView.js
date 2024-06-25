@@ -29,16 +29,13 @@ function Quiz() {
   const visitor = useSelector((state) => state?.session?.visitor);
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
-  const inPrivateZone = useSelector((state) => state?.session?.inPrivateZone);
+  const inZone = useSelector((state) => state?.session?.inZone);
 
   const data = questionDroppedAsset?.dataObject;
 
   const questionNumber = extractQuestionNumber(
     questionDroppedAsset?.uniqueName
   );
-
-  // console.log("questionNumber", questionNumber);
-  // console.log("questionDroppedAsset", questionDroppedAsset);
 
   function extractQuestionNumber(str) {
     const parts = str?.split("-");
@@ -49,11 +46,9 @@ function Quiz() {
   }
 
   const quizResults =
-    startDroppedAsset?.dataObject?.quiz?.results?.[visitor?.profileId][
+    startDroppedAsset?.dataObject?.quiz?.results?.[visitor?.profileId]?.[
       `question-${questionNumber}`
     ];
-
-  console.log("quizResults", startDroppedAsset?.dataObject?.quiz?.results);
 
   const userAnswer = quizResults?.userAnswer;
 
@@ -98,12 +93,10 @@ function Quiz() {
   function showModal() {
     return (
       <>
-        <div class={`modal-container ${!inPrivateZone ? "visible" : ""}`}>
-          <div class="modal">
+        <div className={`modal-container ${!inZone ? "visible" : ""}`}>
+          <div className="modal">
             <h4>Outside the question zone</h4>
-            <p2>
-              Please step inside the question zone to answer the question.
-            </p2>
+            <p>Please step inside the question zone to answer the question.</p>
           </div>
         </div>
       </>

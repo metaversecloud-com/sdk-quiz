@@ -2,14 +2,6 @@ import { Visitor } from "../topiaInit.js";
 import { logger } from "../../logs/logger.js";
 export const openStartIframe = async (req, res) => {
   try {
-    // const {
-    //   visitorId,
-    //   interactiveNonce,
-    //   assetId,
-    //   interactivePublicKey,
-    //   urlSlug,
-    // } = req.query;
-
     const {
       assetId,
       interactiveNonce,

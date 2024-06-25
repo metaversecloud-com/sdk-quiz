@@ -19,7 +19,7 @@ export const {
   setAllQuestions,
   setQuestionAsset,
   setGameResetFlag,
-  setInPrivateZone,
+  setinZone,
   setError,
 } = session.actions;
 
@@ -30,15 +30,17 @@ const getQueryParams = () => {
   const assetId = queryParameters.get("assetId");
   const interactivePublicKey = queryParameters.get("interactivePublicKey");
   const urlSlug = queryParameters.get("urlSlug");
+  const profileId = queryParameters.get("profileId");
+  const sceneDropId = queryParameters.get("sceneDropId");
 
-  return `visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
+  return `visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}&profileId=${profileId}&sceneDropId=${sceneDropId}`;
 };
 
 export const getVisitor = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
 
-    const response = await axios.get(`backend/visitor?${queryParams}`);
+    const response = await axios.get(`api/visitor?${queryParams}`);
 
     if (response.status === 200) {
       dispatch(setVisitor(response.data.visitor));
@@ -55,7 +57,7 @@ export const getVisitor = () => async (dispatch) => {
 export const getDroppedAsset = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/dropped-asset?${queryParams}`;
+    const url = `api/dropped-asset?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
@@ -84,7 +86,7 @@ export const getDroppedAsset = () => async (dispatch) => {
 export const getStartDroppedAsset = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/start-dropped-asset?${queryParams}`;
+    const url = `api/start-dropped-asset?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
@@ -96,13 +98,13 @@ export const getStartDroppedAsset = () => async (dispatch) => {
       const endTimestamp =
         response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
-      const inPrivateZone = response?.data?.inPrivateZone;
+      const inZone = response?.data?.inZone;
 
       dispatch(setStartDroppedAsset(droppedAsset));
       dispatch(setVisitor(visitor));
       dispatch(setStartTimestamp(startTimestamp));
       dispatch(setEndTimestamp(endTimestamp));
-      dispatch(setInPrivateZone(inPrivateZone));
+      dispatch(setinZone(inZone));
     }
   } catch (error) {
     console.error("error", error);
@@ -115,7 +117,7 @@ export const getStartDroppedAsset = () => async (dispatch) => {
 export const updateStartTimestamp = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/start-timestamp?${queryParams}`;
+    const url = `api/start-timestamp?${queryParams}`;
 
     const response = await axios.put(url);
     if (response.status === 200) {
@@ -133,7 +135,7 @@ export const registerUserAnswer =
   (isCorrect, selectedOption) => async (dispatch) => {
     try {
       const queryParams = getQueryParams();
-      const url = `backend/registerUserAnswer?${queryParams}`;
+      const url = `api/registerUserAnswer?${queryParams}`;
 
       const response = await axios.post(url, { isCorrect, selectedOption });
 
@@ -159,7 +161,7 @@ export const registerUserAnswer =
 export const clear = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/clear?${queryParams}`;
+    const url = `api/clear?${queryParams}`;
 
     const response = await axios.post(url);
     if (response.status === 200) {
@@ -176,7 +178,7 @@ export const clear = () => async (dispatch) => {
 export const resetGame = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/resetGame?${queryParams}`;
+    const url = `api/resetGame?${queryParams}`;
 
     const response = await axios.post(url);
     if (response.status === 200) {
@@ -196,7 +198,7 @@ export const resetGame = () => async (dispatch) => {
 export const resetTimer = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/resetTimer?${queryParams}`;
+    const url = `api/resetTimer?${queryParams}`;
 
     const response = await axios.post(url);
     if (response.status === 200) {
@@ -212,18 +214,15 @@ export const resetTimer = () => async (dispatch) => {
 
 export const getLeaderboard = (originAsset) => async (dispatch) => {
   try {
-    console.log("getLeaderboard originAsset ", originAsset);
     const queryParams = getQueryParams();
     let url;
 
     if (originAsset == "startAsset") {
-      console.log("entered startAsset");
-      url = `backend/leaderboard-from-start-asset?${queryParams}`;
+      url = `api/leaderboard-from-start-asset?${queryParams}`;
     } else if (originAsset == "questionAsset") {
-      console.log("entered questionAsset");
-      url = `backend/leaderboard-from-question-asset?${queryParams}`;
+      url = `api/leaderboard-from-question-asset?${queryParams}`;
     } else {
-      url = `backend/leaderboard?${queryParams}`;
+      url = `api/leaderboard?${queryParams}`;
     }
 
     const response = await axios.get(url);
@@ -254,7 +253,7 @@ export const getLeaderboard = (originAsset) => async (dispatch) => {
 export const startClock = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/timestamp?${queryParams}`;
+    const url = `api/timestamp?${queryParams}`;
 
     const response = await axios.put(url);
     if (response.status === 200) {
@@ -271,7 +270,7 @@ export const startClock = () => async (dispatch) => {
 export const getQuestionsStatistics = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/questionsStatistics?${queryParams}`;
+    const url = `api/questionsStatistics?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
@@ -288,7 +287,7 @@ export const getQuestionsStatistics = () => async (dispatch) => {
 export const getTimestamp = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/timestamp?${queryParams}`;
+    const url = `api/timestamp?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
@@ -305,7 +304,7 @@ export const getTimestamp = () => async (dispatch) => {
 export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/question/start-dropped-asset?${queryParams}`;
+    const url = `api/question/start-dropped-asset?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
@@ -318,14 +317,14 @@ export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
       const endTimestamp =
         response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
-      const inPrivateZone = response?.data?.inPrivateZone;
+      const inZone = response?.data?.inZone;
 
       dispatch(setStartDroppedAsset(startDroppedAsset));
       dispatch(setQuestionDroppedAsset(questionDroppedAsset));
       dispatch(setVisitor(visitor));
       dispatch(setStartTimestamp(startTimestamp));
       dispatch(setEndTimestamp(endTimestamp));
-      dispatch(setInPrivateZone(inPrivateZone));
+      dispatch(setinZone(inZone));
     }
   } catch (error) {
     console.error("error", error);
@@ -338,7 +337,7 @@ export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
 export const getAllQuestions = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `backend/all-question-assets?${queryParams}`;
+    const url = `api/all-question-assets?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
@@ -360,7 +359,7 @@ export const editQuestion =
   (questionNumber, updatedQuestion) => async (dispatch) => {
     try {
       const queryParams = getQueryParams();
-      const url = `backend/question?${queryParams}`;
+      const url = `api/question?${queryParams}`;
 
       const response = await axios.put(url, {
         questionNumber,
