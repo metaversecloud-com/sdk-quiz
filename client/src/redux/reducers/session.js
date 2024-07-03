@@ -11,6 +11,7 @@ const initialState = {
   questionsAnswered: null,
   startTimestamp: null,
   setGameResetFlag: null,
+  world: null,
   error: null,
 };
 
@@ -50,6 +51,9 @@ const reducers = {
   },
   setinZone: (state, action) => {
     state.inZone = action.payload;
+  },
+  setWorld: (state, action) => {
+    state.world = action.payload;
   },
   setError: (state, action) => {
     state.error = action.payload;

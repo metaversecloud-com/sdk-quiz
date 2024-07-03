@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
-import {
-  getStartDroppedAsset,
-  updateStartTimestamp,
-} from "../redux/actions/session";
+import { loadGameState, updateStartTimestamp } from "../redux/actions/session";
 import "./StartAssetView.scss";
 import Timer from "../components/timer/Timer.js";
 import TotalQuestionsAnsweredView from "../components/totalQuestionsAnsweredView/TotalQuestionsAnsweredView.js";
@@ -25,10 +22,11 @@ function StartAssetView() {
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
   const visitor = useSelector((state) => state?.session?.visitor);
   const inZone = useSelector((state) => state?.session?.inZone);
+  const world = useSelector((state) => state?.session?.world);
 
   useEffect(() => {
     const fetchDroppedAsset = async () => {
-      await dispatch(getStartDroppedAsset());
+      await dispatch(loadGameState());
 
       setLoading(false);
     };

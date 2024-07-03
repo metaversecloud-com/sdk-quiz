@@ -20,6 +20,7 @@ export const {
   setQuestionAsset,
   setGameResetFlag,
   setinZone,
+  setWorld,
   setError,
 } = session.actions;
 
@@ -83,28 +84,30 @@ export const getDroppedAsset = () => async (dispatch) => {
   }
 };
 
-export const getStartDroppedAsset = () => async (dispatch) => {
+export const loadGameState = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `api/start-dropped-asset?${queryParams}`;
+    const url = `api/game-state?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
       const droppedAsset = response?.data?.droppedAsset;
       const visitor = response?.data?.visitor;
       const startTimestamp =
-        response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
+        response?.data?.world?.dataObject?.quiz[visitor?.profileId]
           ?.startTimestamp;
       const endTimestamp =
-        response?.data?.droppedAsset?.dataObject?.quiz[visitor?.profileId]
+        response?.data?.world?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
       const inZone = response?.data?.inZone;
+      const world = response?.data?.world;
 
-      dispatch(setStartDroppedAsset(droppedAsset));
+      dispatch(setDroppedAsset(droppedAsset));
       dispatch(setVisitor(visitor));
       dispatch(setStartTimestamp(startTimestamp));
       dispatch(setEndTimestamp(endTimestamp));
       dispatch(setinZone(inZone));
+      dispatch(setWorld(world));
     }
   } catch (error) {
     console.error("error", error);
@@ -230,10 +233,10 @@ export const getLeaderboard = (originAsset) => async (dispatch) => {
       const startDroppedAsset = response?.data?.startDroppedAsset;
       const visitor = response?.data?.visitor;
       const startTimestamp =
-        response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
+        response?.data?.world?.dataObject?.quiz[visitor?.profileId]
           ?.startTimestamp;
       const endTimestamp =
-        response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
+        response?.data?.world?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
 
       dispatch(setVisitor(visitor));
@@ -304,7 +307,7 @@ export const getTimestamp = () => async (dispatch) => {
 export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
   try {
     const queryParams = getQueryParams();
-    const url = `api/question/start-dropped-asset?${queryParams}`;
+    const url = `api/question/game-state?${queryParams}`;
 
     const response = await axios.get(url);
     if (response.status === 200) {
@@ -312,12 +315,13 @@ export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
       const questionDroppedAsset = response?.data?.questionDroppedAsset;
       const visitor = response?.data?.visitor;
       const startTimestamp =
-        response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
+        response?.data?.world?.dataObject?.quiz[visitor?.profileId]
           ?.startTimestamp;
       const endTimestamp =
-        response?.data?.startDroppedAsset?.dataObject?.quiz[visitor?.profileId]
+        response?.data?.world?.dataObject?.quiz[visitor?.profileId]
           ?.endTimestamp;
       const inZone = response?.data?.inZone;
+      const world = response?.data?.world;
 
       dispatch(setStartDroppedAsset(startDroppedAsset));
       dispatch(setQuestionDroppedAsset(questionDroppedAsset));
@@ -325,6 +329,7 @@ export const getStartDroppedAssetFromQuestionAsset = () => async (dispatch) => {
       dispatch(setStartTimestamp(startTimestamp));
       dispatch(setEndTimestamp(endTimestamp));
       dispatch(setinZone(inZone));
+      dispatch(setWorld(world));
     }
   } catch (error) {
     console.error("error", error);

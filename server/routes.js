@@ -10,7 +10,7 @@ import {
   getQuestionsStatistics,
   resetTimer,
   resetGame,
-  getStartDroppedAsset,
+  loadGameState,
   updateStartTimestamp,
   getStartAssetFromQuestionAsset,
   getAllQuestionAssets,
@@ -62,7 +62,7 @@ router.get("/system/health", (req, res) => {
 });
 
 // Endpoints for Start Asset
-router.get("/start-dropped-asset", validationMiddleware, getStartDroppedAsset);
+router.get("/game-state", validationMiddleware, loadGameState);
 router.get("/all-question-assets", validationMiddleware, getAllQuestionAssets);
 router.put("/start-timestamp", validationMiddleware, updateStartTimestamp);
 router.post("/registerUserAnswer", validationMiddleware, registerUserAnswer);

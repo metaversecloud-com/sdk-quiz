@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import {
   registerUserAnswer,
-  getStartDroppedAssetFromQuestionAsset,
+  loadG,
+  loadGameState,
 } from "../redux/actions/session";
 import "./QuestionAssetView.scss";
 import info from "../assets/info.png";
@@ -22,20 +23,18 @@ function Quiz() {
   const startDroppedAsset = useSelector(
     (state) => state?.session?.startDroppedAsset
   );
-  const questionDroppedAsset = useSelector(
-    (state) => state?.session?.questionDroppedAsset
-  );
+  const droppedAsset = useSelector((state) => state?.session?.droppedAsset);
 
   const visitor = useSelector((state) => state?.session?.visitor);
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
   const inZone = useSelector((state) => state?.session?.inZone);
 
-  const data = questionDroppedAsset?.dataObject;
+  const data = droppedAsset?.dataObject;
 
-  const questionNumber = extractQuestionNumber(
-    questionDroppedAsset?.uniqueName
-  );
+  console.log("droppedAsset", droppedAsset);
+
+  const questionNumber = extractQuestionNumber(droppedAsset?.uniqueName);
 
   function extractQuestionNumber(str) {
     const parts = str?.split("-");
@@ -54,7 +53,7 @@ function Quiz() {
 
   useEffect(() => {
     const fetchDroppedAsset = () => {
-      dispatch(getStartDroppedAssetFromQuestionAsset());
+      dispatch(loadGameState());
       setLoading(false);
     };
     fetchDroppedAsset();

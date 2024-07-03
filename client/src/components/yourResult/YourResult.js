@@ -3,15 +3,13 @@ import { useSelector } from "react-redux";
 import "./YourResult.scss";
 
 function YourResult() {
-  const startDroppedAsset = useSelector(
-    (state) => state?.session?.startDroppedAsset
-  );
+  const world = useSelector((state) => state?.session?.world);
 
   const profileId = useSelector(
     (state) => state?.session?.visitor?.profile.profileId
   );
 
-  const allResults = startDroppedAsset?.dataObject?.quiz?.results || [];
+  const allResults = world?.dataObject?.quiz?.results || [];
   const startTimestamp = useSelector((state) => state?.session?.startTimestamp);
   const endTimestamp = useSelector((state) => state?.session?.endTimestamp);
 
@@ -54,10 +52,7 @@ function YourResult() {
       >
         <div className="">
           {countCorrectAnswers()}/
-          {
-            startDroppedAsset?.dataObject?.quiz
-              ?.numberOfQuestionsThatBelongToQuiz
-          }
+          {world?.dataObject?.quiz?.numberOfQuestionsThatBelongToQuiz}
         </div>
       </div>
       <div
