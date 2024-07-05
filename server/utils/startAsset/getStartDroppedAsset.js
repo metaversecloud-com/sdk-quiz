@@ -47,7 +47,9 @@ export const getStartDroppedAsset = async (req, res) => {
     return res.json({
       droppedAsset,
       visitor,
-      inZone: visitor?.landmarkZonesString == droppedAsset?.id,
+      inZone:
+        visitor?.landmarkZonesString == droppedAsset?.id ||
+        visitor?.privateZoneId == droppedAsset?.id,
     });
   } catch (error) {
     logger.error({
