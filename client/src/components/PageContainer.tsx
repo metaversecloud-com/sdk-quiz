@@ -10,10 +10,12 @@ export const PageContainer = ({
   children,
   isLoading,
   headerText,
+  showAdminIcon,
 }: {
   children: ReactNode;
   isLoading: boolean;
   headerText?: string;
+  showAdminIcon?: boolean;
 }) => {
   const { error, visitor } = useContext(GlobalStateContext);
   const [showSettings, setShowSettings] = useState(false);
@@ -22,7 +24,7 @@ export const PageContainer = ({
 
   return (
     <div className="p-4">
-      {visitor?.isAdmin && (
+      {showAdminIcon && visitor?.isAdmin && (
         <div>
           <AdminIconButton setShowSettings={() => setShowSettings(!showSettings)} showSettings={showSettings} />
         </div>

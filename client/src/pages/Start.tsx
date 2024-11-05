@@ -57,7 +57,7 @@ export const Start = () => {
   };
 
   return (
-    <PageContainer isLoading={isLoading || !quiz}>
+    <PageContainer isLoading={isLoading || !quiz} showAdminIcon={true}>
       <>
         {!visitor?.isInZone && <OutsideZoneModal />}
 

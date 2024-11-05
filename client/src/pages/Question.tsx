@@ -14,7 +14,7 @@ import { backendAPI, setErrorMessage, setQuiz } from "@/utils";
 export const Question = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { gameStatus, hasInteractiveParams, quiz, visitor } = useContext(GlobalStateContext);
-  const { answers, endTime, startTime } = gameStatus || {};
+  const { answers, endTime, startTime, timeElapsed } = gameStatus || {};
 
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || searchParams.get("questionid") || searchParams.get("uniqueName");
@@ -71,9 +71,11 @@ export const Question = () => {
           <p className="m-3">We're having trouble loading this question. Please try back again later.</p>
         ) : (
           <>
-            <div className="mt-3 mb-6 text-center">
-              <Timer startTime={startTime} />
-            </div>
+            {!endTime && (
+              <div className="mt-3 mb-6 text-center">
+                <Timer startTime={startTime} />
+              </div>
+            )}
 
             <h3>{question.questionText}</h3>
 
