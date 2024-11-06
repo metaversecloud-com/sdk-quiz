@@ -3,13 +3,7 @@ import { logger } from "../../logs/logger.js";
 
 export const getStartDroppedAsset = async (req, res) => {
   try {
-    const {
-      visitorId,
-      interactiveNonce,
-      assetId,
-      interactivePublicKey,
-      urlSlug,
-    } = req.query;
+    const { visitorId, interactiveNonce, assetId, interactivePublicKey, urlSlug } = req.query;
 
     const credentials = {
       assetId,
@@ -44,12 +38,15 @@ export const getStartDroppedAsset = async (req, res) => {
       },
     });
 
+    let inZone = false;
+    const landmarkZonesArray = visitor?.landmarkZonesString.split(",");
+    if (landmarkZonesArray.includes(droppedAsset?.id) || visitor?.privateZoneId === questionDroppedAsset?.id)
+      inZone = true;
+
     return res.json({
       droppedAsset,
       visitor,
-      inZone:
-        visitor?.landmarkZonesString == droppedAsset?.id ||
-        visitor?.privateZoneId == droppedAsset?.id,
+      inZone,
     });
   } catch (error) {
     logger.error({
