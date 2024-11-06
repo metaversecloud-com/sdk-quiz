@@ -5,7 +5,8 @@ export type KeyAssetDataObject = {
   questions: {
     [questionId: string]: {
       questionText: string;
-      options: [{ optionText: string; isCorrect: boolean }];
+      answer: string;
+      options: { [key: string]: string };
     };
   };
   results: {

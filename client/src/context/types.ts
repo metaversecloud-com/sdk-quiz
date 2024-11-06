@@ -19,7 +19,8 @@ export type InteractiveParams = {
 
 export type QuestionType = {
   questionText: string;
-  options: { [optionId: string]: { optionText: string; isCorrect: boolean } };
+  answer: string;
+  options: { [optionId: string]: string };
 };
 
 export type AnswersType = {

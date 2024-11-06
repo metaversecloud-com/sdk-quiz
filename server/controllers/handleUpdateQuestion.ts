@@ -7,7 +7,6 @@ export const handleUpdateQuestion = async (req: Request, res: Response) => {
     const { assetId, urlSlug } = credentials;
 
     const { questionId, updatedQuestion } = req.body;
-    // updatedQuestion=questionsText, options
 
     if ((!questionId && questionId != 0) || !updatedQuestion) {
       throw "Missing questionId or updatedQuestion fields.";

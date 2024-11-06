@@ -34,6 +34,7 @@ const getDefaultQuestions = (count: number) => {
   for (let i = 1; i <= count; i++) {
     result[i.toString()] = {
       questionText: `Question ${i} placeholder`,
+      answer: "1",
       options: getDefaultOptions(count),
     };
   }
@@ -42,10 +43,10 @@ const getDefaultQuestions = (count: number) => {
 };
 
 const getDefaultOptions = (count: number) => {
-  const result: { [key: string]: {} } = {};
+  const result: { [key: string]: string } = {};
 
   for (let i = 1; i <= count; i++) {
-    result[i.toString()] = { isCorrect: i === 1, optionText: `Option ${i} placeholder` };
+    result[i.toString()] = `Option ${i} placeholder`;
   }
 
   return result;

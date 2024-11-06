@@ -14,7 +14,7 @@ import { backendAPI, setErrorMessage, setQuiz } from "@/utils";
 export const Question = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { gameStatus, hasInteractiveParams, quiz, visitor } = useContext(GlobalStateContext);
-  const { answers, endTime, startTime, timeElapsed } = gameStatus || {};
+  const { answers, endTime, startTime } = gameStatus || {};
 
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || searchParams.get("questionid") || searchParams.get("uniqueName");
@@ -46,8 +46,8 @@ export const Question = () => {
     if (quiz && questionId) {
       setQuestion(quiz.questions[questionId]);
 
-      for (const [optionId, option] of Object.entries(quiz.questions[questionId].options)) {
-        if (option.isCorrect) setCorrectOption(optionId);
+      for (const optionId of Object.keys(quiz.questions[questionId].options)) {
+        if (optionId === quiz.questions[questionId].answer) setCorrectOption(optionId);
       }
 
       if (answers?.[questionId]) setSelectedOption(answers?.[questionId].answer);
@@ -90,7 +90,7 @@ export const Question = () => {
                   style={{ height: 20 }}
                   type="radio"
                 />
-                {question.options[optionId].optionText}
+                {question.options[optionId]}
               </div>
             ))}
 
@@ -103,7 +103,7 @@ export const Question = () => {
                   <>
                     <p className="mt-10 mb-6">Nice try! Mistakes help us learn and grow!</p>
                     <p>The correct answer is: </p>
-                    <p>{question.options[correctOption].optionText}</p>
+                    <p>{question.options[correctOption]}</p>
                   </>
                 )}
               </div>

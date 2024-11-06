@@ -37,15 +37,13 @@ export const EditQuestionModal = ({
 
     const updatedQuestion: QuestionType = {
       questionText: data.questionText,
+      answer: correctOption,
       options: {},
     };
 
     for (const optionId of Object.keys(question.options)) {
       const id = optionId.toString();
-      updatedQuestion.options[id] = {
-        optionText: data[id],
-        isCorrect: optionId === correctOption,
-      };
+      updatedQuestion.options[id] = data[id];
     }
 
     backendAPI
@@ -76,7 +74,7 @@ export const EditQuestionModal = ({
             <div className="flex mb-6" key={optionId}>
               <input
                 className="input-radio mt-3 mr-2"
-                defaultChecked={question.options[optionId].isCorrect}
+                defaultChecked={question.options[optionId] === question.answer}
                 name="correctOption"
                 onChange={() => setCorrectOption(optionId)}
                 style={{ height: 20 }}
@@ -87,7 +85,7 @@ export const EditQuestionModal = ({
                 className="input"
                 {...register(optionId, {
                   required: true,
-                  value: question.options[optionId].optionText,
+                  value: question.options[optionId],
                 })}
               />
             </div>
