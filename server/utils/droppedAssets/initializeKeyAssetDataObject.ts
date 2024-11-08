@@ -5,11 +5,10 @@ export const initializeKeyAssetDataObject = async (keyAsset: KeyAssetInterface) 
   try {
     await keyAsset.fetchDataObject();
 
-    if (!keyAsset?.dataObject?.numberOfQuestions) {
+    if (!keyAsset?.dataObject?.questions) {
       const lockId = `${keyAsset.id}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
       await keyAsset.setDataObject(
         {
-          numberOfQuestions: 4,
           questions: getDefaultQuestions(4),
           results: {},
         },

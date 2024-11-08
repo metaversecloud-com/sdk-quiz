@@ -19,7 +19,7 @@ export const handleResetQuiz = async (req: Request, res: Response) => {
 
     await keyAsset.fetchDataObject();
 
-    return res.json({ quiz: keyAsset.dataObject, gameStatus: {} });
+    return res.json({ quiz: keyAsset.dataObject, playerStatus: {} });
   } catch (error) {
     errorHandler({
       error,

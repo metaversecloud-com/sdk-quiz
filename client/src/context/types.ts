@@ -1,6 +1,6 @@
 export const SET_HAS_SETUP_BACKEND = "SET_HAS_SETUP_BACKEND";
 export const SET_INTERACTIVE_PARAMS = "SET_INTERACTIVE_PARAMS";
-export const SET_QUIZ = "SET_QUIZ";
+export const SET_GAME_STATE = "SET_GAME_STATE";
 export const SET_ERROR = "SET_ERROR";
 
 export type InteractiveParams = {
@@ -48,14 +48,16 @@ export type QuizType = {
   };
 };
 
+export type VisitorType = { isAdmin: boolean; isInZone: boolean; profileId: string };
+
 export interface InitialState {
   error?: string;
-  gameStatus?: ResultsType;
+  playerStatus?: ResultsType;
   hasInteractiveParams?: boolean;
   hasSetupBackend?: boolean;
   interactiveParams?: InteractiveParams;
   quiz?: QuizType;
-  visitor?: { isAdmin: boolean; isInZone: boolean; profileId: string };
+  visitor?: VisitorType;
 }
 
 export type ActionType = {

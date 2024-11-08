@@ -26,7 +26,7 @@ export const handleStartQuiz = async (req: Request, res: Response): Promise<Reco
 
     return res.json({
       quiz: keyAssetDataObject,
-      gameStatus: keyAssetDataObject.results[profileId],
+      playerStatus: keyAssetDataObject.results[profileId],
     });
   } catch (error) {
     return errorHandler({

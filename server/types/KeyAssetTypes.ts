@@ -1,7 +1,6 @@
 import { DroppedAsset } from "@rtsdk/topia";
 
 export type KeyAssetDataObject = {
-  numberOfQuestions: number;
   questions: {
     [questionId: string]: {
       questionText: string;

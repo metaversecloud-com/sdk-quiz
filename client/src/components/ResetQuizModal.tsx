@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 import { GlobalDispatchContext } from "@context/GlobalContext";
 
 // utils
-import { backendAPI, setErrorMessage, setQuiz } from "@/utils/index.js";
+import { backendAPI, setErrorMessage, setGameState } from "@/utils/index.js";
 
 export const ResetQuizModal = ({ handleToggleShowResetModal }: { handleToggleShowResetModal: () => void }) => {
   const dispatch = useContext(GlobalDispatchContext);
@@ -16,7 +16,7 @@ export const ResetQuizModal = ({ handleToggleShowResetModal }: { handleToggleSho
 
     backendAPI
       .post(`/admin/reset`)
-      .then((response) => setQuiz(dispatch, response.data))
+      .then((response) => setGameState(dispatch, response.data))
       .catch((error) => setErrorMessage(dispatch, error))
       .finally(() => {
         setAreButtonsDisabled(false);

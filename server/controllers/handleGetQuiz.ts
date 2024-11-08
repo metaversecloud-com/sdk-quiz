@@ -52,7 +52,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
 
     return res.json({
       quiz: keyAssetDataObject,
-      gameStatus: keyAssetDataObject.results[profileId],
+      playerStatus: keyAssetDataObject.results[profileId],
       visitor: { isAdmin, isInZone, profileId },
     });
   } catch (error) {

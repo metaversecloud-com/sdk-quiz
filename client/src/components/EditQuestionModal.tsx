@@ -6,7 +6,7 @@ import { GlobalDispatchContext } from "@context/GlobalContext";
 import { QuestionType } from "@/context/types.js";
 
 // utils
-import { backendAPI, setErrorMessage, setQuiz } from "@/utils/index.js";
+import { backendAPI, setErrorMessage, setGameState } from "@/utils/index.js";
 
 export const EditQuestionModal = ({
   handleToggleShowEditQuestionModal,
@@ -49,7 +49,7 @@ export const EditQuestionModal = ({
     backendAPI
       .put(`/admin/update-question`, { questionId, updatedQuestion })
       .then((response) => {
-        setQuiz(dispatch, response.data);
+        setGameState(dispatch, response.data);
         handleToggleShowEditQuestionModal("");
       })
       .catch((error) => setErrorMessage(dispatch, error))

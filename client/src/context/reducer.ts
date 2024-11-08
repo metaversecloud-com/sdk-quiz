@@ -1,4 +1,11 @@
-import { ActionType, InitialState, SET_ERROR, SET_HAS_SETUP_BACKEND, SET_INTERACTIVE_PARAMS, SET_QUIZ } from "./types";
+import {
+  ActionType,
+  InitialState,
+  SET_ERROR,
+  SET_HAS_SETUP_BACKEND,
+  SET_INTERACTIVE_PARAMS,
+  SET_GAME_STATE,
+} from "./types";
 
 const globalReducer = (state: InitialState, action: ActionType) => {
   const { type, payload } = action;
@@ -15,7 +22,7 @@ const globalReducer = (state: InitialState, action: ActionType) => {
         ...payload,
         hasSetupBackend: true,
       };
-    case SET_QUIZ:
+    case SET_GAME_STATE:
       return {
         ...state,
         ...payload,

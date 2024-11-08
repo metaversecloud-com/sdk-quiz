@@ -2,19 +2,19 @@ import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // components
-import { OutsideZoneModal, PageContainer, Timer } from "@/components";
+import { OutsideZoneModal, PageContainer, PlayerStatus } from "@/components";
 
 // context
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
 import { QuestionType } from "@/context/types";
 
 // utils
-import { backendAPI, setErrorMessage, setQuiz } from "@/utils";
+import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
 export const Question = () => {
   const dispatch = useContext(GlobalDispatchContext);
-  const { gameStatus, hasInteractiveParams, quiz, visitor } = useContext(GlobalStateContext);
-  const { answers, endTime, startTime } = gameStatus || {};
+  const { playerStatus, hasInteractiveParams, quiz, visitor } = useContext(GlobalStateContext);
+  const { answers, startTime } = playerStatus || {};
 
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || searchParams.get("questionid") || searchParams.get("uniqueName");
@@ -29,7 +29,7 @@ export const Question = () => {
 
     backendAPI
       .post(`/question/answer/${questionId}`, { isCorrect: correctOption === selectedOption, selectedOption })
-      .then((response) => setQuiz(dispatch, response.data))
+      .then((response) => setGameState(dispatch, response.data))
       .catch((error) => setErrorMessage(dispatch, error));
   };
 
@@ -37,7 +37,7 @@ export const Question = () => {
     if (hasInteractiveParams) {
       backendAPI
         .get("/quiz")
-        .then((response) => setQuiz(dispatch, response.data))
+        .then((response) => setGameState(dispatch, response.data))
         .catch((error) => setErrorMessage(dispatch, error));
     }
   }, [hasInteractiveParams]);
@@ -71,12 +71,6 @@ export const Question = () => {
           <p className="m-3">We're having trouble loading this question. Please try back again later.</p>
         ) : (
           <>
-            {!endTime && (
-              <div className="mt-3 mb-6 text-center">
-                <Timer startTime={startTime} />
-              </div>
-            )}
-
             <h3>{question.questionText}</h3>
 
             {Object.keys(question.options).map((optionId: string) => (
@@ -98,10 +92,10 @@ export const Question = () => {
               <div className="text-center mt-10 mb-6">
                 <hr />
                 {selectedOption === correctOption ? (
-                  <p className="mt-10">You're a genius!</p>
+                  <p className="mt-6 text-success">You're a genius!</p>
                 ) : (
                   <>
-                    <p className="mt-10 mb-6">Nice try! Mistakes help us learn and grow!</p>
+                    <p className="mt-6 mb-6">Nice try! Mistakes help us learn and grow!</p>
                     <p>The correct answer is: </p>
                     <p>{question.options[correctOption]}</p>
                   </>
@@ -109,7 +103,9 @@ export const Question = () => {
               </div>
             )}
 
-            {endTime && <div className="text-center mt-10 mb-6">Congratulations, you answered all questions!!</div>}
+            {playerStatus && quiz && (
+              <PlayerStatus playerStatus={playerStatus} numberOfQuestions={quiz.numberOfQuestions} />
+            )}
           </>
         )}
       </>

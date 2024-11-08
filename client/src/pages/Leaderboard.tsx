@@ -7,7 +7,7 @@ import { PageContainer } from "@/components";
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
 
 // utils
-import { backendAPI, getLeaderboard, setErrorMessage, setQuiz } from "@/utils";
+import { backendAPI, getLeaderboard, setErrorMessage, setGameState } from "@/utils";
 import { LeaderboardType } from "@/context/types";
 
 export const Leaderboard = () => {
@@ -21,7 +21,7 @@ export const Leaderboard = () => {
     if (hasInteractiveParams) {
       backendAPI
         .get("/quiz")
-        .then((response) => setQuiz(dispatch, response.data))
+        .then((response) => setGameState(dispatch, response.data))
         .catch((error) => setErrorMessage(dispatch, error))
         .finally(() => {
           setIsLoading(false);

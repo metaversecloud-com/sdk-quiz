@@ -5,5 +5,6 @@ export * from "./Loading.js";
 export * from "./OutsideZoneModal.js";
 export * from "./PageContainer.js";
 export * from "./PageFooter.js";
+export * from "./PlayerStatus.js";
 export * from "./ResetQuizModal.js";
 export * from "./Timer.js";

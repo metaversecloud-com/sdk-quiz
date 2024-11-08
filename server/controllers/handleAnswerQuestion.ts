@@ -20,9 +20,10 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       credentials,
     });
     await keyAsset.fetchDataObject();
-    const { numberOfQuestions, results } = keyAsset.dataObject as KeyAssetDataObject;
+    const { questions, results } = keyAsset.dataObject as KeyAssetDataObject;
 
     const now = new Date();
+    const numberOfQuestions = Object.keys(questions).length;
     const hasAnsweredAll = Object.keys(results[profileId].answers).length === numberOfQuestions - 1;
     const endTime = hasAnsweredAll ? now : null;
 
@@ -42,7 +43,7 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
 
     return res.json({
       quiz: keyAssetDataObject,
-      gameStatus: keyAssetDataObject.results[profileId],
+      playerStatus: keyAssetDataObject.results[profileId],
     });
   } catch (error) {
     return errorHandler({

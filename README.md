@@ -16,7 +16,7 @@ Players interact with various elements within the Topia world:
 
 - **Start Zone**: Click "Start Quiz" to begin the race.
 - **Question Zones**: Enter these zones to answer questions. Feedback is provided instantly.
-- **Trophy Zone**: View your score at the end of the quiz.
+- **Trophy**: Click on the trophy to view your score at the end of the quiz.
 
 ## Drawer Content
 
@@ -27,19 +27,80 @@ The drawer is automatically triggered by webhooks when entering zones, displayin
 - Edit questions and answers.
 - Reset the quiz race for all users.
 
-## Themes Description
-
-(If applicable, describe any specific themes or visual styles used in the quiz.)
-
 ## Data Objects
 
-Questions and user scores are managed dynamically. The game uses webhooks to trigger interactions and display content relevant to the player's progress.
+Questions and user scores are managed dynamically. The game uses webhooks to trigger interactions and display content relevant to the player's progress. This information is stored in the key asset (Start) data object.
 
-### Detailed Description of Locks
+## Implementation
 
-(Describe any specific locks or conditions applied to data objects, if applicable.)
+#### Key Asset
 
-## Developer Sections
+- Configuration > Link: `https://{sdk-app-url}.com/start`
+- Configuration > Integrations > Webhooks: `https://{sdk-app-url}.com/api/iframe/start`
+- The Data Object should be set up like the following example. Please take note of the questionIds, you'll need those later!
+
+```json
+{
+  "questions": {
+    "1": {
+      // questionId
+      "questionText": "Who wrote the book \"1984\"?",
+      "answer": "2",
+      "options": {
+        "1": "J.K. Rowling",
+        "2": "George Orwell",
+        "3": "Mark Twain",
+        "4": "William Shakespeare"
+      }
+    },
+    "2": {
+      // questionId
+      "questionText": "Which planet is known as the 'Red Planet'?",
+      "answer": "3",
+      "options": {
+        "1": "Jupiter",
+        "2": "Venus",
+        "3": "Mars",
+        "4": "Neptune"
+      }
+    },
+    "3": {
+      // questionId
+      "questionText": "What is the capital city of Japan?",
+      "answer": "2",
+      "options": {
+        "1": "Beijing",
+        "2": "Tokyo",
+        "3": "Seoul",
+        "4": "Bangkok"
+      }
+    },
+    "4": {
+      // questionId
+      "questionText": "Who was the first President of the United States?",
+      "answer": "3",
+      "options": {
+        "1": "Abraham Lincoln",
+        "2": "Thomas Jefferson",
+        "3": "George Washington",
+        "4": "Franklin D. Roosevelt"
+      }
+    }
+  },
+  "results": {}
+}
+```
+
+### Question Assets
+
+- Configuration > Link: `https://{sdk-app-url}.com/question?questionId=4`
+- Configuration > Integrations > Webhooks: `https://{sdk-app-url}.com/api/iframe/{questionId}`
+
+### Leaderboard Asset
+
+- Configuration > Link: `https://{sdk-app-url}.com/leaderboard`
+
+## Developer
 
 ### Getting Started
 
@@ -48,24 +109,24 @@ Refer to the `.env-example` file to configure your environment variables correct
 #### Production Mode
 
 1. Install dependencies: `npm install`
-2. Start the server: `npm start`
+2. Start the server: `npm run start`
 
 #### Development Mode
 
-1. Start the server: `npm start`
-2. In a new terminal, navigate to the client directory: `cd client && npm start`
+1. Install dependencies: `npm install`, `cd client && npm install`, `cd server && npm install`
+2. Start the server: `npm run dev`
 3. Access `http://localhost:3001`, but you can only truly test when the assets are well placed in the world, with the zones all configured like in the scene: [https://topia.io/quiz-prod](https://topia.io/quiz-prod)
 
-#### Requirements
+### Requirements
 
 - Node.js 18
 - React
 
-#### .env variables
+### .env variables
 
 Copy the `.env-example` file to `.env` and fill in all required environment variables.
 
-#### Where to Find API_KEY, INTERACTIVE_KEY, and INTERACTIVE_SECRET
+### Where to Find API_KEY, INTERACTIVE_KEY, and INTERACTIVE_SECRET
 
 You can find the `INTERACTIVE_KEY`, and `INTERACTIVE_SECRET` in the admin settings in https://topia.io.
 
