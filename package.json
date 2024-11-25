@@ -1,35 +1,30 @@
 {
-  "author": "metaversecloud.com | topia.io",
   "name": "sdk-quiz",
+  "author": "metaversecloud.com | topia.io",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build -ws",
+    "start": "npm run start -w server",
+    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
+    "dev-server": "npm run dev --prefix server",
+    "dev-client": "npm run dev --prefix client"
+  },
   "dependencies": {
-    "@rtsdk/topia": "^0.11.8",
-    "axios": "^1.5.1",
-    "body-parser": "^1.20.2",
-    "concurrently": "^8.2.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-request-id": "^3.0.0",
-    "openai": "^3.3.0",
-    "regenerator-runtime": "^0.13.11",
-    "yalc": "^1.0.0-pre.53"
+    "axios": "^1.6.8",
+    "concurrently": "^8.2.2"
+  },
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/node": "^20.12.4",
+    "nodemon": "^3.1.0",
+    "prettier": "3.2.5",
+    "typescript": "^5.4.3"
   },
   "workspaces": [
     "client",
     "server"
-  ],
-  "description": "",
-  "keywords": [],
-  "license": "ISC",
-  "main": "index.js",
-  "scripts": {
-    "build": "npm run build -w client",
-    "link-sdk": "yalc link @rtsdk/topia",
-    "unlink-sdk": "yalc remove @rtsdk/topia",
-    "server": "npm start -w server",
-    "client": "npm start -w client",
-    "start": "source commit_info.txt;npm start -w server"
-  },
-  "type": "module",
-  "version": "1.0.0"
+  ]
 }
