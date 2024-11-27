@@ -35,7 +35,6 @@ jobs:
           VERSION=$(npm version --workspaces --include-workspace-root true patch)
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_ENV
-          git commit -a -m "chore: bump version ${VERSION}" && git push origin HEAD:dev && git push --tags origin HEAD:dev
                 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -43,3 +42,8 @@ jobs:
           tag_name: ${{ env.version }}
           name: Release ${{ env.version }}
           generate_release_notes: true
+
+      - name: Put changes to dev
+        run: |
+          git commit -a -m "chore: bump version ${VERSION}" && git merge dev && git push origin HEAD:dev && git push --tags origin HEAD:dev
+        
