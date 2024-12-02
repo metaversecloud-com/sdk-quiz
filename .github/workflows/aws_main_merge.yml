@@ -32,7 +32,7 @@ jobs:
         run: |
           git config --global user.email devops@topia.io
           git config --global user.name Devops
-          VERSION=$(npm version --workspaces --include-workspace-root true patch)
+          VERSION=$(npm version patch)
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_ENV
                   
