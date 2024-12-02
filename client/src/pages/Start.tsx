@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 
 // components
 import { OutsideZoneModal, PageContainer, PageFooter, PlayerStatus } from "@/components";
-import instructionsImg from "../assets/instructions-start.png";
 
 // context
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
@@ -50,26 +49,17 @@ export const Start = () => {
       <>
         {!visitor?.isInZone && <OutsideZoneModal />}
 
-        <img src={instructionsImg} style={{ width: "100%" }} />
+        <img src="https://sdk-quiz.s3.us-east-1.amazonaws.com/instructions-start.png" style={{ width: "100%" }} />
 
         <h2 className="mt-4 text-center">Welcome to Quiz Race!</h2>
         <h3 className="mt-4 mb-2">How to play:</h3>
-        <ol>
+        <ol className="p2">
           <li>
-            Click <b style={{ color: "green" }}>Start Quiz</b>.
+            <b>Time</b> starts when you click <b className="text-success">Start Quiz</b>.
           </li>
-          <li>Run to each question zone, and click the question mark.</li>
-          <li>Answer all questions (there are 4).</li>
+          <li>Run to each question zone and answer the question.</li>
+          <li>After answering all questions, check your rank by clicking the 🏆 leaderboard.</li>
         </ol>
-
-        <h3 className="mt-4 mb-2">Important Rules:</h3>
-        <ul>
-          <li>You must be in the question zone to answer the question.</li>
-          <li>
-            <b>Time</b> starts when you click <b style={{ color: "green" }}>Start Quiz</b>.
-          </li>
-          <li>Check your rank by clicking the 🏆 leaderboard.</li>
-        </ul>
 
         {playerStatus && quiz && (
           <PlayerStatus playerStatus={playerStatus} numberOfQuestions={quiz.numberOfQuestions} />
