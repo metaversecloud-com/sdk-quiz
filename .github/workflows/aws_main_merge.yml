@@ -35,7 +35,7 @@ jobs:
           VERSION=$(npm version patch)
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "version=${VERSION}" >> $GITHUB_ENV
-          git commit -a -m "chore: bump version ${VERSION}"
+          #git commit -a -m "chore: bump version ${VERSION}"
                 
       - name: Create Release
         uses: softprops/action-gh-release@v2
