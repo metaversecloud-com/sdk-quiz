@@ -26,8 +26,12 @@ export const getLeaderboard = (results: { [profileId: string]: ResultsType }) =>
   const sortedLeaderboard = leaderboardArray.sort((a, b) => {
     const scoreDifference = b.score - a.score;
     if (scoreDifference === 0) {
-      const aTime = new Date(a.timeElapsed).getTime();
-      const bTime = new Date(b.timeElapsed).getTime();
+      const parseTime = (time: string) => {
+        const [minutes, seconds] = time.split(":").map(Number);
+        return minutes * 60 + seconds;
+      };
+      const aTime = parseTime(a.timeElapsed);
+      const bTime = parseTime(b.timeElapsed);
       return aTime - bTime;
     }
     return scoreDifference;
