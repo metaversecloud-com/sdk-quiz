@@ -15,9 +15,7 @@ export const handleUpdateQuestion = async (req: Request, res: Response) => {
     const visitor = await getVisitor(credentials);
     if (!visitor.isAdmin) throw "User is not an admin.";
 
-    const keyAsset = await DroppedAsset.get(assetId, urlSlug, {
-      credentials,
-    });
+    const keyAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
 
     await keyAsset.updateDataObject({
       [`questions.${questionId}`]: updatedQuestion,

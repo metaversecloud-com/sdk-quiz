@@ -7,9 +7,7 @@ export const handleStartQuiz = async (req: Request, res: Response): Promise<Reco
     const credentials = getCredentials(req.query);
     const { assetId, profileId, urlSlug, username } = credentials;
 
-    const keyAsset = await DroppedAsset.get(assetId, urlSlug, {
-      credentials,
-    });
+    const keyAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
 
     const now = new Date();
     await keyAsset.updateDataObject({
