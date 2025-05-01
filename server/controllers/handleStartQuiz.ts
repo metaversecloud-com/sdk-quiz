@@ -24,9 +24,13 @@ export const handleStartQuiz = async (req: Request, res: Response): Promise<Reco
     const keyAssetDataObject = keyAsset.dataObject as KeyAssetDataObject;
 
     const world = World.create(urlSlug, { credentials });
-    world.triggerActivity({ type: WorldActivityType.GAME_ON, assetId }).catch((error) => {
-      console.error("Error triggering activity:", error);
-    });
+    world.triggerActivity({ type: WorldActivityType.GAME_ON, assetId }).catch((error) =>
+      errorHandler({
+        error,
+        functionName: "handleStartQuiz",
+        message: "Error triggering particle effects",
+      }),
+    );
 
     return res.json({
       quiz: keyAssetDataObject,
