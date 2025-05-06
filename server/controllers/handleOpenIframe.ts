@@ -10,19 +10,33 @@ export const handleOpenIframe = async (req: Request, res: Response): Promise<Rec
     const isStart = iframeId === "start" || uniqueName === "start";
 
     const visitor = await getVisitor(credentials);
-    await visitor?.closeIframe(assetId);
+    await visitor?.closeIframe(assetId).catch((error: any) =>
+      errorHandler({
+        error,
+        functionName: "handleOpenIframe",
+        message: "Error closing iframe",
+      }),
+    );
 
     const origin = process.env.NODE_ENV === "development" ? process.env.NGROK_URL : `https://${req.hostname}`;
     const pageName = isStart ? "start" : "question";
     let link = `${origin}/${pageName}?visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
     if (!isStart) link += `&questionId=${iframeId || uniqueName}`;
 
-    await visitor?.openIframe({
-      droppedAssetId: assetId,
-      link,
-      shouldOpenInDrawer: true,
-      title: "Quiz Race",
-    });
+    visitor
+      ?.openIframe({
+        droppedAssetId: assetId,
+        link,
+        shouldOpenInDrawer: true,
+        title: "Quiz Race",
+      })
+      .catch((error: any) =>
+        errorHandler({
+          error,
+          functionName: "handleOpenIframe",
+          message: "Error opening iframe",
+        }),
+      );
 
     return res.json({ success: true });
   } catch (error) {
