@@ -10,7 +10,6 @@ export const initializeKeyAssetDataObject = async (keyAsset: KeyAssetInterface) 
       await keyAsset.setDataObject(
         {
           questions: getDefaultQuestions(4),
-          results: {},
         },
         { lock: { lockId } },
       );

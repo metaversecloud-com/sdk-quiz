@@ -92,10 +92,10 @@ export const Question = () => {
               <div className="text-center mt-10 mb-6">
                 <hr />
                 {selectedOption === correctOption ? (
-                  <p className="mt-6 text-success">You're a genius!</p>
+                  <p className="pt-6 text-success">You're a genius!</p>
                 ) : (
                   <>
-                    <p className="mt-6 mb-6">Nice try! Mistakes help us learn and grow!</p>
+                    <p className="pt-6 pb-3">Nice try! Mistakes help us learn and grow!</p>
                     <p>The correct answer is: </p>
                     <p>{question.options[correctOption]}</p>
                   </>
@@ -114,5 +114,3 @@ export const Question = () => {
 };
 
 export default Question;
-
-// https://steady-lionfish-crucial.ngrok-free.app/question?questionId=3

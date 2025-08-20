@@ -30,12 +30,12 @@ export type AnswersType = {
   };
 };
 
-export type ResultsType = {
-  answers: AnswersType;
-  endTime: Date;
-  startTime: Date;
-  timeElapsed: string;
-  username: string;
+export type LeaderboardType = {
+  [profileId: string]: {
+    displayName: string;
+    score: number;
+    timeElapsed: string;
+  };
 };
 
 export type QuizType = {
@@ -43,12 +43,16 @@ export type QuizType = {
   questions: {
     [questionId: string]: QuestionType;
   };
-  results: {
-    [profileId: string]: ResultsType;
-  };
 };
 
 export type VisitorType = { isAdmin: boolean; isInZone: boolean; profileId: string };
+
+export type ResultsType = {
+  answers: AnswersType;
+  endTime: Date;
+  startTime: Date;
+  timeElapsed: string;
+};
 
 export interface InitialState {
   error?: string;
@@ -58,15 +62,10 @@ export interface InitialState {
   interactiveParams?: InteractiveParams;
   quiz?: QuizType;
   visitor?: VisitorType;
+  leaderboard?: LeaderboardType;
 }
 
 export type ActionType = {
   type: string;
   payload: InitialState;
-};
-
-export type LeaderboardType = {
-  score: number;
-  timeElapsed: string;
-  username: string;
 };

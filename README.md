@@ -87,7 +87,7 @@ Questions and user scores are managed dynamically. The game uses webhooks to tri
       }
     }
   },
-  "results": {}
+  "leaderboard": {}
 }
 ```
 

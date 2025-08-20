@@ -7,15 +7,13 @@ import { PageContainer } from "@/components";
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
 
 // utils
-import { backendAPI, getLeaderboard, setErrorMessage, setGameState } from "@/utils";
-import { LeaderboardType } from "@/context/types";
+import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
 export const Leaderboard = () => {
   const dispatch = useContext(GlobalDispatchContext);
-  const { hasInteractiveParams, quiz } = useContext(GlobalStateContext);
+  const { hasInteractiveParams, quiz, leaderboard } = useContext(GlobalStateContext);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [leaderboard, setLeaderboard] = useState<LeaderboardType[] | null>(null);
 
   useEffect(() => {
     if (hasInteractiveParams) {
@@ -29,15 +27,9 @@ export const Leaderboard = () => {
     }
   }, [hasInteractiveParams]);
 
-  useEffect(() => {
-    if (quiz) {
-      setLeaderboard(getLeaderboard(quiz.results));
-    }
-  }, [quiz]);
-
   return (
     <PageContainer isLoading={isLoading} headerText="Leaderboard">
-      {!leaderboard || leaderboard.length === 0 ? (
+      {!leaderboard || Object.keys(leaderboard).length === 0 ? (
         <div className="text-center mt-10 mb-6">There are no race finishes yet.</div>
       ) : (
         <table className="table">
@@ -48,10 +40,10 @@ export const Leaderboard = () => {
               <th>Score</th>
               <th>Time</th>
             </tr>
-            {leaderboard.map((entry, index) => (
-              <tr key={index}>
+            {Object.entries(leaderboard).map(([profileId, entry], index) => (
+              <tr key={profileId}>
                 <td>{index + 1}</td>
-                <td>{entry.username}</td>
+                <td>{entry.displayName}</td>
                 <td>
                   {entry.score}/{quiz?.numberOfQuestions}
                 </td>

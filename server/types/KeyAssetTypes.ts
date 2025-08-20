@@ -1,6 +1,9 @@
 import { DroppedAsset } from "@rtsdk/topia";
 
 export type KeyAssetDataObject = {
+  leaderboard: {
+    [profileId: string]: string;
+  };
   questions: {
     [questionId: string]: {
       questionText: string;
@@ -8,7 +11,7 @@ export type KeyAssetDataObject = {
       options: { [key: string]: string };
     };
   };
-  results: {
+  results?: {
     [profileId: string]: {
       answers: {
         [questionId: string]: {
