@@ -40,7 +40,19 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
     updatedStatus.endTime = hasAnsweredAll ? now : null;
     updatedStatus.timeElapsed = minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
 
-    await visitor.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: updatedStatus }, {});
+    await visitor.updateDataObject(
+      { [`${urlSlug}-${sceneDropId}`]: updatedStatus },
+      {
+        analytics: [
+          {
+            analyticName: `question${questionId}Answered`,
+            profileId,
+            uniqueKey: profileId,
+            urlSlug,
+          },
+        ],
+      },
+    );
 
     if (hasAnsweredAll) {
       let score = 0;
