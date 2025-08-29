@@ -16,7 +16,7 @@ export const handleResetQuiz = async (req: Request, res: Response) => {
     const lockId = `${sceneDropId}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
     await visitor.updateDataObject(
       { [`${urlSlug}-${sceneDropId}`]: defaultVisitorStatus },
-      { lock: { lockId, releaseLock: true } },
+      { analytics: [{ analyticName: "resets", urlSlug }], lock: { lockId, releaseLock: true } },
     );
 
     const keyAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });

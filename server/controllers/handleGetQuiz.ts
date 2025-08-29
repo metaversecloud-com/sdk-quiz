@@ -13,7 +13,6 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
 
     const getVisitorResponse = await getVisitor(credentials, true);
     if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-
     const { visitor, playerStatus } = getVisitorResponse;
     const { isAdmin, landmarkZonesString, privateZoneId } = visitor;
 
@@ -34,6 +33,15 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
         const keyAsset = droppedAssets.find((droppedAsset) => droppedAsset.uniqueName === "start");
         keyAssetId = keyAsset?.id!;
       }
+    } else {
+      visitor.updatePublicKeyAnalytics([
+        {
+          analyticName: "joins",
+          profileId,
+          uniqueKey: profileId,
+          urlSlug,
+        },
+      ]);
     }
 
     // store keyAssetId by sceneDropId in World data object so that it can be accessed by any clickable asset

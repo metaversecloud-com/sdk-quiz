@@ -6,7 +6,7 @@ import { WorldActivityType } from "@rtsdk/topia";
 export const handleStartQuiz = async (req: Request, res: Response): Promise<Record<string, any> | void> => {
   try {
     const credentials = getCredentials(req.query);
-    const { assetId, sceneDropId, urlSlug, username } = credentials;
+    const { assetId, profileId, sceneDropId, urlSlug, username } = credentials;
 
     const getVisitorResponse = await getVisitor(credentials);
     if (getVisitorResponse instanceof Error) throw getVisitorResponse;
@@ -20,7 +20,19 @@ export const handleStartQuiz = async (req: Request, res: Response): Promise<Reco
       username,
     };
 
-    await visitor.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: playerStatus }, {});
+    await visitor.updateDataObject(
+      { [`${urlSlug}-${sceneDropId}`]: playerStatus },
+      {
+        analytics: [
+          {
+            analyticName: "starts",
+            profileId,
+            uniqueKey: profileId,
+            urlSlug,
+          },
+        ],
+      },
+    );
 
     const keyAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
     const keyAssetDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;

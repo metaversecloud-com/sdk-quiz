@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 export const handleAnswerQuestion = async (req: Request, res: Response): Promise<Record<string, any> | void> => {
   try {
     const credentials = getCredentials(req.query);
-    const { displayName, profileId, sceneDropId, urlSlug } = credentials;
+    const { assetId, displayName, profileId, sceneDropId, urlSlug } = credentials;
 
     const { isCorrect, selectedOption } = req.body;
 
@@ -47,9 +47,51 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       for (const questionId in answers) {
         if (answers[questionId].isCorrect) score++;
       }
-      keyAsset.updateDataObject({
-        [`leaderboard.${profileId}`]: `${displayName}|${score}|${updatedStatus.timeElapsed}`,
-      });
+      keyAsset.updateDataObject(
+        {
+          [`leaderboard.${profileId}`]: `${displayName}|${score}|${updatedStatus.timeElapsed}`,
+        },
+        {
+          analytics: [
+            {
+              analyticName: "completions",
+              profileId,
+              uniqueKey: profileId,
+              urlSlug,
+            },
+          ],
+        },
+      );
+
+      visitor
+        .triggerParticle({
+          name: "partyPopper_float",
+          duration: 5,
+        })
+        .catch((error: any) =>
+          errorHandler({
+            error,
+            functionName: "handleAnswerQuestion",
+            message: "Error triggering particle effects",
+          }),
+        );
+    }
+
+    if (isCorrect) {
+      const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
+      world
+        .triggerParticle({
+          name: "brain_float",
+          duration: 3,
+          position: droppedAsset.position,
+        })
+        .catch((error: any) =>
+          errorHandler({
+            error,
+            functionName: "handleAnswerQuestion",
+            message: "Error triggering particle effects",
+          }),
+        );
     }
 
     const keyAssetDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
