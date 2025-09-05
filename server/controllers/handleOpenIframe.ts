@@ -9,8 +9,11 @@ export const handleOpenIframe = async (req: Request, res: Response): Promise<Rec
     const { iframeId } = req.params;
     const isStart = iframeId === "start" || uniqueName === "start";
 
-    const visitor = await getVisitor(credentials);
-    await visitor?.closeIframe(assetId).catch((error: any) =>
+    const getVisitorResponse = await getVisitor(credentials);
+    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
+
+    const { visitor } = getVisitorResponse;
+    await visitor.closeIframe(assetId).catch((error: any) =>
       errorHandler({
         error,
         functionName: "handleOpenIframe",
@@ -24,7 +27,7 @@ export const handleOpenIframe = async (req: Request, res: Response): Promise<Rec
     if (!isStart) link += `&questionId=${iframeId || uniqueName}`;
 
     visitor
-      ?.openIframe({
+      .openIframe({
         droppedAssetId: assetId,
         link,
         shouldOpenInDrawer: true,

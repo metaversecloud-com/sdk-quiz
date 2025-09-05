@@ -24,16 +24,16 @@ export const PlayerStatus = ({
           {endTime ? (
             <>
               <h3>Hooray, quiz complete!</h3>
-              <p className="mt-3 mb-3">See how you stack up against others on the leaderboard!</p>
+              <p className="py-3">See how you stack up against others on the leaderboard!</p>
               <h4>Your result:</h4>
-              <div className="chip chip-success">
+              <div className="mt-3 chip chip-success">
                 {correctAnswersCount} / {numberOfQuestions} correct in {timeElapsed}
               </div>
             </>
           ) : (
             <>
               <h4>Quiz in progress!</h4>
-              <div className="mt-3 mb-3">
+              <div className="py-3">
                 <Timer startTime={startTime} />
               </div>
               <p>

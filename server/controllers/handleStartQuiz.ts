@@ -1,27 +1,41 @@
 import { Request, Response } from "express";
 import { KeyAssetDataObject } from "../types/index.js";
-import { errorHandler, getCredentials, DroppedAsset, World } from "../utils/index.js";
+import { errorHandler, getCredentials, DroppedAsset, World, getVisitor } from "../utils/index.js";
 import { WorldActivityType } from "@rtsdk/topia";
 
 export const handleStartQuiz = async (req: Request, res: Response): Promise<Record<string, any> | void> => {
   try {
     const credentials = getCredentials(req.query);
-    const { assetId, profileId, urlSlug, username } = credentials;
+    const { assetId, profileId, sceneDropId, urlSlug, username } = credentials;
+
+    const getVisitorResponse = await getVisitor(credentials);
+    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
+
+    const { visitor } = getVisitorResponse;
+    const now = new Date();
+    const playerStatus = {
+      answers: {},
+      endTime: null,
+      startTime: now,
+      username,
+    };
+
+    await visitor.updateDataObject(
+      { [`${urlSlug}-${sceneDropId}`]: playerStatus },
+      {
+        analytics: [
+          {
+            analyticName: "starts",
+            profileId,
+            uniqueKey: profileId,
+            urlSlug,
+          },
+        ],
+      },
+    );
 
     const keyAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
-
-    const now = new Date();
-    await keyAsset.updateDataObject({
-      [`results.${profileId}`]: {
-        answers: {},
-        endTime: null,
-        startTime: now,
-        username,
-      },
-    });
-
-    await keyAsset.fetchDataObject();
-    const keyAssetDataObject = keyAsset.dataObject as KeyAssetDataObject;
+    const keyAssetDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
 
     const world = World.create(urlSlug, { credentials });
     world.triggerActivity({ type: WorldActivityType.GAME_ON, assetId }).catch((error) =>
@@ -34,7 +48,7 @@ export const handleStartQuiz = async (req: Request, res: Response): Promise<Reco
 
     return res.json({
       quiz: keyAssetDataObject,
-      playerStatus: keyAssetDataObject.results[profileId],
+      playerStatus,
     });
   } catch (error) {
     return errorHandler({

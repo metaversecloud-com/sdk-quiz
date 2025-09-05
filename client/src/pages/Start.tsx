@@ -46,13 +46,13 @@ export const Start = () => {
 
   return (
     <PageContainer isLoading={isLoading || !quiz} showAdminIcon={true}>
-      <>
+      <div className="grid gap-2">
         {!visitor?.isInZone && <OutsideZoneModal />}
 
         <img src="https://sdk-quiz.s3.us-east-1.amazonaws.com/instructions-start.png" style={{ width: "100%" }} />
 
-        <h2 className="mt-4 text-center">Welcome to Quiz Race!</h2>
-        <h3 className="mt-4 mb-2">How to play:</h3>
+        <h2 className="text-center">Welcome to Quiz Race!</h2>
+        <h3>How to play:</h3>
         <ol className="p2">
           <li>
             <b>Time</b> starts when you click <b className="text-success">Start Quiz</b>.
@@ -70,7 +70,7 @@ export const Start = () => {
             Start Quiz
           </button>
         </PageFooter>
-      </>
+      </div>
     </PageContainer>
   );
 };
