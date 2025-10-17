@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, getVisitor } from "../utils/index.js";
+import { DroppedAsset, errorHandler, getCredentials, getVisitor, User } from "../utils/index.js";
 import { defaultVisitorStatus } from "../constants.js";
+import { KeyAssetDataObject } from "../types/KeyAssetTypes.js";
 
 export const handleResetQuiz = async (req: Request, res: Response) => {
   try {
@@ -10,17 +11,23 @@ export const handleResetQuiz = async (req: Request, res: Response) => {
     const getVisitorResponse = await getVisitor(credentials, true);
     if (getVisitorResponse instanceof Error) throw getVisitorResponse;
 
-    const { visitor } = getVisitorResponse;
     if (!getVisitorResponse.visitor.isAdmin) throw "User is not an admin.";
 
     const lockId = `${sceneDropId}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
-    await visitor.updateDataObject(
-      { [`${urlSlug}-${sceneDropId}`]: defaultVisitorStatus },
+
+    const keyAsset = await DroppedAsset.create(assetId, urlSlug, { credentials });
+    await keyAsset.fetchDataObject();
+    const dataObject = keyAsset.dataObject as KeyAssetDataObject;
+
+    for (const profileId of Object.keys(dataObject.leaderboard)) {
+      const user = await User.create({ credentials, profileId });
+      await user.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: defaultVisitorStatus });
+    }
+
+    await keyAsset.updateDataObject(
+      { leaderboard: {} },
       { analytics: [{ analyticName: "resets", urlSlug }], lock: { lockId, releaseLock: true } },
     );
-
-    const keyAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
-    await keyAsset.updateDataObject({ leaderboard: {} });
 
     return res.json({ leaderboard: {}, quiz: keyAsset.dataObject, playerStatus: defaultVisitorStatus });
   } catch (error) {
