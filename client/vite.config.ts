@@ -6,9 +6,9 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: 3001,
+    port: 3010,
     proxy: {
-      "/api": "http://localhost:3000/",
+      "/api": "http://localhost:3011/",
     },
   },
   build: {
@@ -22,5 +22,5 @@ export default defineConfig({
       "@context": path.resolve(__dirname, "./src/context"),
       "@pages": path.resolve(__dirname, "./src/pages"),
     },
-  }
+  },
 });
