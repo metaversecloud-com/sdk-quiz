@@ -1,8 +1,15 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, getVisitor, World } from "../utils/index.js";
+import {
+  DroppedAsset,
+  errorHandler,
+  getCredentials,
+  getVisitor,
+  initializeKeyAssetDataObject,
+  sortLeaderboard,
+  World,
+} from "../utils/index.js";
 import { KeyAssetDataObject, KeyAssetInterface, WorldDataObjectType } from "../types/index.js";
 import { DroppedAssetInterface } from "@rtsdk/topia";
-import { initializeKeyAssetDataObject } from "../utils/droppedAssets/initializeKeyAssetDataObject.js";
 
 export const handleGetQuiz = async (req: Request, res: Response) => {
   try {
@@ -78,32 +85,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       await keyAsset.setDataObject(keyAssetDataObject, { lock: { lockId, releaseLock: true } });
     }
 
-    const leaderboardArray = [];
-    for (const profileId in leaderboard) {
-      const data = leaderboard[profileId];
-
-      const [displayName, score, timeElapsed] = data.split("|");
-
-      leaderboardArray.push({
-        displayName,
-        score: parseInt(score),
-        timeElapsed,
-      });
-    }
-
-    const sortedLeaderboard = leaderboardArray.sort((a, b) => {
-      const scoreDifference = b.score - a.score;
-      if (scoreDifference === 0) {
-        const parseTime = (time: string) => {
-          const [minutes, seconds] = time.split(":").map(Number);
-          return minutes * 60 + seconds;
-        };
-        const aTime = parseTime(a.timeElapsed);
-        const bTime = parseTime(b.timeElapsed);
-        return aTime - bTime;
-      }
-      return scoreDifference;
-    });
+    const sortedLeaderboard = await sortLeaderboard(leaderboard);
 
     return res.json({
       leaderboard: sortedLeaderboard,

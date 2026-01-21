@@ -1,5 +1,5 @@
-import { KeyAssetInterface } from "../../types/KeyAssetTypes.js";
-import { errorHandler } from "../errorHandler.js";
+import { KeyAssetInterface } from "../types/KeyAssetTypes.js";
+import { errorHandler } from "./errorHandler.js";
 
 export const initializeKeyAssetDataObject = async (keyAsset: KeyAssetInterface) => {
   try {
