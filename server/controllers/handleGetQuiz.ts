@@ -10,6 +10,7 @@ import {
 } from "../utils/index.js";
 import { KeyAssetDataObject, KeyAssetInterface, WorldDataObjectType } from "../types/index.js";
 import { DroppedAssetInterface } from "@rtsdk/topia";
+import { defaultVisitorStatus } from "../constants.js";
 
 export const handleGetQuiz = async (req: Request, res: Response) => {
   try {
@@ -20,7 +21,8 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
 
     const getVisitorResponse = await getVisitor(credentials, true);
     if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-    const { visitor, playerStatus } = getVisitorResponse;
+
+    let { visitor, playerStatus } = getVisitorResponse;
     const { isAdmin, landmarkZonesString, privateZoneId } = visitor;
 
     let isInZone = false;
@@ -86,6 +88,12 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
     }
 
     const sortedLeaderboard = await sortLeaderboard(leaderboard);
+
+    if (playerStatus.endTime && !sortedLeaderboard.find((entry) => entry.profileId === profileId)) {
+      playerStatus = defaultVisitorStatus;
+
+      await visitor.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: playerStatus }, {});
+    }
 
     return res.json({
       leaderboard: sortedLeaderboard,
