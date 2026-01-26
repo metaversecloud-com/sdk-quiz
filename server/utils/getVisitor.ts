@@ -38,13 +38,15 @@ export const getVisitor = async (credentials: Credentials, shouldGetVisitorDetai
 
     for (const item of visitor.inventoryItems) {
       // @ts-ignore
-      const { id, name = "", image_url } = item;
+      const { id, name = "", image_url, type, status } = item;
 
-      visitorInventory[name] = {
-        id,
-        icon: image_url,
-        name,
-      };
+      if (status === "ACTIVE" && type === "BADGE") {
+        visitorInventory[name] = {
+          id,
+          icon: image_url,
+          name,
+        };
+      }
     }
 
     return { visitor, playerStatus, visitorInventory };

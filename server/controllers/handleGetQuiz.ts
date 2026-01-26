@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   DroppedAsset,
+  Ecosystem,
   errorHandler,
   getCredentials,
   getVisitor,
@@ -8,7 +9,7 @@ import {
   sortLeaderboard,
   World,
 } from "../utils/index.js";
-import { KeyAssetDataObject, KeyAssetInterface, WorldDataObjectType } from "../types/index.js";
+import { BadgesType, KeyAssetDataObject, KeyAssetInterface, WorldDataObjectType } from "../types/index.js";
 import { DroppedAssetInterface } from "@rtsdk/topia";
 import { defaultVisitorStatus } from "../constants.js";
 
@@ -22,7 +23,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
     const getVisitorResponse = await getVisitor(credentials, true);
     if (getVisitorResponse instanceof Error) throw getVisitorResponse;
 
-    let { visitor, playerStatus } = getVisitorResponse;
+    let { visitor, playerStatus, visitorInventory } = getVisitorResponse;
     const { isAdmin, landmarkZonesString, privateZoneId } = visitor;
 
     let isInZone = false;
@@ -91,15 +92,33 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
 
     if (playerStatus.endTime && !sortedLeaderboard.find((entry) => entry.profileId === profileId)) {
       playerStatus = defaultVisitorStatus;
-
       await visitor.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: playerStatus }, {});
+    }
+
+    const ecosystem = await Ecosystem.create({ credentials });
+    await ecosystem.fetchInventoryItems();
+
+    const badges: BadgesType = {};
+
+    for (const item of ecosystem.inventoryItems) {
+      const { id, name, image_path, description, type } = item;
+      if (name && type === "BADGE") {
+        badges[name] = {
+          id: id,
+          name: name || "Unknown",
+          icon: image_path || "",
+          description: description || "",
+        };
+      }
     }
 
     return res.json({
       leaderboard: sortedLeaderboard,
       quiz: keyAssetDataObject,
       visitor: { isAdmin, isInZone, profileId },
+      visitorInventory,
       playerStatus,
+      badges,
     });
   } catch (error) {
     errorHandler({

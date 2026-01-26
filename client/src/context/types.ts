@@ -62,7 +62,16 @@ export interface InitialState {
   interactiveParams?: InteractiveParams;
   quiz?: QuizType;
   visitor?: VisitorType;
+  visitorInventory?: { [name: string]: { id: string; icon: string; name: string } };
   leaderboard?: LeaderboardType;
+  badges?: {
+    [name: string]: {
+      id: string;
+      name: string;
+      icon: string;
+      description: string;
+    };
+  };
 }
 
 export type ActionType = {
