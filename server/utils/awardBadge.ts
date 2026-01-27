@@ -1,5 +1,5 @@
 import { Credentials } from "../types";
-import { Ecosystem, standardizeError } from "./index.js";
+import {  getCachedInventoryItems, standardizeError } from "./index.js";
 
 export const awardBadge = async ({
   credentials,
@@ -15,10 +15,9 @@ export const awardBadge = async ({
   try {
     if (visitorInventory[badgeName]) return { success: true };
 
-    const ecosystem = await Ecosystem.create({ credentials });
-    await ecosystem.fetchInventoryItems();
+    const inventoryItems = await getCachedInventoryItems({ credentials });
 
-    const inventoryItem = ecosystem.inventoryItems?.find((item) => item.name === badgeName);
+    const inventoryItem = inventoryItems?.find((item) => item.name === badgeName);
     if (!inventoryItem) throw new Error(`Inventory item ${badgeName} not found in ecosystem`);
 
     await visitor.grantInventoryItem(inventoryItem, 1);

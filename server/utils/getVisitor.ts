@@ -36,9 +36,9 @@ export const getVisitor = async (credentials: Credentials, shouldGetVisitorDetai
     await visitor.fetchInventoryItems();
     let visitorInventory: { [key: string]: { id: string; icon: string; name: string } } = {};
 
-    for (const item of visitor.inventoryItems) {
-      // @ts-ignore
-      const { id, name = "", image_url, type, status } = item;
+    for (const visitorItem of visitor.inventoryItems) {
+      const { id, status, item } = visitorItem;
+      const { name, type, image_url = "" } = item || {};
 
       if (status === "ACTIVE" && type === "BADGE") {
         visitorInventory[name] = {

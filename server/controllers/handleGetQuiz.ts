@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import {
   DroppedAsset,
-  Ecosystem,
   errorHandler,
+  getCachedInventoryItems,
   getCredentials,
   getVisitor,
   initializeKeyAssetDataObject,
@@ -95,14 +95,13 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       await visitor.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: playerStatus }, {});
     }
 
-    const ecosystem = await Ecosystem.create({ credentials });
-    await ecosystem.fetchInventoryItems();
+    const inventoryItems = await getCachedInventoryItems({ credentials });
 
     const badges: BadgesType = {};
 
-    for (const item of ecosystem.inventoryItems) {
-      const { id, name, image_path, description, type } = item;
-      if (name && type === "BADGE") {
+    for (const item of inventoryItems) {
+      const { id, name, image_path, description, type, status } = item;
+      if (name && type === "BADGE" && status === "ACTIVE") {
         badges[name] = {
           id: id,
           name: name || "Unknown",
