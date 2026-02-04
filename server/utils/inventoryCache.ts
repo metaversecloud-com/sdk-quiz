@@ -1,9 +1,10 @@
 import { Credentials } from "../types";
 import { Ecosystem } from "./topiaInit.js";
 import { standardizeError } from "./standardizeError.js";
+import { InventoryItemInterface } from "@rtsdk/topia";
 
 interface CachedInventory {
-  items: any[];
+  items: InventoryItemInterface[];
   timestamp: number;
 }
 
@@ -25,7 +26,7 @@ export const getCachedInventoryItems = async ({
 }: {
   credentials: Credentials;
   forceRefresh?: boolean;
-}): Promise<any[]> => {
+}): Promise<InventoryItemInterface[]> => {
   try {
     const now = Date.now();
 

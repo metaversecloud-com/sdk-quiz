@@ -104,7 +104,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       if (name && type === "BADGE" && status === "ACTIVE") {
         badges[name] = {
           id: id,
-          name: name || "Unknown",
+          name,
           icon: image_path || "",
           description: description || "",
         };
