@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
 // components
-import { PageContainer } from "@/components";
+import { Badges, PageContainer } from "@/components";
 
 // context
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
@@ -11,7 +11,7 @@ import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
 export const Leaderboard = () => {
   const dispatch = useContext(GlobalDispatchContext);
-  const { hasInteractiveParams, quiz, leaderboard, badges, visitorInventory } = useContext(GlobalStateContext);
+  const { hasInteractiveParams, quiz, leaderboard } = useContext(GlobalStateContext);
 
   const [activeTab, setActiveTab] = useState("leaderboard");
   const [isLoading, setIsLoading] = useState(true);
@@ -71,20 +71,7 @@ export const Leaderboard = () => {
             )}
           </>
         ) : (
-          <div className="grid grid-cols-3 gap-6 pt-4">
-            {badges &&
-              Object.values(badges).map((badge) => {
-                const hasBadge = visitorInventory && Object.keys(visitorInventory).includes(badge.name);
-                const style = { width: "90px", filter: "none" };
-                if (!hasBadge) style.filter = "grayscale(1)";
-                return (
-                  <div className="tooltip" key={badge.id}>
-                    <span className="tooltip-content">{badge.name}</span>
-                    <img src={badge.icon} alt={badge.name} style={style} />
-                  </div>
-                );
-              })}
-          </div>
+          <Badges />
         )}
       </div>
     </PageContainer>
