@@ -1,8 +1,17 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, getVisitor, World } from "../utils/index.js";
-import { KeyAssetDataObject, KeyAssetInterface, WorldDataObjectType } from "../types/index.js";
+import {
+  DroppedAsset,
+  errorHandler,
+  getCachedInventoryItems,
+  getCredentials,
+  getVisitor,
+  initializeKeyAssetDataObject,
+  sortLeaderboard,
+  World,
+} from "../utils/index.js";
+import { BadgesType, KeyAssetDataObject, KeyAssetInterface, WorldDataObjectType } from "../types/index.js";
 import { DroppedAssetInterface } from "@rtsdk/topia";
-import { initializeKeyAssetDataObject } from "../utils/droppedAssets/initializeKeyAssetDataObject.js";
+import { defaultVisitorStatus } from "../constants.js";
 
 export const handleGetQuiz = async (req: Request, res: Response) => {
   try {
@@ -13,7 +22,8 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
 
     const getVisitorResponse = await getVisitor(credentials, true);
     if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-    const { visitor, playerStatus } = getVisitorResponse;
+
+    let { visitor, playerStatus, visitorInventory } = getVisitorResponse;
     const { isAdmin, landmarkZonesString, privateZoneId } = visitor;
 
     let isInZone = false;
@@ -78,38 +88,36 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       await keyAsset.setDataObject(keyAssetDataObject, { lock: { lockId, releaseLock: true } });
     }
 
-    const leaderboardArray = [];
-    for (const profileId in leaderboard) {
-      const data = leaderboard[profileId];
+    const sortedLeaderboard = await sortLeaderboard(leaderboard);
 
-      const [displayName, score, timeElapsed] = data.split("|");
-
-      leaderboardArray.push({
-        displayName,
-        score: parseInt(score),
-        timeElapsed,
-      });
+    if (playerStatus.endTime && !sortedLeaderboard.find((entry) => entry.profileId === profileId)) {
+      playerStatus = defaultVisitorStatus;
+      await visitor.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: playerStatus }, {});
     }
 
-    const sortedLeaderboard = leaderboardArray.sort((a, b) => {
-      const scoreDifference = b.score - a.score;
-      if (scoreDifference === 0) {
-        const parseTime = (time: string) => {
-          const [minutes, seconds] = time.split(":").map(Number);
-          return minutes * 60 + seconds;
+    const inventoryItems = await getCachedInventoryItems({ credentials });
+
+    const badges: BadgesType = {};
+
+    for (const item of inventoryItems) {
+      const { id, name, image_path, description, type, status } = item;
+      if (name && type === "BADGE" && status === "ACTIVE") {
+        badges[name] = {
+          id: id,
+          name,
+          icon: image_path || "",
+          description: description || "",
         };
-        const aTime = parseTime(a.timeElapsed);
-        const bTime = parseTime(b.timeElapsed);
-        return aTime - bTime;
       }
-      return scoreDifference;
-    });
+    }
 
     return res.json({
       leaderboard: sortedLeaderboard,
       quiz: keyAssetDataObject,
       visitor: { isAdmin, isInZone, profileId },
+      visitorInventory,
       playerStatus,
+      badges,
     });
   } catch (error) {
     errorHandler({
