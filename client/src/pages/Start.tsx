@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
 // components
-import { OutsideZoneModal, PageContainer, PageFooter, PlayerStatus } from "@/components";
+import { Badges, OutsideZoneModal, PageContainer, PageFooter, PlayerStatus } from "@/components";
 
 // context
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
@@ -11,8 +11,7 @@ import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
 export const Start = () => {
   const dispatch = useContext(GlobalDispatchContext);
-  const { playerStatus, hasInteractiveParams, quiz, visitor, visitorInventory, badges } =
-    useContext(GlobalStateContext);
+  const { playerStatus, hasInteractiveParams, quiz, visitor } = useContext(GlobalStateContext);
 
   const [activeTab, setActiveTab] = useState("instructions");
   const [isLoading, setIsLoading] = useState(true);
@@ -88,20 +87,7 @@ export const Start = () => {
             </PageFooter>
           </>
         ) : (
-          <div className="grid grid-cols-3 gap-6 pt-4">
-            {badges &&
-              Object.values(badges).map((badge) => {
-                const hasBadge = visitorInventory && Object.keys(visitorInventory).includes(badge.name);
-                const style = { width: "90px", filter: "none" };
-                if (!hasBadge) style.filter = "grayscale(1)";
-                return (
-                  <div className="tooltip" key={badge.id}>
-                    <span className="tooltip-content">{badge.name}</span>
-                    <img src={badge.icon} alt={badge.name} style={style} />
-                  </div>
-                );
-              })}
-          </div>
+          <Badges />
         )}
       </div>
     </PageContainer>
