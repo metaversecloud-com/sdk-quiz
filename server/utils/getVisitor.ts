@@ -50,7 +50,7 @@ export const getVisitor = async (credentials: Credentials, shouldGetVisitorDetai
     }
 
     return { visitor, playerStatus, visitorInventory };
-  } catch (error: any) {
-    return standardizeError(error);
+  } catch (error) {
+    throw standardizeError(error);
   }
 };

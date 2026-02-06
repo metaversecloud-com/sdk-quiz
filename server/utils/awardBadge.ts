@@ -30,7 +30,7 @@ export const awardBadge = async ({
       .catch(() => console.error(`Failed to fire toast after awarding the ${badgeName} badge.`));
 
     return { success: true };
-  } catch (error: any) {
-    return standardizeError(error);
+  } catch (error) {
+    throw standardizeError(error);
   }
 };

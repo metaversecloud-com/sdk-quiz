@@ -9,10 +9,9 @@ export const handleResetQuiz = async (req: Request, res: Response) => {
     const credentials = getCredentials(req.query);
     const { sceneDropId, urlSlug } = credentials;
 
-    const getVisitorResponse = await getVisitor(credentials, true);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
+    const { visitor } = await getVisitor(credentials, true);
 
-    if (!getVisitorResponse.visitor.isAdmin) throw "User is not an admin.";
+    if (!visitor.isAdmin) throw "User is not an admin.";
 
     const lockId = `${sceneDropId}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
 

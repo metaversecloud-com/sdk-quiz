@@ -12,10 +12,9 @@ export const handleUpdateQuestion = async (req: Request, res: Response) => {
       throw "Missing questionId or updatedQuestion fields.";
     }
 
-    const getVisitorResponse = await getVisitor(credentials, true);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
+    const { visitor } = await getVisitor(credentials, true);
 
-    if (!getVisitorResponse.visitor.isAdmin) throw "User is not an admin.";
+    if (!visitor.isAdmin) throw "User is not an admin.";
 
     const keyAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
 
