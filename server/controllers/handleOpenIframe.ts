@@ -9,10 +9,7 @@ export const handleOpenIframe = async (req: Request, res: Response): Promise<Rec
     const { iframeId } = req.params;
     const isStart = iframeId === "start" || uniqueName === "start";
 
-    const getVisitorResponse = await getVisitor(credentials);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-
-    const { visitor } = getVisitorResponse;
+    const { visitor } = await getVisitor(credentials);
     await visitor.closeIframe(assetId).catch((error: any) =>
       errorHandler({
         error,

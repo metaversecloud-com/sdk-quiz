@@ -1,21 +1,26 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, getVisitor, User } from "../utils/index.js";
+import { DroppedAsset, errorHandler, getCredentials, getVisitor, User, World } from "../utils/index.js";
 import { defaultVisitorStatus } from "../constants.js";
 import { KeyAssetDataObject } from "../types/KeyAssetTypes.js";
+import { WorldDataObjectType } from "../types/WorldDataObjectType.js";
 
 export const handleResetQuiz = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-    const { assetId, sceneDropId, urlSlug } = credentials;
+    const { sceneDropId, urlSlug } = credentials;
 
-    const getVisitorResponse = await getVisitor(credentials, true);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
+    const { visitor } = await getVisitor(credentials, true);
 
-    if (!getVisitorResponse.visitor.isAdmin) throw "User is not an admin.";
+    if (!visitor.isAdmin) throw "User is not an admin.";
 
     const lockId = `${sceneDropId}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
 
-    const keyAsset = await DroppedAsset.create(assetId, urlSlug, { credentials });
+    const world = World.create(urlSlug, { credentials });
+    const worldDataObject = (await world.fetchDataObject()) as WorldDataObjectType;
+
+    const keyAsset = await DroppedAsset.get(worldDataObject[sceneDropId].keyAssetId, urlSlug, {
+      credentials,
+    });
     await keyAsset.fetchDataObject();
     const dataObject = keyAsset.dataObject as KeyAssetDataObject;
 

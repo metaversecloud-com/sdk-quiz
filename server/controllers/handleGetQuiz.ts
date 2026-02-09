@@ -20,10 +20,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
 
     let keyAssetId = assetId;
 
-    const getVisitorResponse = await getVisitor(credentials, true);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-
-    let { visitor, playerStatus, visitorInventory } = getVisitorResponse;
+    let { visitor, playerStatus, visitorInventory } = await getVisitor(credentials, true);
     const { isAdmin, landmarkZonesString, privateZoneId } = visitor;
 
     let isInZone = false;

@@ -22,10 +22,7 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
     const { questionId } = req.params;
     if (!questionId) throw "Question id is required.";
 
-    const getVisitorResponse = await getVisitor(credentials);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-
-    const { visitor, playerStatus, visitorInventory } = getVisitorResponse;
+    const { visitor, playerStatus, visitorInventory } = await getVisitor(credentials);
     const { answers, endTime, startTime } = playerStatus;
     let quizzesCompleted = (visitor.dataObject as { quizzesCompleted?: number })?.quizzesCompleted || 0;
 

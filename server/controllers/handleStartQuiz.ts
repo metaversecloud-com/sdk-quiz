@@ -8,10 +8,7 @@ export const handleStartQuiz = async (req: Request, res: Response): Promise<Reco
     const credentials = getCredentials(req.query);
     const { assetId, profileId, sceneDropId, urlSlug, username } = credentials;
 
-    const getVisitorResponse = await getVisitor(credentials);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-
-    const { visitor } = getVisitorResponse;
+    const { visitor } = await getVisitor(credentials);
     const now = new Date();
     const playerStatus = {
       answers: {},
