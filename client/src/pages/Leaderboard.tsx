@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 // components
 import { Badges, PageContainer } from "@/components";
@@ -12,6 +13,8 @@ import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 export const Leaderboard = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { hasInteractiveParams, quiz, leaderboard } = useContext(GlobalStateContext);
+  const [searchParams] = useSearchParams();
+  const forceRefreshInventory = searchParams.get("forceRefreshInventory") === "true";
 
   const [activeTab, setActiveTab] = useState("leaderboard");
   const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +22,7 @@ export const Leaderboard = () => {
   useEffect(() => {
     if (hasInteractiveParams) {
       backendAPI
-        .get("/quiz")
+        .get("/quiz", { params: { forceRefreshInventory } })
         .then((response) => setGameState(dispatch, response.data))
         .catch((error) => setErrorMessage(dispatch, error))
         .finally(() => {

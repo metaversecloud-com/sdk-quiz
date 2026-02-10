@@ -18,6 +18,7 @@ export const Question = () => {
 
   const [searchParams] = useSearchParams();
   const questionId = searchParams.get("questionId") || searchParams.get("questionid") || searchParams.get("uniqueName");
+  const forceRefreshInventory = searchParams.get("forceRefreshInventory") === "true";
 
   const [isLoading, setIsLoading] = useState(true);
   const [question, setQuestion] = useState<QuestionType>();
@@ -36,7 +37,7 @@ export const Question = () => {
   useEffect(() => {
     if (hasInteractiveParams) {
       backendAPI
-        .get("/quiz")
+        .get("/quiz", { params: { forceRefreshInventory } })
         .then((response) => setGameState(dispatch, response.data))
         .catch((error) => setErrorMessage(dispatch, error));
     }
