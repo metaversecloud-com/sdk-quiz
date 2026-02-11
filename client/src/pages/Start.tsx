@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 // components
 import { Badges, OutsideZoneModal, PageContainer, PageFooter, PlayerStatus } from "@/components";
@@ -12,6 +13,8 @@ import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 export const Start = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { playerStatus, hasInteractiveParams, quiz, visitor } = useContext(GlobalStateContext);
+  const [searchParams] = useSearchParams();
+  const forceRefreshInventory = searchParams.get("forceRefreshInventory") === "true";
 
   const [activeTab, setActiveTab] = useState("instructions");
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +23,7 @@ export const Start = () => {
   useEffect(() => {
     if (hasInteractiveParams) {
       backendAPI
-        .get("/quiz?isStartAsset=true")
+        .get("/quiz", { params: { isStartAsset: true, forceRefreshInventory } })
         .then((response) => setGameState(dispatch, response.data))
         .catch((error) => setErrorMessage(dispatch, error))
         .finally(() => {

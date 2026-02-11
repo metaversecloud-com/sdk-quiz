@@ -114,6 +114,18 @@ Questions and user scores are managed dynamically. The game uses webhooks to tri
 
 - Configuration > Link: `https://{sdk-app-url}.com/leaderboard`
 
+## Environment Variables
+
+Create a `.env` file in the root directory. See `.env-example` for a template.
+
+| Variable             | Description                                                                        | Required |
+| -------------------- | ---------------------------------------------------------------------------------- | -------- |
+| `NODE_ENV`           | Node environment                                                                   | No       |
+| `NGROK_URL`          | Ngrok tunnel URL for webhook callbacks during local development                    | No       |
+| `INSTANCE_DOMAIN`    | Topia API domain (`api.topia.io` for production, `api-stage.topia.io` for staging) | Yes      |
+| `INTERACTIVE_KEY`    | Topia interactive app key                                                          | Yes      |
+| `INTERACTIVE_SECRET` | Topia interactive app secret                                                       | Yes      |
+
 ## Developer
 
 ### Getting Started

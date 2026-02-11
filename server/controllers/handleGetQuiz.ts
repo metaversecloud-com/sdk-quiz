@@ -17,6 +17,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
     const { assetId, isStartAsset, profileId, sceneDropId, urlSlug } = credentials;
+    const forceRefreshInventory = req.query.forceRefreshInventory === "true";
 
     let keyAssetId = assetId;
 
@@ -92,7 +93,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       await visitor.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: playerStatus }, {});
     }
 
-    const inventoryItems = await getCachedInventoryItems({ credentials });
+    const inventoryItems = await getCachedInventoryItems({ credentials, forceRefresh: forceRefreshInventory });
 
     const badges: BadgesType = {};
 
