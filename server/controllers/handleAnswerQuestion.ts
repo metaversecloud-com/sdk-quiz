@@ -1,4 +1,4 @@
-import { KeyAssetDataObject, VisitorStatusType, WorldDataObjectType } from "../types/index.js";
+import { KeyAssetDataObject, QuestionDefinition, VisitorStatusType, WorldDataObjectType } from "../types/index.js";
 import {
   errorHandler,
   getCredentials,
@@ -15,7 +15,7 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
     const credentials = getCredentials(req.query);
     const { assetId, displayName, profileId, sceneDropId, urlSlug } = credentials;
 
-    const { isCorrect, selectedOption } = req.body;
+    const { isCorrect, selectedOption, selectedOptions } = req.body;
 
     const promises = [];
 
@@ -33,7 +33,19 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       credentials,
     });
     await keyAsset.fetchDataObject();
-    const { leaderboard, questions } = keyAsset.dataObject as KeyAssetDataObject;
+    const { leaderboard, questions, settings } = keyAsset.dataObject as KeyAssetDataObject;
+
+    const question = questions[questionId] as QuestionDefinition;
+    const isConfigured = !!settings;
+    const { showCorrectAnswer, completionParticle, correctAnswerParticle } = settings || {};
+
+    // Determine correctness for allThatApply questions
+    let answerIsCorrect = isCorrect;
+    if (question.questionType === "allThatApply" && question.correctOptions && selectedOptions) {
+      const correctSet = new Set(question.correctOptions);
+      const selectedSet = new Set(selectedOptions as string[]);
+      answerIsCorrect = correctSet.size === selectedSet.size && [...correctSet].every((o) => selectedSet.has(o));
+    }
 
     const now = new Date();
     const numberOfQuestions = Object.keys(questions).length;
@@ -44,7 +56,11 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
     const seconds = ((durationMs % 60000) / 1000).toFixed(0);
 
     const updatedStatus: VisitorStatusType = playerStatus;
-    updatedStatus.answers[questionId] = { answer: selectedOption, isCorrect };
+    updatedStatus.answers[questionId] = {
+      answer: selectedOption || "",
+      selectedOptions: selectedOptions || undefined,
+      isCorrect: answerIsCorrect,
+    };
     updatedStatus.endTime = hasAnsweredAll ? now : null;
     updatedStatus.timeElapsed = minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
 
@@ -52,14 +68,14 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       quizzesCompleted += 1;
 
       let score = 0;
-      for (const questionId in answers) {
-        if (answers[questionId].isCorrect) score++;
+      for (const qId in updatedStatus.answers) {
+        if (updatedStatus.answers[qId].isCorrect) score++;
       }
 
       promises.push(
         keyAsset.updateDataObject(
           {
-            [`leaderboard.${profileId}`]: `${displayName}|${score}|${updatedStatus.timeElapsed}`,
+            [`leaderboard.${profileId}`]: `${displayName}|${score}|${updatedStatus.timeElapsed}|${now.toISOString()}|${Object.keys(updatedStatus.answers).length}|Y`,
           },
           {
             analytics: [
@@ -74,10 +90,11 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
         ),
       );
 
+      // Use configurable particle or default
       promises.push(
         visitor
           .triggerParticle({
-            name: "partyPopper_float",
+            name: completionParticle,
             duration: 5,
           })
           .catch((error: any) =>
@@ -146,7 +163,6 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       // Award Top 3 Finisher badge if player is in top 3 of leaderboard
       leaderboard[profileId] = `${displayName}|${score}|${updatedStatus.timeElapsed}`;
       const sortedLeaderboard = sortLeaderboard(leaderboard);
-      // Get the top 3 profileIds from the sorted leaderboard
       const top3ProfileIds = sortedLeaderboard.slice(0, 3).map((entry) => entry.profileId);
       if (top3ProfileIds.includes(profileId)) {
         promises.push(
@@ -166,12 +182,13 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       }
     }
 
-    if (isCorrect) {
+    if (answerIsCorrect && showCorrectAnswer) {
+      const correctParticle = correctAnswerParticle || "brain_float";
       const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
       promises.push(
         world
           .triggerParticle({
-            name: "brain_float",
+            name: correctParticle,
             duration: 3,
             position: droppedAsset.position,
           })
@@ -208,8 +225,20 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
 
     const keyAssetDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
 
+    // If showCorrectAnswer is false (configured quiz), don't reveal correct answers
+    const responseQuiz = { ...keyAssetDataObject };
+    if (isConfigured && settings && !showCorrectAnswer) {
+      // Strip correct answer info from questions in response
+      const sanitizedQuestions: Record<string, any> = {};
+      for (const [qId, q] of Object.entries(responseQuiz.questions)) {
+        const { answer, correctOptions, ...rest } = q as QuestionDefinition;
+        sanitizedQuestions[qId] = rest;
+      }
+      responseQuiz.questions = sanitizedQuestions;
+    }
+
     return res.json({
-      quiz: keyAssetDataObject,
+      quiz: responseQuiz,
       playerStatus: updatedStatus,
     });
   } catch (error) {

@@ -17,25 +17,55 @@ export type InteractiveParams = {
   visitorId: string;
 };
 
+// Question types
+export type QuizQuestionType = "multipleChoice" | "allThatApply";
+
 export type QuestionType = {
   questionText: string;
+  questionType?: QuizQuestionType;
   answer: string;
+  correctOptions?: string[];
   options: { [optionId: string]: string };
+  mediaUrl?: string;
+  mediaType?: "image" | "video" | "link";
+};
+
+// Settings types
+export type AssetAppearance = {
+  startImage: string;
+  questionMarkerImage: string;
+  platformImage: string;
+  leaderboardImage: string;
+};
+
+export type ReplayMode = "manual" | "never";
+
+export type QuizSettings = {
+  assetAppearance: AssetAppearance;
+  correctAnswerParticle: string;
+  completionParticle: string;
+  replayMode: ReplayMode;
+  showCorrectAnswer: boolean;
+  timerEnabled: boolean;
+  timerDurationMinutes?: number;
 };
 
 export type AnswersType = {
   [questionId: string]: {
     answer: string;
+    selectedOptions?: string[];
     isCorrect: boolean;
   };
 };
 
-export type LeaderboardType = {
-  [profileId: string]: {
-    displayName: string;
-    score: number;
-    timeElapsed: string;
-  };
+export type LeaderboardEntryType = {
+  profileId: string;
+  displayName: string;
+  score: number;
+  timeElapsed: string;
+  completionDate?: string;
+  questionsAnswered?: number;
+  completed?: string;
 };
 
 export type QuizType = {
@@ -43,6 +73,8 @@ export type QuizType = {
   questions: {
     [questionId: string]: QuestionType;
   };
+  settings?: QuizSettings;
+  droppedAssets?: { [key: string]: string };
 };
 
 export type VisitorType = { isAdmin: boolean; isInZone: boolean; profileId: string };
@@ -54,8 +86,11 @@ export type ResultsType = {
   timeElapsed: string;
 };
 
+export type ErrorType = string | { message?: string; response?: { data?: { message?: string } } };
+
 export interface InitialState {
   error?: string;
+  isConfigured?: boolean;
   playerStatus?: ResultsType;
   hasInteractiveParams?: boolean;
   hasSetupBackend?: boolean;
@@ -63,7 +98,7 @@ export interface InitialState {
   quiz?: QuizType;
   visitor?: VisitorType;
   visitorInventory?: { [name: string]: { id: string; icon: string; name: string } };
-  leaderboard?: LeaderboardType;
+  leaderboard?: LeaderboardEntryType[];
   badges?: {
     [name: string]: {
       id: string;
@@ -72,6 +107,7 @@ export interface InitialState {
       description: string;
     };
   };
+  settings?: QuizSettings | null;
 }
 
 export type ActionType = {

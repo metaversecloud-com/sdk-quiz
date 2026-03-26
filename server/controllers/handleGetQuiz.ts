@@ -37,8 +37,9 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       } else {
         const droppedAssets: DroppedAssetInterface[] = await world.fetchDroppedAssetsBySceneDropId({
           sceneDropId,
+          uniqueName: "start",
         });
-        const keyAsset = droppedAssets.find((droppedAsset) => droppedAsset.uniqueName === "start");
+        const keyAsset = droppedAssets[0];
         keyAssetId = keyAsset?.id!;
       }
     } else {
@@ -52,7 +53,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       ]);
     }
 
-    // store keyAssetId by sceneDropId in World data object so that it can be accessed by any clickable asset
+    // Store keyAssetId by sceneDropId in World data object
     if (!dataObject || Object.keys(dataObject).length === 0) {
       await world.setDataObject({ [sceneDropId]: { keyAssetId } });
     } else if (!dataObject[sceneDropId]) {
@@ -63,27 +64,44 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       credentials: { ...credentials, assetId: keyAssetId },
     });
 
-    await initializeKeyAssetDataObject(keyAsset as KeyAssetInterface);
+    await keyAsset.fetchDataObject();
+    const keyAssetDataObject = keyAsset.dataObject as KeyAssetDataObject;
 
-    const keyAssetDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
+    // Determine if quiz is configured:
+    // - New quizzes: have a `settings` key
+    // - Legacy quizzes: have real questions (not just placeholders) in the data object
+    const hasSettings = !!keyAssetDataObject?.settings;
+    const hasRealQuestions =
+      keyAssetDataObject?.questions &&
+      Object.keys(keyAssetDataObject.questions).length > 0 &&
+      Object.values(keyAssetDataObject.questions).some(
+        (q) => !q.questionText.startsWith("Question ") || !q.questionText.endsWith(" placeholder"),
+      );
+    const isConfigured = hasSettings || !!hasRealQuestions;
 
-    let leaderboard: Record<string, string> = keyAssetDataObject?.leaderboard || {};
+    // For unconfigured quizzes (first drop), initialize with default placeholder questions
+    if (!hasSettings && !hasRealQuestions) {
+      await initializeKeyAssetDataObject(keyAsset as KeyAssetInterface);
+      await keyAsset.fetchDataObject();
+    }
 
-    if (keyAssetDataObject.results) {
-      for (const profileId in keyAssetDataObject.results) {
-        const { answers, timeElapsed, username } = keyAssetDataObject.results[profileId];
+    const currentDataObject = keyAsset.dataObject as KeyAssetDataObject;
+    let leaderboard: Record<string, string> = currentDataObject?.leaderboard || {};
 
+    // Migrate legacy results format to leaderboard
+    if (currentDataObject.results) {
+      for (const profileId in currentDataObject.results) {
+        const { answers, timeElapsed, username } = currentDataObject.results[profileId];
         let score = 0;
         for (const questionId in answers) {
           if (answers[questionId].isCorrect) score++;
         }
-
         leaderboard[profileId] = `${username}|${score}|${timeElapsed}`;
       }
-      keyAssetDataObject.leaderboard = leaderboard;
-      delete keyAssetDataObject.results;
+      currentDataObject.leaderboard = leaderboard;
+      delete currentDataObject.results;
       const lockId = `${keyAssetId}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
-      await keyAsset.setDataObject(keyAssetDataObject, { lock: { lockId, releaseLock: true } });
+      await keyAsset.setDataObject(currentDataObject, { lock: { lockId, releaseLock: true } });
     }
 
     const sortedLeaderboard = await sortLeaderboard(leaderboard);
@@ -96,7 +114,6 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
     const inventoryItems = await getCachedInventoryItems({ credentials, forceRefresh: forceRefreshInventory });
 
     const badges: BadgesType = {};
-
     for (const item of inventoryItems) {
       const { id, name, image_path, description, type, status } = item;
       if (name && type === "BADGE" && status === "ACTIVE") {
@@ -110,12 +127,14 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
     }
 
     return res.json({
+      isConfigured,
       leaderboard: sortedLeaderboard,
-      quiz: keyAssetDataObject,
+      quiz: currentDataObject,
       visitor: { isAdmin, isInZone, profileId },
       visitorInventory,
       playerStatus,
       badges,
+      settings: currentDataObject.settings || null,
     });
   } catch (error) {
     errorHandler({

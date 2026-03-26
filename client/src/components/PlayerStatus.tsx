@@ -1,12 +1,20 @@
-import { ResultsType } from "@/context/types";
+import { ReplayMode, ResultsType } from "@/context/types";
 import { Timer } from "./Timer";
 
 export const PlayerStatus = ({
   playerStatus,
   numberOfQuestions,
+  replayMode = "manual",
+  timerDurationMinutes,
+  onRestart,
+  onTimeout,
 }: {
   playerStatus: ResultsType;
   numberOfQuestions: number;
+  replayMode?: ReplayMode;
+  timerDurationMinutes?: number;
+  onRestart?: () => void;
+  onTimeout?: () => void;
 }) => {
   const { answers, endTime, startTime, timeElapsed } = playerStatus;
 
@@ -29,12 +37,22 @@ export const PlayerStatus = ({
               <div className="mt-3 chip chip-success">
                 {correctAnswersCount} / {numberOfQuestions} correct in {timeElapsed}
               </div>
+
+              {replayMode === "manual" && onRestart && (
+                <div className="mt-6">
+                  <hr className="mb-6" />
+                  <p className="p2 pb-3">Want to perfect your score or get better time?</p>
+                  <button className="btn" onClick={onRestart} aria-label="Race again">
+                    Restart Quiz
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <>
               <h4>Quiz in progress!</h4>
               <div className="py-3">
-                <Timer startTime={startTime} />
+                <Timer startTime={startTime} timerDurationMinutes={timerDurationMinutes} onTimeout={onTimeout} />
               </div>
               <p>
                 Questions completed: {Object.keys(answers).length} / {numberOfQuestions}

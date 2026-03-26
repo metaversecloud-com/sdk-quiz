@@ -7,7 +7,7 @@ import {
   SET_GAME_STATE,
 } from "./types";
 
-const globalReducer = (state: InitialState, action: ActionType) => {
+const globalReducer = (state: InitialState, action: ActionType): InitialState => {
   const { type, payload } = action;
   switch (type) {
     case SET_INTERACTIVE_PARAMS:

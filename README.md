@@ -114,6 +114,14 @@ Questions and user scores are managed dynamically. The game uses webhooks to tri
 
 - Configuration > Link: `https://{sdk-app-url}.com/leaderboard`
 
+### Required Assets with Unique Names
+
+The app uses the following unique name patterns for managing dropped assets:
+
+| Unique Name Pattern | Description |
+| ------------------- | ----------- |
+| `start`             | Key asset   |
+
 ## Environment Variables
 
 Create a `.env` file in the root directory. See `.env-example` for a template.
