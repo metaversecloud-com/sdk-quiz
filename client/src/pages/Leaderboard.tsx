@@ -11,30 +11,49 @@ import { LeaderboardEntryType } from "@/context/types";
 // utils
 import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
-const downloadCSV = (leaderboard: LeaderboardEntryType[], numberOfQuestions: number) => {
-  const headers = ["Rank", "Date", "Display Name", "Questions Answered", "Completed", "Score", "Time"];
-  const rows = leaderboard.map((entry, index) => [
-    index + 1,
-    entry.completionDate ? new Date(entry.completionDate).toLocaleDateString() : "N/A",
-    entry.displayName,
-    entry.questionsAnswered ?? numberOfQuestions,
-    entry.completed || "Y",
-    `${entry.score}/${numberOfQuestions}`,
-    entry.timeElapsed,
-  ]);
+const openResultsInNewTab = (leaderboard: LeaderboardEntryType[], numberOfQuestions: number) => {
+  const rows = leaderboard
+    .map(
+      (entry, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${new Date(entry.completionDate || "").toLocaleDateString() || "N/A"}</td>
+        <td>${entry.displayName}</td>
+        <td>${entry.questionsAnswered ?? numberOfQuestions}</td>
+        <td>${entry.completed || "Y"}</td>
+        <td>${entry.score}/${numberOfQuestions}</td>
+        <td>${entry.timeElapsed}</td>
+      </tr>`,
+    )
+    .join("");
 
-  const csvContent = [headers.join(","), ...rows.map((r) => r.map((cell) => `"${cell}"`).join(","))].join("\n");
+  const html = `<!DOCTYPE html>
+<html><head>
+  <title>Quiz Results - ${new Date().toLocaleDateString()}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 2rem; color: #1a1a1a; }
+    h1 { font-size: 1.25rem; margin-bottom: 1rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+    th { background: #f5f5f5; font-weight: 600; }
+    tr:nth-child(even) { background: #fafafa; }
+    @media print { body { margin: 0.5rem; } }
+  </style>
+</head><body>
+  <h1>Quiz Results - ${new Date().toLocaleDateString()}</h1>
+  <table>
+    <thead><tr>
+      <th>#</th><th>Date</th><th>Display Name</th><th>Questions Answered</th><th>Completed</th><th>Score</th><th>Time</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+</body></html>`;
 
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  const link = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-
-  link.href = url;
-  link.download = `quiz_leaderboard_${new Date().toISOString()}.csv`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  const newTab = window.open("", "_blank");
+  if (newTab) {
+    newTab.document.write(html);
+    newTab.document.close();
+  }
 };
 
 export const Leaderboard = () => {
@@ -112,10 +131,10 @@ export const Leaderboard = () => {
                 {visitor?.isAdmin && (
                   <button
                     className="btn btn-outline mt-4"
-                    onClick={() => downloadCSV(leaderboard, numberOfQuestions)}
-                    aria-label="Download results as CSV"
+                    onClick={() => openResultsInNewTab(leaderboard, numberOfQuestions)}
+                    aria-label="View full results in new tab"
                   >
-                    Download CSV
+                    View Full Results
                   </button>
                 )}
               </>

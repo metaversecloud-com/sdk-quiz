@@ -91,20 +91,22 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       );
 
       // Use configurable particle or default
-      promises.push(
-        visitor
-          .triggerParticle({
-            name: completionParticle,
-            duration: 5,
-          })
-          .catch((error: any) =>
-            errorHandler({
-              error,
-              functionName: "handleAnswerQuestion",
-              message: "Error triggering particle effects",
-            }),
-          ),
-      );
+      if (completionParticle) {
+        promises.push(
+          visitor
+            .triggerParticle({
+              name: completionParticle,
+              duration: 5,
+            })
+            .catch((error: any) =>
+              errorHandler({
+                error,
+                functionName: "handleAnswerQuestion",
+                message: "Error triggering particle effects",
+              }),
+            ),
+        );
+      }
 
       // Award Perfect Score badge if all answers are correct
       if (score === numberOfQuestions) {
@@ -182,13 +184,12 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       }
     }
 
-    if (answerIsCorrect && showCorrectAnswer) {
-      const correctParticle = correctAnswerParticle || "brain_float";
+    if (answerIsCorrect && showCorrectAnswer && correctAnswerParticle) {
       const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
       promises.push(
         world
           .triggerParticle({
-            name: correctParticle,
+            name: correctAnswerParticle,
             duration: 3,
             position: droppedAsset.position,
           })
