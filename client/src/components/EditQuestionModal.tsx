@@ -31,9 +31,7 @@ export const EditQuestionModal = ({
   } = useForm();
 
   const toggleCorrectOption = (optionId: string) => {
-    setCorrectOptions((prev) =>
-      prev.includes(optionId) ? prev.filter((id) => id !== optionId) : [...prev, optionId],
-    );
+    setCorrectOptions((prev) => (prev.includes(optionId) ? prev.filter((id) => id !== optionId) : [...prev, optionId]));
   };
 
   const onSubmit = handleSubmit((data) => {
@@ -76,7 +74,9 @@ export const EditQuestionModal = ({
         <form onSubmit={onSubmit}>
           <h4 className="mb-4">Question {questionId}</h4>
           {question.questionType && (
-            <p className="p3 text-muted mb-2">Type: {question.questionType === "allThatApply" ? "All That Apply" : "Multiple Choice"}</p>
+            <p className="p3 text-muted mb-2">
+              Type: {question.questionType === "allThatApply" ? "All That Apply" : "Multiple Choice"}
+            </p>
           )}
           <input
             className="input mb-4"
@@ -84,9 +84,7 @@ export const EditQuestionModal = ({
             aria-label="Question text"
           />
 
-          <h4 className="mb-4">
-            Options {isAllThatApply ? "(check all correct)" : "(select correct answer)"}
-          </h4>
+          <h4 className="mb-4">Options {isAllThatApply ? "(check all correct)" : "(select correct answer)"}</h4>
 
           {Object.keys(question.options).map((optionId: string) => (
             <div className="flex mb-6" key={optionId}>
@@ -123,7 +121,9 @@ export const EditQuestionModal = ({
           ))}
 
           {Object.keys(errors).length > 0 && (
-            <p className="p3 pt-10 text-center text-error" role="alert">An error has occurred. Please try again later.</p>
+            <p className="p3 pt-10 text-center text-error" role="alert">
+              An error has occurred. Please try again later.
+            </p>
           )}
 
           <div className="actions">

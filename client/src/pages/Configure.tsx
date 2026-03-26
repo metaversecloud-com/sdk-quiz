@@ -73,7 +73,7 @@ export const Configure = () => {
     if (quiz?.settings && quiz.questions) {
       return quiz.questions;
     }
-    return { "1": { ...DEFAULT_QUESTION } };
+    return {};
   });
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmittingSettings, setIsSubmittingSettings] = useState(false);
@@ -313,22 +313,28 @@ export const Configure = () => {
         </div>
       ) : (
         <div>
-          {Object.entries(questions).map(([questionId, question]) => (
-            <QuestionEditor
-              key={questionId}
-              questionId={questionId}
-              question={question}
-              onChange={handleQuestionChange}
-              onDelete={handleDeleteQuestion}
-              canDelete={Object.keys(questions).length > 1}
-              isDeleting={isDeleting}
-              errors={validationErrors[questionId]}
-            />
-          ))}
+          {!quiz?.settings ? (
+            <p>You must save settings before adding questions.</p>
+          ) : (
+            <>
+              {Object.entries(questions).map(([questionId, question]) => (
+                <QuestionEditor
+                  key={questionId}
+                  questionId={questionId}
+                  question={question}
+                  onChange={handleQuestionChange}
+                  onDelete={handleDeleteQuestion}
+                  canDelete={Object.keys(questions).length > 1}
+                  isDeleting={isDeleting}
+                  errors={validationErrors[questionId]}
+                />
+              ))}
 
-          <button className="btn btn-outline mt-4" onClick={handleAddQuestion} aria-label="Add new question">
-            + Add Question
-          </button>
+              <button className="btn btn-outline mt-4" onClick={handleAddQuestion} aria-label="Add new question">
+                + Add Question
+              </button>
+            </>
+          )}
         </div>
       )}
 
@@ -338,7 +344,7 @@ export const Configure = () => {
             {isSubmittingSettings ? "Saving..." : "Save Settings"}
           </button>
         ) : (
-          <button className="btn" onClick={handleSaveQuestions} disabled={isSubmittingQuestions}>
+          <button className="btn" onClick={handleSaveQuestions} disabled={isSubmittingQuestions || !quiz?.settings}>
             {isSubmittingQuestions ? "Saving..." : "Save Questions"}
           </button>
         )}

@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 import { DroppedAsset, dropQuestionAsset, errorHandler, getCredentials, getVisitor, World } from "../utils/index.js";
 import { AssetAppearance, KeyAssetDataObject, QuestionDefinition } from "../types/index.js";
-import { WorldDataObjectType } from "../types/WorldDataObjectType.js";
-import { DEFAULT_ASSET_APPEARANCE } from "../utils/assetConstants.js";
+import { DEFAULT_ASSET_APPEARANCE, DEFAULT_QUIZ_SETTINGS } from "../utils/constants.js";
 
 export const handleSaveQuestions = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
-    const { assetId, urlSlug, sceneDropId } = credentials;
+    const { assetId, urlSlug } = credentials;
 
     const { visitor } = await getVisitor(credentials, true);
     if (!visitor.isAdmin) throw "User is not an admin.";

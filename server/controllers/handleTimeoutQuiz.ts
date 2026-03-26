@@ -1,12 +1,5 @@
-import { KeyAssetDataObject, QuestionDefinition, VisitorStatusType, WorldDataObjectType } from "../types/index.js";
-import {
-  errorHandler,
-  getCredentials,
-  DroppedAsset,
-  World,
-  getVisitor,
-  sortLeaderboard,
-} from "../utils/index.js";
+import { KeyAssetDataObject, VisitorStatusType, WorldDataObjectType } from "../types/index.js";
+import { errorHandler, getCredentials, DroppedAsset, World, getVisitor } from "../utils/index.js";
 import { Request, Response } from "express";
 
 export const handleTimeoutQuiz = async (req: Request, res: Response): Promise<Record<string, any> | void> => {
@@ -15,7 +8,7 @@ export const handleTimeoutQuiz = async (req: Request, res: Response): Promise<Re
     const { displayName, profileId, sceneDropId, urlSlug } = credentials;
 
     const { visitor, playerStatus } = await getVisitor(credentials);
-    const { answers, startTime, endTime } = playerStatus;
+    const { startTime, endTime } = playerStatus;
 
     // Already completed — nothing to do
     if (endTime) {
@@ -31,7 +24,7 @@ export const handleTimeoutQuiz = async (req: Request, res: Response): Promise<Re
       credentials,
     });
     await keyAsset.fetchDataObject();
-    const { leaderboard, questions, settings } = keyAsset.dataObject as KeyAssetDataObject;
+    const { questions, settings } = keyAsset.dataObject as KeyAssetDataObject;
 
     if (!settings?.timerDurationMinutes) throw "Quiz does not have a time limit.";
 
@@ -44,7 +37,6 @@ export const handleTimeoutQuiz = async (req: Request, res: Response): Promise<Re
     }
 
     const now = new Date();
-    const numberOfQuestions = Object.keys(questions).length;
 
     // Mark all unanswered questions as wrong
     const updatedStatus: VisitorStatusType = { ...playerStatus };

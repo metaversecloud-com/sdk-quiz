@@ -40,8 +40,8 @@ export const AdminView = () => {
       <div className="card my-4">
         <div className="card-details">
           <p className="p2 text-warning">
-            This is a legacy quiz. You can edit existing questions below. To access new features (question types, asset
-            customization, replay settings), create a new quiz from the library.
+            This is a legacy quiz. Drop a new Quiz scene from the library to access new features (updated question
+            types, asset customization, and replay settings, etc.).
           </p>
         </div>
       </div>
@@ -49,13 +49,6 @@ export const AdminView = () => {
       {Object.keys(questions).map((questionId) => (
         <div className="mb-4" key={questionId}>
           Question {questionId}:
-          <button
-            className="icon-with-rounded-border mx-2 float-right"
-            onClick={() => handleToggleShowEditQuestionModal(questionId)}
-            aria-label={`Edit question ${questionId}`}
-          >
-            <img src={`https://sdk-style.s3.amazonaws.com/icons/edit.svg`} alt="Edit" />
-          </button>
           <br />
           {questions[questionId].questionText}
           {questions[questionId].questionType && (

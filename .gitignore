@@ -6,3 +6,4 @@ client/.env
 server/.env
 *.env*
 /server/.yalc
+server/yalc.lock

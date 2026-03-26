@@ -68,7 +68,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
     const keyAssetDataObject = keyAsset.dataObject as KeyAssetDataObject;
 
     // Determine if quiz is configured:
-    // - New quizzes: have a `settings` key
+    // - New quizzes: have settings AND at least one real question
     // - Legacy quizzes: have real questions (not just placeholders) in the data object
     const hasSettings = !!keyAssetDataObject?.settings;
     const hasRealQuestions =
@@ -77,7 +77,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       Object.values(keyAssetDataObject.questions).some(
         (q) => !q.questionText.startsWith("Question ") || !q.questionText.endsWith(" placeholder"),
       );
-    const isConfigured = hasSettings || !!hasRealQuestions;
+    const isConfigured = (hasSettings && !!hasRealQuestions) || !!hasRealQuestions;
 
     // For unconfigured quizzes (first drop), initialize with default placeholder questions
     if (!hasSettings && !hasRealQuestions) {

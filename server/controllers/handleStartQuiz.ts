@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { KeyAssetDataObject } from "../types/index.js";
 import { errorHandler, getCredentials, DroppedAsset, World, getVisitor } from "../utils/index.js";
 import { WorldActivityType } from "@rtsdk/topia";
-import { WorldDataObjectType } from "../types/WorldDataObjectType.js";
 
 export const handleStartQuiz = async (req: Request, res: Response): Promise<Record<string, any> | void> => {
   try {

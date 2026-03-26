@@ -234,11 +234,11 @@ export const Question = () => {
                   );
                 })}
 
-                {selectedOption && !hasSubmitted && (
+                {!hasSubmitted && (
                   <button
                     className="btn mt-6"
                     onClick={() => submitAnswer()}
-                    disabled={isSubmitting}
+                    disabled={!selectedOption || isSubmitting}
                     aria-label="Submit answer"
                   >
                     {isSubmitting ? "Submitting..." : "Submit Answer"}
