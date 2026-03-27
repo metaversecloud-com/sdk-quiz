@@ -8,7 +8,8 @@ interface AssetPickerProps {
 }
 
 export const AssetPicker = ({ label, options, value, onChange }: AssetPickerProps) => {
-  const [customUrl, setCustomUrl] = useState("");
+  const isCustom = value && !options.includes(value);
+  const [customUrl, setCustomUrl] = useState(isCustom ? value : "");
 
   const hasCustomUrl = customUrl.length > 0;
   const selectedPreset = !hasCustomUrl ? value : "";

@@ -15,7 +15,7 @@ export const setGameState = (
   if (!dispatch || !data.quiz) return;
 
   const gameState = data;
-  gameState.quiz.numberOfQuestions = Object.keys(data.quiz.questions).length;
+  gameState.quiz.numberOfQuestions = Object.keys(data.quiz.questions || {}).length;
 
   dispatch({
     type: SET_GAME_STATE,

@@ -157,12 +157,12 @@ export const handleUpdateSettings = async (req: Request, res: Response) => {
       );
     }
 
+    const updatedDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
+
     // Update start asset
     if (updatedSettings.assetAppearance.startImage !== baseSettings.assetAppearance.startImage) {
       await keyAsset.updateWebImageLayers("", updatedSettings.assetAppearance.startImage);
     }
-
-    const updatedDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
 
     return res.json({
       success: true,

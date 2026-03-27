@@ -44,8 +44,6 @@ export const Configure = () => {
   const dispatch = useContext(GlobalDispatchContext);
   const { quiz } = useContext(GlobalStateContext);
 
-  const isEditing = !!quiz?.settings;
-
   // Settings state
   const [appearance, setAppearance] = useState<AssetAppearance>(
     quiz?.settings?.assetAppearance || {
@@ -115,7 +113,7 @@ export const Configure = () => {
   const handleDeleteQuestion = (questionId: string) => {
     if (Object.keys(questions).length <= 1 || isDeleting) return;
 
-    if (isEditing && quiz?.droppedAssets?.[questionId]) {
+    if (quiz?.droppedAssets?.[questionId]) {
       setIsDeleting(true);
       backendAPI
         .delete(`/admin/delete-question/${questionId}`)
