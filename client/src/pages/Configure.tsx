@@ -137,12 +137,16 @@ export const Configure = () => {
     for (const [qId, q] of Object.entries(questions)) {
       const qErrors: { [field: string]: string } = {};
       if (!q.questionText.trim()) qErrors.questionText = "Question text is required.";
-      const filledOptions = Object.values(q.options).filter((v) => v.trim());
-      if (filledOptions.length < 2) qErrors.options = "At least 2 options must be filled in.";
-      for (const [optId, optVal] of Object.entries(q.options)) {
-        if (!optVal.trim()) qErrors[`option-${optId}`] = "Option cannot be empty.";
+      if (q.questionType !== "openText") {
+        const filledOptions = Object.values(q.options).filter((v) => v.trim());
+        if (filledOptions.length < 2) qErrors.options = "At least 2 options must be filled in.";
+        for (const [optId, optVal] of Object.entries(q.options)) {
+          if (!optVal.trim()) qErrors[`option-${optId}`] = "Option cannot be empty.";
+        }
       }
-      if (q.questionType === "allThatApply") {
+      if (q.questionType === "openText") {
+        if (!q.answer?.trim()) qErrors.answer = "Correct answer is required.";
+      } else if (q.questionType === "allThatApply") {
         if (!q.correctOptions || q.correctOptions.length === 0) {
           qErrors.correctAnswer = "Select at least one correct answer.";
         }

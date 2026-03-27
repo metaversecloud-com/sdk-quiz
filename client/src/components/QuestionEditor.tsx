@@ -98,6 +98,16 @@ export const QuestionEditor = ({ questionId, question, onChange, onDelete, canDe
           />
           All That Apply
         </label>
+        <label className="label" style={{ fontWeight: "normal" }}>
+          <input
+            className="input-radio mr-2"
+            type="radio"
+            name={`questionType-${questionId}`}
+            checked={questionType === "openText"}
+            onChange={() => handleFieldChange("questionType", "openText" as QuizQuestionType)}
+          />
+          Open Text
+        </label>
 
         <p className="pt-4">Question Text</p>
         <input
@@ -111,60 +121,78 @@ export const QuestionEditor = ({ questionId, question, onChange, onDelete, canDe
         />
         {errors?.questionText && <p className="p3 text-error">{errors.questionText}</p>}
 
-        <p className="pt-4">
-          Options {questionType === "allThatApply" ? "(check all correct answers)" : "(select the correct answer)"}
-        </p>
-        {Object.keys(question.options).map((optionId) => (
-          <div className="flex items-center" key={optionId}>
-            {questionType === "allThatApply" ? (
-              <input
-                className="input-checkbox mr-2"
-                type="checkbox"
-                checked={(question.correctOptions || []).includes(optionId)}
-                onChange={() => handleCorrectOptionToggle(optionId)}
-                aria-label={`Mark option ${optionId} as correct`}
-                style={{ minWidth: "20px", height: "20px" }}
-              />
-            ) : (
-              <input
-                className="input-radio mr-2"
-                type="radio"
-                name={`answer-${questionId}`}
-                checked={question.answer === optionId}
-                onChange={() => handleCorrectOptionToggle(optionId)}
-                aria-label={`Mark option ${optionId} as correct`}
-                style={{ minWidth: "20px", height: "20px" }}
-              />
-            )}
-            <div className="flex-1">
-              <input
-                className={`input${errors?.[`option-${optionId}`] ? " input-error" : ""}`}
-                type="text"
-                value={question.options[optionId]}
-                onChange={(e) => handleOptionChange(optionId, e.target.value)}
-                placeholder={`Option ${optionId}`}
-                required
-                aria-label={`Option ${optionId} text`}
-              />
-              {errors?.[`option-${optionId}`] && <p className="p3 text-error">{errors[`option-${optionId}`]}</p>}
-            </div>
-            {Object.keys(question.options).length > 2 && (
-              <button
-                type="button"
-                className="btn btn-text max-w-[16px]"
-                onClick={() => handleRemoveOption(optionId)}
-                aria-label={`Remove option ${optionId}`}
-                style={{ padding: "4px", minWidth: "auto" }}
-              >
-                x
-              </button>
-            )}
-          </div>
-        ))}
-        {errors?.correctAnswer && <p className="p3 text-error">{errors.correctAnswer}</p>}
-        <button type="button" className="btn btn-text mt-2" onClick={handleAddOption} aria-label="Add another option">
-          + Add Option
-        </button>
+        {questionType === "openText" ? (
+          <>
+            <p className="pt-4">Correct Answer (case-insensitive)</p>
+            <input
+              className={`input${errors?.answer ? " input-error" : ""}`}
+              type="text"
+              value={question.answer || ""}
+              onChange={(e) => handleFieldChange("answer", e.target.value)}
+              placeholder="Enter the correct answer"
+              required
+              aria-label="Correct answer text"
+            />
+            {errors?.answer && <p className="p3 text-error">{errors.answer}</p>}
+          </>
+        ) : (
+          <>
+            <p className="pt-4">
+              Options {questionType === "allThatApply" ? "(check all correct answers)" : "(select the correct answer)"}
+            </p>
+            {Object.keys(question.options).map((optionId) => (
+              <div className="flex items-center" key={optionId}>
+                {questionType === "allThatApply" ? (
+                  <input
+                    className="input-checkbox mr-2"
+                    type="checkbox"
+                    checked={(question.correctOptions || []).includes(optionId)}
+                    onChange={() => handleCorrectOptionToggle(optionId)}
+                    aria-label={`Mark option ${optionId} as correct`}
+                    style={{ minWidth: "20px", height: "20px" }}
+                  />
+                ) : (
+                  <input
+                    className="input-radio mr-2"
+                    type="radio"
+                    name={`answer-${questionId}`}
+                    checked={question.answer === optionId}
+                    onChange={() => handleCorrectOptionToggle(optionId)}
+                    aria-label={`Mark option ${optionId} as correct`}
+                    style={{ minWidth: "20px", height: "20px" }}
+                  />
+                )}
+                <div className="flex-1">
+                  <input
+                    className={`input${errors?.[`option-${optionId}`] ? " input-error" : ""}`}
+                    type="text"
+                    value={question.options[optionId]}
+                    onChange={(e) => handleOptionChange(optionId, e.target.value)}
+                    placeholder={`Option ${optionId}`}
+                    required
+                    aria-label={`Option ${optionId} text`}
+                  />
+                  {errors?.[`option-${optionId}`] && <p className="p3 text-error">{errors[`option-${optionId}`]}</p>}
+                </div>
+                {Object.keys(question.options).length > 2 && (
+                  <button
+                    type="button"
+                    className="btn btn-text max-w-[16px]"
+                    onClick={() => handleRemoveOption(optionId)}
+                    aria-label={`Remove option ${optionId}`}
+                    style={{ padding: "4px", minWidth: "auto" }}
+                  >
+                    x
+                  </button>
+                )}
+              </div>
+            ))}
+            {errors?.correctAnswer && <p className="p3 text-error">{errors.correctAnswer}</p>}
+            <button type="button" className="btn btn-text mt-2" onClick={handleAddOption} aria-label="Add another option">
+              + Add Option
+            </button>
+          </>
+        )}
 
         <div className="mt-4">
           <p>Media URL (optional)</p>

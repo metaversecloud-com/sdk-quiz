@@ -39,9 +39,12 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
     const isConfigured = !!settings;
     const { showCorrectAnswer, completionParticle, correctAnswerParticle } = settings || {};
 
-    // Determine correctness for allThatApply questions
+    // Determine correctness based on question type
     let answerIsCorrect = isCorrect;
-    if (question.questionType === "allThatApply" && question.correctOptions && selectedOptions) {
+    if (question.questionType === "openText") {
+      answerIsCorrect =
+        (selectedOption || "").trim().toLowerCase() === (question.answer || "").trim().toLowerCase();
+    } else if (question.questionType === "allThatApply" && question.correctOptions && selectedOptions) {
       const correctSet = new Set(question.correctOptions);
       const selectedSet = new Set(selectedOptions as string[]);
       answerIsCorrect = correctSet.size === selectedSet.size && [...correctSet].every((o) => selectedSet.has(o));

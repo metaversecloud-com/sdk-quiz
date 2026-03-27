@@ -20,8 +20,12 @@ export const handleSaveQuestions = async (req: Request, res: Response) => {
 
     for (const [qId, question] of Object.entries(questions)) {
       if (!question.questionText) throw `Question ${qId} is missing question text.`;
-      if (!question.options || Object.keys(question.options).length < 2) {
-        throw `Question ${qId} must have at least 2 options.`;
+      if (question.questionType === "openText") {
+        if (!question.answer?.trim()) throw `Question ${qId} is missing the correct answer.`;
+      } else {
+        if (!question.options || Object.keys(question.options).length < 2) {
+          throw `Question ${qId} must have at least 2 options.`;
+        }
       }
     }
 

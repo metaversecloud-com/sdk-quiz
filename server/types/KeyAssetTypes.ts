@@ -1,7 +1,7 @@
 import { DroppedAsset } from "@rtsdk/topia";
 
 // Question types
-export type QuizQuestionType = "multipleChoice" | "allThatApply";
+export type QuizQuestionType = "multipleChoice" | "allThatApply" | "openText";
 
 export type QuestionDefinition = {
   questionText: string;

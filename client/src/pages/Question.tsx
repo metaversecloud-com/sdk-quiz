@@ -26,6 +26,7 @@ export const Question = () => {
   const [correctOption, setCorrectOption] = useState("");
   const [selectedOption, setSelectedOption] = useState<string | undefined>(undefined);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [textAnswer, setTextAnswer] = useState("");
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,6 +38,7 @@ export const Question = () => {
   };
 
   const isAllThatApply = question?.questionType === "allThatApply";
+  const isOpenText = question?.questionType === "openText";
   const previousAnswer = answers?.[questionId || ""];
   const isAnswered = !!previousAnswer;
 
@@ -53,18 +55,21 @@ export const Question = () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    const isCorrectForMultipleChoice = (option || selectedOption) === correctOption;
-    const correctOptionsSet = new Set(question?.correctOptions || []);
-    const selectedSet = new Set(options || selectedOptions);
-    const isCorrectForAllThatApply =
-      correctOptionsSet.size === selectedSet.size && [...correctOptionsSet].every((o) => selectedSet.has(o));
-
-    const isCorrect = isAllThatApply ? isCorrectForAllThatApply : isCorrectForMultipleChoice;
+    let isCorrect: boolean;
+    if (isOpenText) {
+      isCorrect = (textAnswer || "").trim().toLowerCase() === (correctOption || "").trim().toLowerCase();
+    } else if (isAllThatApply) {
+      const correctOptionsSet = new Set(question?.correctOptions || []);
+      const selectedSet = new Set(options || selectedOptions);
+      isCorrect = correctOptionsSet.size === selectedSet.size && [...correctOptionsSet].every((o) => selectedSet.has(o));
+    } else {
+      isCorrect = (option || selectedOption) === correctOption;
+    }
 
     backendAPI
       .post(`/question/answer/${questionId}`, {
         isCorrect,
-        selectedOption: option || selectedOption || "",
+        selectedOption: isOpenText ? textAnswer : option || selectedOption || "",
         selectedOptions: isAllThatApply ? options || selectedOptions : undefined,
       })
       .then((response) => {
@@ -96,6 +101,9 @@ export const Question = () => {
       if (answers?.[questionId]) {
         setSelectedOption(answers[questionId].answer);
         setSelectedOptions(answers[questionId].selectedOptions || []);
+        if (q?.questionType === "openText") {
+          setTextAnswer(answers[questionId].answer || "");
+        }
         setHasSubmitted(true);
       }
 
@@ -151,7 +159,31 @@ export const Question = () => {
 
             {renderMedia()}
 
-            {isAllThatApply ? (
+            {isOpenText ? (
+              // Open text: text input
+              <>
+                <input
+                  className="input mt-4"
+                  type="text"
+                  value={textAnswer}
+                  onChange={(e) => setTextAnswer(e.target.value)}
+                  disabled={isDisabled}
+                  placeholder="Type your answer"
+                  aria-label="Your answer"
+                />
+
+                {!hasSubmitted && (
+                  <button
+                    className="btn mt-6"
+                    onClick={() => submitAnswer()}
+                    disabled={!textAnswer.trim() || isSubmitting}
+                    aria-label="Submit answer"
+                  >
+                    {isSubmitting ? "Submitting..." : "Submit Answer"}
+                  </button>
+                )}
+              </>
+            ) : isAllThatApply ? (
               // All-that-apply: checkboxes
               <>
                 <p className="p3 text-muted mb-2">Select all that apply</p>
@@ -247,7 +279,26 @@ export const Question = () => {
               </>
             )}
 
-            {showCorrectAnswer && hasSubmitted && !isAllThatApply && (
+            {showCorrectAnswer && hasSubmitted && isOpenText && (
+              <div className="text-center mt-10 mb-6">
+                <hr />
+                {previousAnswer?.isCorrect ? (
+                  <p className="pt-6 text-success" role="status">
+                    Correct!
+                  </p>
+                ) : (
+                  <>
+                    <p className="pt-6 pb-3" role="status">
+                      Not quite!
+                    </p>
+                    <p>The correct answer is: </p>
+                    <p className="text-success">{correctOption}</p>
+                  </>
+                )}
+              </div>
+            )}
+
+            {showCorrectAnswer && hasSubmitted && !isAllThatApply && !isOpenText && (
               <div className="text-center mt-10 mb-6">
                 <hr />
                 {selectedOption === correctOption ? (

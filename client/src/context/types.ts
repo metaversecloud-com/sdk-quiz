@@ -18,7 +18,7 @@ export type InteractiveParams = {
 };
 
 // Question types
-export type QuizQuestionType = "multipleChoice" | "allThatApply";
+export type QuizQuestionType = "multipleChoice" | "allThatApply" | "openText";
 
 export type QuestionType = {
   questionText: string;
