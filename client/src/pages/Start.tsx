@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // components
-import {  PageContainer, PageFooter, PlayerStatus } from "@/components";
+import { PageContainer, PageFooter, PlayerStatus } from "@/components";
 
 // pages
 import { NotConfigured } from "./NotConfigured";
@@ -86,58 +86,47 @@ export const Start = () => {
 
     return (
       <div className="grid gap-2">
-          <>
-            <img
-              src="https://sdk-quiz.s3.us-east-1.amazonaws.com/instructions-start.png"
-              style={{ width: "100%" }}
-              alt="Quiz instructions"
+        <>
+          <img
+            src="https://sdk-quiz.s3.us-east-1.amazonaws.com/instructions-start.png"
+            style={{ width: "100%" }}
+            alt="Quiz instructions"
+          />
+
+          <h2 className="text-center">Welcome to Quiz Race!</h2>
+
+          <h3>How to play:</h3>
+          <ol className="p2">
+            <li>
+              <b>Time</b> starts when you click <b className="text-success">Start Quiz</b>.
+            </li>
+            <li>Run to each question zone and answer the question.</li>
+            <li>After answering all questions, check your rank by clicking the leaderboard.</li>
+          </ol>
+
+          {replayMode === "manual" && !quizComplete && (
+            <p className="p3 text-muted">You can retake this quiz to improve your score or time.</p>
+          )}
+
+          {playerStatus && quiz && (
+            <PlayerStatus
+              playerStatus={playerStatus}
+              numberOfQuestions={quiz.numberOfQuestions}
+              replayMode={replayMode}
+              timerDurationMinutes={settings?.timerDurationMinutes}
+              onRestart={restartQuiz}
+              onTimeout={handleTimeout}
             />
+          )}
 
-            <h2 className="text-center">Welcome to Quiz Race!</h2>
-
-            {settings?.showCorrectAnswer === false && (
-              <div className="card mb-2">
-                <div className="card-details">
-                  <p className="p3 text-muted">
-                    In this quiz, you can change your answers freely before submitting. Correct answers will not be
-                    shown until you submit all answers.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            <h3>How to play:</h3>
-            <ol className="p2">
-              <li>
-                <b>Time</b> starts when you click <b className="text-success">Start Quiz</b>.
-              </li>
-              <li>Run to each question zone and answer the question.</li>
-              <li>After answering all questions, check your rank by clicking the leaderboard.</li>
-            </ol>
-
-            {replayMode === "manual" && !quizComplete && (
-              <p className="p3 text-muted">You can retake this quiz to improve your score or time.</p>
-            )}
-
-            {playerStatus && quiz && (
-              <PlayerStatus
-                playerStatus={playerStatus}
-                numberOfQuestions={quiz.numberOfQuestions}
-                replayMode={replayMode}
-                timerDurationMinutes={settings?.timerDurationMinutes}
-                onRestart={restartQuiz}
-                onTimeout={handleTimeout}
-              />
-            )}
-
-            {!quizComplete && (
-              <PageFooter>
-                <button className="btn" disabled={areButtonsDisabled} onClick={startQuiz} aria-label="Start the quiz">
-                  Start Quiz
-                </button>
-              </PageFooter>
-            )}
-          </>
+          {!quizComplete && (
+            <PageFooter>
+              <button className="btn" disabled={areButtonsDisabled} onClick={startQuiz} aria-label="Start the quiz">
+                Start Quiz
+              </button>
+            </PageFooter>
+          )}
+        </>
       </div>
     );
   };
