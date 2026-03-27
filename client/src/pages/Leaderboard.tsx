@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // components
-import { Badges, PageContainer } from "@/components";
+import { Badges, PageContainer, ResetQuizModal } from "@/components";
 
 // context
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
@@ -64,6 +64,7 @@ export const Leaderboard = () => {
 
   const [activeTab, setActiveTab] = useState("leaderboard");
   const [isLoading, setIsLoading] = useState(true);
+  const [showResetModal, setShowResetModal] = useState(false);
 
   useEffect(() => {
     if (hasInteractiveParams) {
@@ -102,7 +103,18 @@ export const Leaderboard = () => {
         {activeTab === "leaderboard" ? (
           <>
             {!leaderboard || leaderboard.length === 0 ? (
-              <div className="text-center mt-10 mb-6">There are no race finishes yet.</div>
+              <div className="text-center mt-10 mb-6">
+                <p>There are no race finishes yet.</p>
+                {visitor?.isAdmin && (
+                  <button
+                    className="btn btn-danger mt-4"
+                    onClick={() => setShowResetModal(true)}
+                    aria-label="Reset quiz"
+                  >
+                    Reset Quiz
+                  </button>
+                )}
+              </div>
             ) : (
               <>
                 <table className="table" role="table" aria-label="Leaderboard">
@@ -129,13 +141,18 @@ export const Leaderboard = () => {
                 </table>
 
                 {visitor?.isAdmin && (
-                  <button
-                    className="btn btn-outline mt-4"
-                    onClick={() => openResultsInNewTab(leaderboard, numberOfQuestions)}
-                    aria-label="View full results in new tab"
-                  >
-                    View Full Results
-                  </button>
+                  <div className="flex gap-2 mt-4">
+                    <button
+                      className="btn btn-outline"
+                      onClick={() => openResultsInNewTab(leaderboard, numberOfQuestions)}
+                      aria-label="View full results in new tab"
+                    >
+                      View Results
+                    </button>
+                    <button className="btn btn-danger" onClick={() => setShowResetModal(true)} aria-label="Reset quiz">
+                      Reset Quiz
+                    </button>
+                  </div>
                 )}
               </>
             )}
@@ -143,6 +160,7 @@ export const Leaderboard = () => {
         ) : (
           <Badges />
         )}
+        {showResetModal && <ResetQuizModal handleToggleShowResetModal={() => setShowResetModal(false)} />}
       </div>
     </PageContainer>
   );

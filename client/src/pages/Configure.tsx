@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // components
 import { AssetPicker, PageFooter, QuestionEditor } from "@/components";
@@ -65,6 +65,16 @@ export const Configure = () => {
   const [timerDurationMinutes, setTimerDurationMinutes] = useState<number | undefined>(
     quiz?.settings?.timerDurationMinutes,
   );
+
+  // Particles
+  const [particles, setParticles] = useState<{ name: string }[]>([]);
+
+  useEffect(() => {
+    backendAPI
+      .get("/admin/particles")
+      .then((response) => setParticles(response.data.particles || []))
+      .catch(() => {});
+  }, []);
 
   // Questions state
   const [questions, setQuestions] = useState<{ [questionId: string]: QuestionType }>(() => {
@@ -295,23 +305,39 @@ export const Configure = () => {
 
           <h3 className="h3 mb-4 pt-3 border-t border-grey-500">Particle Effects</h3>
           <label className="label">Correct Answer Particle</label>
-          <input
+          <select
             className="input mb-4"
-            type="text"
             value={correctAnswerParticle}
             onChange={(e) => setCorrectAnswerParticle(e.target.value)}
-            placeholder="brain_float"
-            aria-label="Correct answer particle effect name"
-          />
+            aria-label="Correct answer particle effect"
+          >
+            <option value="">None</option>
+            {particles.map((p) => (
+              <option key={p.name} value={p.name}>
+                {p.name}
+              </option>
+            ))}
+            {correctAnswerParticle && !particles.find((p) => p.name === correctAnswerParticle) && (
+              <option value={correctAnswerParticle}>{correctAnswerParticle}</option>
+            )}
+          </select>
           <label className="label">Completion Particle</label>
-          <input
+          <select
             className="input mb-4"
-            type="text"
             value={completionParticle}
             onChange={(e) => setCompletionParticle(e.target.value)}
-            placeholder="partyPopper_float"
-            aria-label="Completion particle effect name"
-          />
+            aria-label="Completion particle effect"
+          >
+            <option value="">None</option>
+            {particles.map((p) => (
+              <option key={p.name} value={p.name}>
+                {p.name}
+              </option>
+            ))}
+            {completionParticle && !particles.find((p) => p.name === completionParticle) && (
+              <option value={completionParticle}>{completionParticle}</option>
+            )}
+          </select>
         </div>
       ) : (
         <div>

@@ -1,5 +1,6 @@
 export * from "./handleAnswerQuestion.js";
 export * from "./handleDeleteQuestion.js";
+export * from "./handleGetParticles.js";
 export * from "./handleGetQuiz.js";
 export * from "./handleOpenIframe.js";
 export * from "./handleResetQuiz.js";

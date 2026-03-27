@@ -1,5 +1,16 @@
 import { useState } from "react";
 
+const MAX_DIMENSION = 2048;
+
+const validateImageDimensions = (url: string): Promise<{ valid: boolean; width: number; height: number }> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ valid: img.width <= MAX_DIMENSION && img.height <= MAX_DIMENSION, width: img.width, height: img.height });
+    img.onerror = () => resolve({ valid: true, width: 0, height: 0 });
+    img.src = url;
+  });
+};
+
 interface AssetPickerProps {
   label: string;
   options: string[];
@@ -10,6 +21,7 @@ interface AssetPickerProps {
 export const AssetPicker = ({ label, options, value, onChange }: AssetPickerProps) => {
   const isCustom = value && !options.includes(value);
   const [customUrl, setCustomUrl] = useState(isCustom ? value : "");
+  const [dimensionError, setDimensionError] = useState("");
 
   const hasCustomUrl = customUrl.length > 0;
   const selectedPreset = !hasCustomUrl ? value : "";
@@ -42,16 +54,27 @@ export const AssetPicker = ({ label, options, value, onChange }: AssetPickerProp
       </div>
       <div className="mt-2">
         <input
-          className="input"
+          className={`input${dimensionError ? " input-error" : ""}`}
           type="url"
           placeholder="Or enter a custom image URL"
           value={customUrl}
           onChange={(e) => {
-            setCustomUrl(e.target.value);
-            if (e.target.value) onChange(e.target.value);
+            const url = e.target.value;
+            setCustomUrl(url);
+            setDimensionError("");
+            if (url) {
+              validateImageDimensions(url).then(({ valid, width, height }) => {
+                if (!valid) {
+                  setDimensionError(`Image is ${width}x${height}px. Maximum allowed is ${MAX_DIMENSION}x${MAX_DIMENSION}px.`);
+                } else {
+                  onChange(url);
+                }
+              });
+            }
           }}
           aria-label={`Custom URL for ${label}`}
         />
+        {dimensionError && <p className="p3 text-error">{dimensionError}</p>}
       </div>
     </div>
   );

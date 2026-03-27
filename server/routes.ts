@@ -2,6 +2,7 @@ import express from "express";
 import {
   handleAnswerQuestion,
   handleDeleteQuestion,
+  handleGetParticles,
   handleGetQuiz,
   handleOpenIframe,
   handleResetQuiz,
@@ -38,6 +39,7 @@ router.post("/question/answer/:questionId", handleAnswerQuestion);
 router.post("/quiz/timeout", handleTimeoutQuiz);
 
 // Admin
+router.get("/admin/particles", handleGetParticles);
 router.put("/admin/save-questions", handleSaveQuestions);
 router.delete("/admin/delete-question/:questionId", handleDeleteQuestion);
 router.put("/admin/update-settings", handleUpdateSettings);
