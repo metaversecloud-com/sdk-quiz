@@ -24,7 +24,10 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
 
     const { visitor, playerStatus, visitorInventory } = await getVisitor(credentials);
     const { answers, endTime, startTime } = playerStatus;
-    let quizzesCompleted = (visitor.dataObject as { quizzesCompleted?: number })?.quizzesCompleted || 0;
+    const visitorData = visitor.dataObject as Record<string, any> || {};
+    const quizKey = `${urlSlug}-${sceneDropId}`;
+    let quizAttempts = visitorData.quizCompletions?.[quizKey] || 0;
+    let totalQuizzesCompleted = visitorData.totalQuizzesCompleted || 0;
 
     const world = World.create(urlSlug, { credentials });
     const worldDataObject = (await world.fetchDataObject()) as WorldDataObjectType;
@@ -68,7 +71,8 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
     updatedStatus.timeElapsed = minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
 
     if (hasAnsweredAll) {
-      quizzesCompleted += 1;
+      quizAttempts += 1;
+      totalQuizzesCompleted += 1;
 
       let score = 0;
       for (const qId in updatedStatus.answers) {
@@ -78,7 +82,7 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       promises.push(
         keyAsset.updateDataObject(
           {
-            [`leaderboard.${profileId}`]: `${displayName}|${score}|${updatedStatus.timeElapsed}|${now.toISOString()}|${Object.keys(updatedStatus.answers).length}|Y`,
+            [`leaderboard.${profileId}`]: `${displayName}|${score}|${updatedStatus.timeElapsed}|${now.toISOString()}|${Object.keys(updatedStatus.answers).length}|${quizAttempts}`,
           },
           {
             analytics: [
@@ -147,8 +151,8 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
         );
       }
 
-      // Award Quiz Master badge if 10 quizzes have been completed
-      if (quizzesCompleted === 10) {
+      // Award Quiz Master badge if 10 quizzes have been completed across all quizzes
+      if (totalQuizzesCompleted === 10) {
         promises.push(
           awardBadge({
             credentials,
@@ -208,7 +212,11 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
 
     promises.push(
       visitor.updateDataObject(
-        { quizzesCompleted, [`${urlSlug}-${sceneDropId}`]: updatedStatus },
+        {
+          totalQuizzesCompleted,
+          [`quizCompletions.${quizKey}`]: quizAttempts,
+          [quizKey]: updatedStatus,
+        },
         {
           analytics: [
             {

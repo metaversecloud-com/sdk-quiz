@@ -65,7 +65,7 @@ export type LeaderboardEntryType = {
   timeElapsed: string;
   completionDate?: string;
   questionsAnswered?: number;
-  completed?: string;
+  attempts?: number;
 };
 
 export type QuizType = {

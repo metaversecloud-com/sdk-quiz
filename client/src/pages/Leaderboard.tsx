@@ -20,7 +20,7 @@ const openResultsInNewTab = (leaderboard: LeaderboardEntryType[], numberOfQuesti
         <td>${new Date(entry.completionDate || "").toLocaleDateString() || "N/A"}</td>
         <td>${entry.displayName}</td>
         <td>${entry.questionsAnswered ?? numberOfQuestions}</td>
-        <td>${entry.completed || "Y"}</td>
+        <td>${entry.attempts ?? 1}</td>
         <td>${entry.score}/${numberOfQuestions}</td>
         <td>${entry.timeElapsed}</td>
       </tr>`,
@@ -43,7 +43,7 @@ const openResultsInNewTab = (leaderboard: LeaderboardEntryType[], numberOfQuesti
   <h1>Quiz Results - ${new Date().toLocaleDateString()}</h1>
   <table>
     <thead><tr>
-      <th>#</th><th>Date</th><th>Display Name</th><th>Questions Answered</th><th>Completed</th><th>Score</th><th>Time</th>
+      <th>#</th><th>Date</th><th>Display Name</th><th>Questions Answered</th><th>Attempts</th><th>Score</th><th>Time</th>
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>
@@ -105,15 +105,6 @@ export const Leaderboard = () => {
             {!leaderboard || leaderboard.length === 0 ? (
               <div className="text-center mt-10 mb-6">
                 <p>There are no race finishes yet.</p>
-                {visitor?.isAdmin && (
-                  <button
-                    className="btn btn-danger mt-4"
-                    onClick={() => setShowResetModal(true)}
-                    aria-label="Reset quiz"
-                  >
-                    Reset Quiz
-                  </button>
-                )}
               </div>
             ) : (
               <>

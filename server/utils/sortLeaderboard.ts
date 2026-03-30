@@ -4,9 +4,9 @@ export const sortLeaderboard = (leaderboard: Record<string, string>) => {
     const data = leaderboard[profileId];
 
     // Format: "displayName|score|timeElapsed" (legacy)
-    // or: "displayName|score|timeElapsed|completionDate|questionsAnswered|completed" (new)
+    // or: "displayName|score|timeElapsed|completionDate|questionsAnswered|attempts" (new)
     const parts = data.split("|");
-    const [displayName, score, timeElapsed, completionDate, questionsAnswered, completed] = parts;
+    const [displayName, score, timeElapsed, completionDate, questionsAnswered, attempts] = parts;
 
     leaderboardArray.push({
       profileId,
@@ -15,7 +15,7 @@ export const sortLeaderboard = (leaderboard: Record<string, string>) => {
       timeElapsed,
       completionDate: completionDate || undefined,
       questionsAnswered: questionsAnswered ? parseInt(questionsAnswered) : undefined,
-      completed: completed || "Y",
+      attempts: attempts ? parseInt(attempts) : 1,
     });
   }
 
