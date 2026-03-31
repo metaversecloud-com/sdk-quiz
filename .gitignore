@@ -7,3 +7,7 @@ server/.env
 *.env*
 /server/.yalc
 server/yalc.lock
+/client/build
+/server/dist
+/client/build
+/client/build/assets

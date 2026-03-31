@@ -86,22 +86,24 @@ export const handleUpdateSettings = async (req: Request, res: Response) => {
     }
 
     // Update question assets
-    for (const [questionId, droppedAssetId] of Object.entries(keyAssetDataObject.droppedAssets)) {
-      if (
-        updatedSettings.assetAppearance.questionMarkerImage !== baseSettings.assetAppearance.questionMarkerImage ||
-        updatedSettings.assetAppearance.platformImage !== baseSettings.assetAppearance.platformImage
-      ) {
-        if (questionId === "leaderboard") continue;
-        try {
-          const questionAsset = await DroppedAsset.create(droppedAssetId, urlSlug, { credentials });
-          updatePromises.push(
-            questionAsset.updateWebImageLayers(
-              updatedSettings.assetAppearance.platformImage,
-              updatedSettings.assetAppearance.questionMarkerImage,
-            ),
-          );
-        } catch {
-          // Asset may have been manually deleted, skip
+    if (keyAssetDataObject.droppedAssets && Object.keys(keyAssetDataObject.droppedAssets).length > 0) {
+      for (const [questionId, droppedAssetId] of Object.entries(keyAssetDataObject.droppedAssets)) {
+        if (
+          updatedSettings.assetAppearance.questionMarkerImage !== baseSettings.assetAppearance.questionMarkerImage ||
+          updatedSettings.assetAppearance.platformImage !== baseSettings.assetAppearance.platformImage
+        ) {
+          if (questionId === "leaderboard") continue;
+          try {
+            const questionAsset = await DroppedAsset.create(droppedAssetId, urlSlug, { credentials });
+            updatePromises.push(
+              questionAsset.updateWebImageLayers(
+                updatedSettings.assetAppearance.platformImage,
+                updatedSettings.assetAppearance.questionMarkerImage,
+              ),
+            );
+          } catch {
+            // Asset may have been manually deleted, skip
+          }
         }
       }
     }
