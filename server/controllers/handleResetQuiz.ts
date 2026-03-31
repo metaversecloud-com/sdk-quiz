@@ -34,7 +34,7 @@ export const handleResetQuiz = async (req: Request, res: Response) => {
       { analytics: [{ analyticName: "resets", urlSlug }], lock: { lockId, releaseLock: true } },
     );
 
-    return res.json({ leaderboard: {}, quiz: keyAsset.dataObject, playerStatus: defaultVisitorStatus });
+    return res.json({ leaderboard: [], quiz: keyAsset.dataObject, playerStatus: defaultVisitorStatus });
   } catch (error) {
     errorHandler({
       error,

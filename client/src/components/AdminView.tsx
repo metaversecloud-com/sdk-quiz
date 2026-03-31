@@ -6,9 +6,14 @@ import { EditQuestionModal, PageFooter, ResetQuizModal } from "@/components";
 // context
 import { GlobalStateContext } from "@context/GlobalContext";
 
+// pages
+import { Configure } from "@/pages/Configure";
+
 export const AdminView = () => {
-  const { quiz } = useContext(GlobalStateContext);
+  const { isConfigured, quiz } = useContext(GlobalStateContext);
   const { questions } = quiz!;
+  // Legacy = configured quiz with real questions but no settings key
+  const isLegacy = isConfigured && !quiz?.settings;
 
   const [selectedQuestionId, setSelectedQuestionId] = useState("");
   const [showEditQuestionModal, setShowEditQuestionModal] = useState(false);
@@ -23,24 +28,37 @@ export const AdminView = () => {
     setShowResetModal(!showResetModal);
   }
 
+  // New quizzes: show the full Configure page
+  if (!isLegacy) {
+    return <Configure />;
+  }
+
+  // Legacy quizzes: show the old settings UI
   return (
     <div style={{ position: "relative" }}>
+      <h2>Settings</h2>
+      <div className="card my-4">
+        <div className="card-details">
+          <p className="p2 text-warning">
+            This is a legacy quiz. Drop a new Quiz scene from the library to access new features (updated question
+            types, asset customization, and replay settings, etc.).
+          </p>
+        </div>
+      </div>
+
       {Object.keys(questions).map((questionId) => (
         <div className="mb-4" key={questionId}>
           Question {questionId}:
-          <button
-            className="icon-with-rounded-border mx-2 float-right"
-            onClick={() => handleToggleShowEditQuestionModal(questionId)}
-          >
-            <img src={`https://sdk-style.s3.amazonaws.com/icons/edit.svg`} />
-          </button>
           <br />
           {questions[questionId].questionText}
+          {questions[questionId].questionType && (
+            <span className="p3 text-muted ml-2">({questions[questionId].questionType})</span>
+          )}
         </div>
       ))}
 
       <PageFooter>
-        <button className="btn btn-danger" onClick={() => handleToggleShowResetModal()}>
+        <button className="btn btn-danger" onClick={() => handleToggleShowResetModal()} aria-label="Reset quiz">
           Reset Quiz
         </button>
       </PageFooter>

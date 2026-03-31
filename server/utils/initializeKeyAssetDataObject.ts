@@ -5,13 +5,17 @@ export const initializeKeyAssetDataObject = async (keyAsset: KeyAssetInterface) 
   try {
     await keyAsset.fetchDataObject();
 
+    // If this is a configured quiz (has settings), don't auto-populate
+    if (keyAsset?.dataObject?.settings) return;
+
+    // Initialize with empty data object if none exists
     if (!keyAsset?.dataObject?.questions) {
       const lockId = `${keyAsset.id}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
       await keyAsset.setDataObject(
         {
-          questions: getDefaultQuestions(4),
+          questions: {},
         },
-        { lock: { lockId } },
+        { lock: { lockId, releaseLock: true } },
       );
     }
 
@@ -24,28 +28,4 @@ export const initializeKeyAssetDataObject = async (keyAsset: KeyAssetInterface) 
     });
     return await keyAsset.fetchDataObject();
   }
-};
-
-const getDefaultQuestions = (count: number) => {
-  const result: { [key: string]: {} } = {};
-
-  for (let i = 1; i <= count; i++) {
-    result[i.toString()] = {
-      questionText: `Question ${i} placeholder`,
-      answer: "1",
-      options: getDefaultOptions(count),
-    };
-  }
-
-  return result;
-};
-
-const getDefaultOptions = (count: number) => {
-  const result: { [key: string]: string } = {};
-
-  for (let i = 1; i <= count; i++) {
-    result[i.toString()] = `Option ${i} placeholder`;
-  }
-
-  return result;
 };

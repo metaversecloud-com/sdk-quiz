@@ -3,13 +3,19 @@ export const sortLeaderboard = (leaderboard: Record<string, string>) => {
   for (const profileId in leaderboard) {
     const data = leaderboard[profileId];
 
-    const [displayName, score, timeElapsed] = data.split("|");
+    // Format: "displayName|score|timeElapsed" (legacy)
+    // or: "displayName|score|timeElapsed|completionDate|questionsAnswered|attempts" (new)
+    const parts = data.split("|");
+    const [displayName, score, timeElapsed, completionDate, questionsAnswered, attempts] = parts;
 
     leaderboardArray.push({
       profileId,
       displayName,
       score: parseInt(score),
       timeElapsed,
+      completionDate: completionDate || undefined,
+      questionsAnswered: questionsAnswered ? parseInt(questionsAnswered) : undefined,
+      attempts: attempts ? parseInt(attempts) : 1,
     });
   }
 

@@ -1,5 +1,6 @@
 export * from "./AdminIconButton.js";
 export * from "./AdminView.js";
+export * from "./AssetPicker.js";
 export * from "./Badges.js";
 export * from "./EditQuestionModal.js";
 export * from "./Loading.js";
@@ -7,5 +8,6 @@ export * from "./OutsideZoneModal.js";
 export * from "./PageContainer.js";
 export * from "./PageFooter.js";
 export * from "./PlayerStatus.js";
+export * from "./QuestionEditor.js";
 export * from "./ResetQuizModal.js";
 export * from "./Timer.js";
