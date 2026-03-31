@@ -40,6 +40,9 @@ export const handleUpdateSettings = async (req: Request, res: Response) => {
       },
     };
 
+    // If asset appearance changed and assets exist, update them
+    const updatePromises: Promise<any>[] = [];
+
     // Ensure leaderboard asset exists — find by uniqueName or drop a new one
     let leaderboardAssetId = keyAssetDataObject.droppedAssets?.leaderboard;
 
@@ -67,51 +70,47 @@ export const handleUpdateSettings = async (req: Request, res: Response) => {
       }
     }
 
-    // If asset appearance changed and assets exist, update them
-    const appearanceChanged =
-      settings.assetAppearance &&
-      JSON.stringify(settings.assetAppearance) !== JSON.stringify(baseSettings.assetAppearance);
-
-    if (appearanceChanged && keyAssetDataObject.droppedAssets) {
-      const updatePromises: Promise<any>[] = [];
-
-      // Update question assets
-      for (const [questionId, droppedAssetId] of Object.entries(keyAssetDataObject.droppedAssets)) {
-        if (
-          updatedSettings.assetAppearance.questionMarkerImage !== baseSettings.assetAppearance.questionMarkerImage ||
-          updatedSettings.assetAppearance.platformImage !== baseSettings.assetAppearance.platformImage
-        ) {
-          if (questionId === "leaderboard") continue;
-          try {
-            const questionAsset = await DroppedAsset.create(droppedAssetId, urlSlug, { credentials });
-            updatePromises.push(
-              questionAsset.updateWebImageLayers(
-                updatedSettings.assetAppearance.platformImage,
-                updatedSettings.assetAppearance.questionMarkerImage,
-              ),
-            );
-          } catch {
-            // Asset may have been manually deleted, skip
-          }
-        }
+    // Update leaderboard asset
+    if (
+      leaderboardAssetId &&
+      updatedSettings.assetAppearance.leaderboardImage !== baseSettings.assetAppearance.leaderboardImage
+    ) {
+      try {
+        const leaderboardAsset = await DroppedAsset.create(leaderboardAssetId, urlSlug, { credentials });
+        updatePromises.push(
+          leaderboardAsset.updateWebImageLayers(updatedSettings.assetAppearance.leaderboardImage, ""),
+        );
+      } catch {
+        // Asset may have been manually deleted, skip
       }
+    }
 
-      // Update leaderboard asset
+    // Update question assets
+    for (const [questionId, droppedAssetId] of Object.entries(keyAssetDataObject.droppedAssets)) {
       if (
-        leaderboardAssetId &&
-        updatedSettings.assetAppearance.leaderboardImage !== baseSettings.assetAppearance.leaderboardImage
+        updatedSettings.assetAppearance.questionMarkerImage !== baseSettings.assetAppearance.questionMarkerImage ||
+        updatedSettings.assetAppearance.platformImage !== baseSettings.assetAppearance.platformImage
       ) {
+        if (questionId === "leaderboard") continue;
         try {
-          const leaderboardAsset = await DroppedAsset.create(leaderboardAssetId, urlSlug, { credentials });
+          const questionAsset = await DroppedAsset.create(droppedAssetId, urlSlug, { credentials });
           updatePromises.push(
-            leaderboardAsset.updateWebImageLayers(updatedSettings.assetAppearance.leaderboardImage, ""),
+            questionAsset.updateWebImageLayers(
+              updatedSettings.assetAppearance.platformImage,
+              updatedSettings.assetAppearance.questionMarkerImage,
+            ),
           );
         } catch {
           // Asset may have been manually deleted, skip
         }
       }
+    }
 
-      await Promise.allSettled(updatePromises);
+    await Promise.allSettled(updatePromises);
+
+    // Update start asset
+    if (updatedSettings.assetAppearance.startImage !== baseSettings.assetAppearance.startImage) {
+      await keyAsset.updateWebImageLayers("", updatedSettings.assetAppearance.startImage);
     }
 
     // Save settings (and initialize structure if first time)
@@ -158,11 +157,6 @@ export const handleUpdateSettings = async (req: Request, res: Response) => {
     }
 
     const updatedDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
-
-    // Update start asset
-    if (updatedSettings.assetAppearance.startImage !== baseSettings.assetAppearance.startImage) {
-      await keyAsset.updateWebImageLayers("", updatedSettings.assetAppearance.startImage);
-    }
 
     return res.json({
       success: true,
