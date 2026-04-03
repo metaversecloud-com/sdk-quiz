@@ -40,8 +40,9 @@ export const AdminView = () => {
       <div className="card my-4">
         <div className="card-details">
           <p className="p2 text-warning">
-            This is a legacy quiz. Drop a new Quiz scene from the library to access new features (updated question
-            types, asset customization, and replay settings, etc.).
+            <strong>This quiz was created with an older version and can’t be updated.</strong>
+            To make changes or use new features (like updated question types and customization), add a new Quiz scene
+            from the library.
           </p>
         </div>
       </div>
