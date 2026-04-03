@@ -79,23 +79,42 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
         if (updatedStatus.answers[qId].isCorrect) score++;
       }
 
-      promises.push(
-        keyAsset.updateDataObject(
+      // Only update leaderboard if new score is better or same score with shorter time
+      const newEntry = `${displayName}|${score}|${updatedStatus.timeElapsed}|${now.toISOString()}|${Object.keys(updatedStatus.answers).length}|${quizAttempts}`;
+      let shouldUpdateLeaderboard = true;
+
+      const existingEntry = leaderboard?.[profileId];
+      if (existingEntry) {
+        const [, oldScoreStr, oldTimeStr] = existingEntry.split("|");
+        const oldScore = parseInt(oldScoreStr) || 0;
+        const parseTime = (time: string) => {
+          const [m, s] = time.split(":").map(Number);
+          return m * 60 + s;
+        };
+        if (oldScore > score || (oldScore === score && parseTime(oldTimeStr) <= parseTime(updatedStatus.timeElapsed))) {
+          shouldUpdateLeaderboard = false;
+        }
+      }
+
+      const leaderboardAnalytics = {
+        analytics: [
           {
-            [`leaderboard.${profileId}`]: `${displayName}|${score}|${updatedStatus.timeElapsed}|${now.toISOString()}|${Object.keys(updatedStatus.answers).length}|${quizAttempts}`,
+            analyticName: "completions",
+            profileId,
+            uniqueKey: profileId,
+            urlSlug,
           },
-          {
-            analytics: [
-              {
-                analyticName: "completions",
-                profileId,
-                uniqueKey: profileId,
-                urlSlug,
-              },
-            ],
-          },
-        ),
-      );
+        ],
+      };
+
+      if (shouldUpdateLeaderboard) {
+        promises.push(
+          keyAsset.updateDataObject({ [`leaderboard.${profileId}`]: newEntry }, leaderboardAnalytics),
+        );
+      } else {
+        // Still track the completion analytic even if leaderboard isn't updated
+        promises.push(keyAsset.updateDataObject({}, leaderboardAnalytics));
+      }
 
       // Use configurable particle or default
       if (completionParticle) {

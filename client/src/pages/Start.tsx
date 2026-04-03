@@ -87,11 +87,30 @@ export const Start = () => {
     return (
       <div className="grid gap-2">
         <>
-          <img
-            src="https://sdk-quiz.s3.us-east-1.amazonaws.com/instructions-start.png"
-            style={{ width: "100%" }}
-            alt="Quiz instructions"
-          />
+          {settings?.assetAppearance?.questionMarkerImage && settings?.assetAppearance?.platformImage ? (
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <img src={settings.assetAppearance.platformImage} alt="Quiz platform" />
+              <img
+                src={settings.assetAppearance.questionMarkerImage}
+                style={{ position: "absolute", top: "10%", objectFit: "contain" }}
+                alt="Quiz marker"
+              />
+            </div>
+          ) : (
+            <img
+              src="https://sdk-quiz.s3.us-east-1.amazonaws.com/instructions-start.png"
+              style={{ width: "100%" }}
+              alt="Quiz instructions"
+            />
+          )}
 
           <h2 className="text-center">Welcome to Quiz Race!</h2>
 
