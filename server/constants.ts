@@ -1,6 +1,6 @@
 export const defaultVisitorStatus = {
   answers: {},
-  timeElapsed: 0,
+  timeElapsed: "",
   endTime: null,
   startTime: null,
 };

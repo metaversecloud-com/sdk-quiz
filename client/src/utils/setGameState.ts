@@ -1,14 +1,21 @@
-import { ActionType, QuizType, ResultsType, SET_GAME_STATE, VisitorType } from "@/context/types";
+import { ActionType, LeaderboardEntryType, QuizType, ResultsType, SET_GAME_STATE, VisitorType, QuizSettings } from "@/context/types";
 import { Dispatch } from "react";
 
 export const setGameState = (
   dispatch: Dispatch<ActionType> | null,
-  data: { playerStatus?: ResultsType; quiz: QuizType; visitor?: VisitorType },
+  data: {
+    isConfigured?: boolean;
+    playerStatus?: ResultsType;
+    quiz: QuizType;
+    visitor?: VisitorType;
+    leaderboard?: LeaderboardEntryType[];
+    settings?: QuizSettings | null;
+  },
 ) => {
   if (!dispatch || !data.quiz) return;
 
   const gameState = data;
-  gameState.quiz.numberOfQuestions = Object.keys(data.quiz.questions).length;
+  gameState.quiz.numberOfQuestions = Object.keys(data.quiz.questions || {}).length;
 
   dispatch({
     type: SET_GAME_STATE,

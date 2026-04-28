@@ -4,6 +4,20 @@
 
 Desert Quiz Race is an engaging and interactive quiz game where players race against time to answer questions correctly. The game integrates into Topia world, offering a an experience of gaming and learning. Players start the race by clicking "Start Quiz" and navigate through various zones to answer questions, ending the race by re-entering the start zone to view their scores and times. Admins can easily manage the game by editing questions and resetting the quiz race.
 
+## Built With
+
+### Client
+
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+### Server
+
+![Node.js](https://img.shields.io/badge/node.js-%2343853D.svg?style=for-the-badge&logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/express-%23000000.svg?style=for-the-badge&logo=express&logoColor=white)
+
 ## Key Features
 
 - **Interactive Quiz Experience**: Engage in a dynamic quiz race within the Topia world.
@@ -99,6 +113,26 @@ Questions and user scores are managed dynamically. The game uses webhooks to tri
 ### Leaderboard Asset
 
 - Configuration > Link: `https://{sdk-app-url}.com/leaderboard`
+
+### Required Assets with Unique Names
+
+The app uses the following unique name patterns for managing dropped assets:
+
+| Unique Name Pattern | Description |
+| ------------------- | ----------- |
+| `start`             | Key asset   |
+
+## Environment Variables
+
+Create a `.env` file in the root directory. See `.env-example` for a template.
+
+| Variable             | Description                                                                        | Required |
+| -------------------- | ---------------------------------------------------------------------------------- | -------- |
+| `NODE_ENV`           | Node environment                                                                   | No       |
+| `NGROK_URL`          | Ngrok tunnel URL for webhook callbacks during local development                    | No       |
+| `INSTANCE_DOMAIN`    | Topia API domain (`api.topia.io` for production, `api-stage.topia.io` for staging) | Yes      |
+| `INTERACTIVE_KEY`    | Topia interactive app key                                                          | Yes      |
+| `INTERACTIVE_SECRET` | Topia interactive app secret                                                       | Yes      |
 
 ## Developer
 

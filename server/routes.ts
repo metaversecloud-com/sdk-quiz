@@ -1,11 +1,15 @@
 import express from "express";
 import {
   handleAnswerQuestion,
+  handleDeleteQuestion,
+  handleGetParticles,
   handleGetQuiz,
   handleOpenIframe,
   handleResetQuiz,
+  handleSaveQuestions,
   handleStartQuiz,
-  handleUpdateQuestion,
+  handleTimeoutQuiz,
+  handleUpdateSettings,
 } from "./controllers/index.js";
 import { getVersion } from "./utils/getVersion.js";
 
@@ -32,9 +36,13 @@ router.get("/system/health", (req, res) => {
 router.get("/quiz", handleGetQuiz);
 router.put("/start", handleStartQuiz);
 router.post("/question/answer/:questionId", handleAnswerQuestion);
+router.post("/quiz/timeout", handleTimeoutQuiz);
 
 // Admin
-router.put("/admin/update-question", handleUpdateQuestion);
+router.get("/admin/particles", handleGetParticles);
+router.put("/admin/save-questions", handleSaveQuestions);
+router.delete("/admin/delete-question/:questionId", handleDeleteQuestion);
+router.put("/admin/update-settings", handleUpdateSettings);
 router.post("/admin/reset", handleResetQuiz);
 
 // Webhooks

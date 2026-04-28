@@ -1,19 +1,27 @@
 import { Request, Response } from "express";
-import { DroppedAsset, errorHandler, getCredentials, getVisitor, World } from "../utils/index.js";
-import { KeyAssetDataObject, KeyAssetInterface, WorldDataObjectType } from "../types/index.js";
+import {
+  DroppedAsset,
+  errorHandler,
+  getCachedInventoryItems,
+  getCredentials,
+  getVisitor,
+  initializeKeyAssetDataObject,
+  sortLeaderboard,
+  World,
+} from "../utils/index.js";
+import { BadgesType, KeyAssetDataObject, KeyAssetInterface, WorldDataObjectType } from "../types/index.js";
 import { DroppedAssetInterface } from "@rtsdk/topia";
-import { initializeKeyAssetDataObject } from "../utils/droppedAssets/initializeKeyAssetDataObject.js";
+import { defaultVisitorStatus } from "../constants.js";
 
 export const handleGetQuiz = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
     const { assetId, isStartAsset, profileId, sceneDropId, urlSlug } = credentials;
+    const forceRefreshInventory = req.query.forceRefreshInventory === "true";
 
     let keyAssetId = assetId;
 
-    const getVisitorResponse = await getVisitor(credentials, true);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-    const { visitor, playerStatus } = getVisitorResponse;
+    let { visitor, playerStatus, visitorInventory } = await getVisitor(credentials, true);
     const { isAdmin, landmarkZonesString, privateZoneId } = visitor;
 
     let isInZone = false;
@@ -29,8 +37,9 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       } else {
         const droppedAssets: DroppedAssetInterface[] = await world.fetchDroppedAssetsBySceneDropId({
           sceneDropId,
+          uniqueName: "start",
         });
-        const keyAsset = droppedAssets.find((droppedAsset) => droppedAsset.uniqueName === "start");
+        const keyAsset = droppedAssets[0];
         keyAssetId = keyAsset?.id!;
       }
     } else {
@@ -44,7 +53,7 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       ]);
     }
 
-    // store keyAssetId by sceneDropId in World data object so that it can be accessed by any clickable asset
+    // Store keyAssetId by sceneDropId in World data object
     if (!dataObject || Object.keys(dataObject).length === 0) {
       await world.setDataObject({ [sceneDropId]: { keyAssetId } });
     } else if (!dataObject[sceneDropId]) {
@@ -55,61 +64,77 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
       credentials: { ...credentials, assetId: keyAssetId },
     });
 
-    await initializeKeyAssetDataObject(keyAsset as KeyAssetInterface);
+    await keyAsset.fetchDataObject();
+    const keyAssetDataObject = keyAsset.dataObject as KeyAssetDataObject;
 
-    const keyAssetDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
+    // Determine if quiz is configured:
+    // - New quizzes: have settings AND at least one real question
+    // - Legacy quizzes: have real questions (not just placeholders) in the data object
+    const hasSettings = !!keyAssetDataObject?.settings;
+    const hasRealQuestions =
+      keyAssetDataObject?.questions &&
+      Object.keys(keyAssetDataObject.questions).length > 0 &&
+      Object.values(keyAssetDataObject.questions).some(
+        (q) => !q.questionText.startsWith("Question ") || !q.questionText.endsWith(" placeholder"),
+      );
+    const isConfigured = (hasSettings && !!hasRealQuestions) || !!hasRealQuestions;
 
-    let leaderboard: Record<string, string> = keyAssetDataObject?.leaderboard || {};
+    // For unconfigured quizzes (first drop), initialize with default placeholder questions
+    if (!hasSettings && !hasRealQuestions) {
+      await initializeKeyAssetDataObject(keyAsset as KeyAssetInterface);
+      await keyAsset.fetchDataObject();
+    }
 
-    if (keyAssetDataObject.results) {
-      for (const profileId in keyAssetDataObject.results) {
-        const { answers, timeElapsed, username } = keyAssetDataObject.results[profileId];
+    const currentDataObject = keyAsset.dataObject as KeyAssetDataObject;
+    let leaderboard: Record<string, string> = currentDataObject?.leaderboard || {};
 
+    // Migrate legacy results format to leaderboard
+    if (currentDataObject.results) {
+      for (const profileId in currentDataObject.results) {
+        const { answers, timeElapsed, username } = currentDataObject.results[profileId];
         let score = 0;
         for (const questionId in answers) {
           if (answers[questionId].isCorrect) score++;
         }
-
         leaderboard[profileId] = `${username}|${score}|${timeElapsed}`;
       }
-      keyAssetDataObject.leaderboard = leaderboard;
-      delete keyAssetDataObject.results;
+      currentDataObject.leaderboard = leaderboard;
+      delete currentDataObject.results;
       const lockId = `${keyAssetId}-${new Date(Math.round(new Date().getTime() / 60000) * 60000)}`;
-      await keyAsset.setDataObject(keyAssetDataObject, { lock: { lockId, releaseLock: true } });
+      await keyAsset.setDataObject(currentDataObject, { lock: { lockId, releaseLock: true } });
     }
 
-    const leaderboardArray = [];
-    for (const profileId in leaderboard) {
-      const data = leaderboard[profileId];
+    const sortedLeaderboard = await sortLeaderboard(leaderboard);
 
-      const [displayName, score, timeElapsed] = data.split("|");
-
-      leaderboardArray.push({
-        displayName,
-        score: parseInt(score),
-        timeElapsed,
-      });
+    if (playerStatus.endTime && !sortedLeaderboard.find((entry) => entry.profileId === profileId)) {
+      playerStatus = defaultVisitorStatus;
+      await visitor.updateDataObject({ [`${urlSlug}-${sceneDropId}`]: playerStatus }, {});
     }
 
-    const sortedLeaderboard = leaderboardArray.sort((a, b) => {
-      const scoreDifference = b.score - a.score;
-      if (scoreDifference === 0) {
-        const parseTime = (time: string) => {
-          const [minutes, seconds] = time.split(":").map(Number);
-          return minutes * 60 + seconds;
+    const inventoryItems = await getCachedInventoryItems({ credentials, forceRefresh: forceRefreshInventory });
+
+    const badges: BadgesType = {};
+    for (const item of inventoryItems) {
+      const { id, name, image_path, description, type, status } = item;
+      if (name && type === "BADGE" && status === "ACTIVE") {
+        badges[name] = {
+          id: id,
+          name,
+          icon: image_path || "",
+          description: description || "",
         };
-        const aTime = parseTime(a.timeElapsed);
-        const bTime = parseTime(b.timeElapsed);
-        return aTime - bTime;
       }
-      return scoreDifference;
-    });
+    }
 
     return res.json({
+      isConfigured,
       leaderboard: sortedLeaderboard,
-      quiz: keyAssetDataObject,
+      quiz: currentDataObject,
       visitor: { isAdmin, isInZone, profileId },
+      visitorInventory,
       playerStatus,
+      badges,
+      settings: currentDataObject.settings || null,
     });
   } catch (error) {
     errorHandler({

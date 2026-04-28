@@ -8,11 +8,9 @@ export const handleOpenIframe = async (req: Request, res: Response): Promise<Rec
 
     const { iframeId } = req.params;
     const isStart = iframeId === "start" || uniqueName === "start";
+    const isLeaderboard = iframeId === "leaderboard" || uniqueName === "quiz-leaderboard";
 
-    const getVisitorResponse = await getVisitor(credentials);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-
-    const { visitor } = getVisitorResponse;
+    const { visitor } = await getVisitor(credentials);
     await visitor.closeIframe(assetId).catch((error: any) =>
       errorHandler({
         error,
@@ -22,16 +20,25 @@ export const handleOpenIframe = async (req: Request, res: Response): Promise<Rec
     );
 
     const origin = process.env.NODE_ENV === "development" ? process.env.NGROK_URL : `https://${req.hostname}`;
-    const pageName = isStart ? "start" : "question";
+
+    let pageName: string;
+    if (isStart) {
+      pageName = "start";
+    } else if (isLeaderboard) {
+      pageName = "leaderboard";
+    } else {
+      pageName = "question";
+    }
+
     let link = `${origin}/${pageName}?visitorId=${visitorId}&interactiveNonce=${interactiveNonce}&assetId=${assetId}&interactivePublicKey=${interactivePublicKey}&urlSlug=${urlSlug}`;
-    if (!isStart) link += `&questionId=${iframeId || uniqueName}`;
+    if (!isStart && !isLeaderboard) link += `&questionId=${iframeId || uniqueName}`;
 
     visitor
       .openIframe({
         droppedAssetId: assetId,
         link,
         shouldOpenInDrawer: true,
-        title: "Quiz Race",
+        title: isLeaderboard ? "Quiz Leaderboard" : "Quiz Race",
       })
       .catch((error: any) =>
         errorHandler({

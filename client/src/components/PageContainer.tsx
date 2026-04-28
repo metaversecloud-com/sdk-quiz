@@ -9,12 +9,10 @@ import { GlobalStateContext } from "@context/GlobalContext";
 export const PageContainer = ({
   children,
   isLoading,
-  headerText,
   showAdminIcon,
 }: {
   children: ReactNode;
   isLoading: boolean;
-  headerText?: string;
   showAdminIcon?: boolean;
 }) => {
   const { error, visitor } = useContext(GlobalStateContext);
@@ -27,11 +25,6 @@ export const PageContainer = ({
       {showAdminIcon && visitor?.isAdmin && (
         <div>
           <AdminIconButton setShowSettings={() => setShowSettings(!showSettings)} showSettings={showSettings} />
-        </div>
-      )}
-      {(headerText || showSettings) && (
-        <div className="pb-6">
-          <h2>{showSettings ? "Settings" : headerText}</h2>
         </div>
       )}
       {showSettings ? (

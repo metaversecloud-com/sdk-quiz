@@ -8,10 +8,7 @@ export const handleStartQuiz = async (req: Request, res: Response): Promise<Reco
     const credentials = getCredentials(req.query);
     const { assetId, profileId, sceneDropId, urlSlug, username } = credentials;
 
-    const getVisitorResponse = await getVisitor(credentials);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-
-    const { visitor } = getVisitorResponse;
+    const { visitor } = await getVisitor(credentials);
     const now = new Date();
     const playerStatus = {
       answers: {},
@@ -42,9 +39,24 @@ export const handleStartQuiz = async (req: Request, res: Response): Promise<Reco
       errorHandler({
         error,
         functionName: "handleStartQuiz",
-        message: "Error triggering particle effects",
+        message: "Error triggering activity",
       }),
     );
+
+    // Teleport user to the start asset position
+    visitor
+      .moveVisitor({
+        x: keyAsset.position.x,
+        y: keyAsset.position.y,
+        shouldTeleportVisitor: true,
+      })
+      .catch((error: any) =>
+        errorHandler({
+          error,
+          functionName: "handleStartQuiz",
+          message: "Error teleporting visitor to start",
+        }),
+      );
 
     return res.json({
       quiz: keyAssetDataObject,

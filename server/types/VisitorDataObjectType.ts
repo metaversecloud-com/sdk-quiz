@@ -1,9 +1,12 @@
+export type VisitorAnswerType = {
+  answer: string;
+  selectedOptions?: string[]; // for allThatApply questions
+  isCorrect: boolean;
+};
+
 export type VisitorStatusType = {
   answers: {
-    [questionId: string]: {
-      answer: string;
-      isCorrect: boolean;
-    };
+    [questionId: string]: VisitorAnswerType;
   };
   timeElapsed: string;
   endTime: Date | null;

@@ -5,10 +5,10 @@ import {
   Topia,
   AssetFactory,
   DroppedAssetFactory,
+  EcosystemFactory,
   UserFactory,
   VisitorFactory,
   WorldFactory,
-  EcosystemFactory,
 } from "@rtsdk/topia";
 
 const config = {
@@ -23,9 +23,10 @@ const myTopiaInstance = new Topia(config);
 
 const Asset = new AssetFactory(myTopiaInstance);
 const DroppedAsset = new DroppedAssetFactory(myTopiaInstance);
+const Ecosystem = new EcosystemFactory(myTopiaInstance);
 const User = new UserFactory(myTopiaInstance);
 const Visitor = new VisitorFactory(myTopiaInstance);
 const World = new WorldFactory(myTopiaInstance);
 const Ecosystem = new EcosystemFactory(myTopiaInstance);
 
-export { Asset, DroppedAsset, myTopiaInstance, User, Visitor, World, Ecosystem };
+export { Asset, DroppedAsset, Ecosystem, myTopiaInstance, User, Visitor, World };

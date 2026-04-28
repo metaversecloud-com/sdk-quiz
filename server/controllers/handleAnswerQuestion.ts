@@ -1,5 +1,13 @@
-import { KeyAssetDataObject, VisitorStatusType, WorldDataObjectType } from "../types/index.js";
-import { errorHandler, getCredentials, DroppedAsset, World, getVisitor } from "../utils/index.js";
+import { KeyAssetDataObject, QuestionDefinition, VisitorStatusType, WorldDataObjectType } from "../types/index.js";
+import {
+  errorHandler,
+  getCredentials,
+  DroppedAsset,
+  World,
+  getVisitor,
+  awardBadge,
+  sortLeaderboard,
+} from "../utils/index.js";
 import { Request, Response } from "express";
 
 export const handleAnswerQuestion = async (req: Request, res: Response): Promise<Record<string, any> | void> => {
@@ -7,16 +15,19 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
     const credentials = getCredentials(req.query);
     const { assetId, displayName, profileId, sceneDropId, urlSlug } = credentials;
 
-    const { isCorrect, selectedOption } = req.body;
+    const { isCorrect, selectedOption, selectedOptions } = req.body;
+
+    const promises = [];
 
     const { questionId } = req.params;
     if (!questionId) throw "Question id is required.";
 
-    const getVisitorResponse = await getVisitor(credentials);
-    if (getVisitorResponse instanceof Error) throw getVisitorResponse;
-
-    const { visitor, playerStatus } = getVisitorResponse;
+    const { visitor, playerStatus, visitorInventory } = await getVisitor(credentials);
     const { answers, endTime, startTime } = playerStatus;
+    const visitorData = visitor.dataObject as Record<string, any> || {};
+    const quizKey = `${urlSlug}-${sceneDropId}`;
+    let quizAttempts = visitorData.quizCompletions?.[quizKey] || 0;
+    let totalQuizzesCompleted = visitorData.totalQuizzesCompleted || 0;
 
     const world = World.create(urlSlug, { credentials });
     const worldDataObject = (await world.fetchDataObject()) as WorldDataObjectType;
@@ -25,7 +36,22 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
       credentials,
     });
     await keyAsset.fetchDataObject();
-    const { questions } = keyAsset.dataObject as KeyAssetDataObject;
+    const { leaderboard, questions, settings } = keyAsset.dataObject as KeyAssetDataObject;
+
+    const question = questions[questionId] as QuestionDefinition;
+    const isConfigured = !!settings;
+    const { showCorrectAnswer, completionParticle, correctAnswerParticle } = settings || {};
+
+    // Determine correctness based on question type
+    let answerIsCorrect = isCorrect;
+    if (question.questionType === "openText") {
+      answerIsCorrect =
+        (selectedOption || "").trim().toLowerCase() === (question.answer || "").trim().toLowerCase();
+    } else if (question.questionType === "allThatApply" && question.correctOptions && selectedOptions) {
+      const correctSet = new Set(question.correctOptions);
+      const selectedSet = new Set(selectedOptions as string[]);
+      answerIsCorrect = correctSet.size === selectedSet.size && [...correctSet].every((o) => selectedSet.has(o));
+    }
 
     const now = new Date();
     const numberOfQuestions = Object.keys(questions).length;
@@ -36,80 +62,214 @@ export const handleAnswerQuestion = async (req: Request, res: Response): Promise
     const seconds = ((durationMs % 60000) / 1000).toFixed(0);
 
     const updatedStatus: VisitorStatusType = playerStatus;
-    updatedStatus.answers[questionId] = { answer: selectedOption, isCorrect };
+    updatedStatus.answers[questionId] = {
+      answer: selectedOption || "",
+      selectedOptions: selectedOptions || undefined,
+      isCorrect: answerIsCorrect,
+    };
     updatedStatus.endTime = hasAnsweredAll ? now : null;
     updatedStatus.timeElapsed = minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
 
-    await visitor.updateDataObject(
-      { [`${urlSlug}-${sceneDropId}`]: updatedStatus },
-      {
+    if (hasAnsweredAll) {
+      quizAttempts += 1;
+      totalQuizzesCompleted += 1;
+
+      let score = 0;
+      for (const qId in updatedStatus.answers) {
+        if (updatedStatus.answers[qId].isCorrect) score++;
+      }
+
+      // Only update leaderboard if new score is better or same score with shorter time
+      const newEntry = `${displayName}|${score}|${updatedStatus.timeElapsed}|${now.toISOString()}|${Object.keys(updatedStatus.answers).length}|${quizAttempts}`;
+      let shouldUpdateLeaderboard = true;
+
+      const existingEntry = leaderboard?.[profileId];
+      if (existingEntry) {
+        const [, oldScoreStr, oldTimeStr] = existingEntry.split("|");
+        const oldScore = parseInt(oldScoreStr) || 0;
+        const parseTime = (time: string) => {
+          const [m, s] = time.split(":").map(Number);
+          return m * 60 + s;
+        };
+        if (oldScore > score || (oldScore === score && parseTime(oldTimeStr) <= parseTime(updatedStatus.timeElapsed))) {
+          shouldUpdateLeaderboard = false;
+        }
+      }
+
+      const leaderboardAnalytics = {
         analytics: [
           {
-            analyticName: `question${questionId}Answered`,
+            analyticName: "completions",
             profileId,
             uniqueKey: profileId,
             urlSlug,
           },
         ],
-      },
-    );
+      };
 
-    if (hasAnsweredAll) {
-      let score = 0;
-      for (const questionId in answers) {
-        if (answers[questionId].isCorrect) score++;
+      if (shouldUpdateLeaderboard) {
+        promises.push(
+          keyAsset.updateDataObject({ [`leaderboard.${profileId}`]: newEntry }, leaderboardAnalytics),
+        );
+      } else {
+        // Still track the completion analytic even if leaderboard isn't updated
+        promises.push(keyAsset.updateDataObject({}, leaderboardAnalytics));
       }
-      keyAsset.updateDataObject(
+
+      // Use configurable particle or default
+      if (completionParticle) {
+        promises.push(
+          visitor
+            .triggerParticle({
+              name: completionParticle,
+              duration: 5,
+            })
+            .catch((error: any) =>
+              errorHandler({
+                error,
+                functionName: "handleAnswerQuestion",
+                message: "Error triggering particle effects",
+              }),
+            ),
+        );
+      }
+
+      // Award Perfect Score badge if all answers are correct
+      if (score === numberOfQuestions) {
+        promises.push(
+          awardBadge({
+            credentials,
+            visitor,
+            visitorInventory,
+            badgeName: "Perfect Score",
+          }).catch((error) =>
+            errorHandler({
+              error,
+              functionName: "handleAnswerQuestion",
+              message: "Error awarding Perfect Score badge",
+            }),
+          ),
+        );
+      }
+
+      // Award Lightning Round badge if quiz is finished under 30 seconds
+      if (durationMs <= 30000) {
+        promises.push(
+          awardBadge({
+            credentials,
+            visitor,
+            visitorInventory,
+            badgeName: "Lightning Round",
+          }).catch((error) =>
+            errorHandler({
+              error,
+              functionName: "handleAnswerQuestion",
+              message: "Error awarding Lightning Round badge",
+            }),
+          ),
+        );
+      }
+
+      // Award Quiz Master badge if 10 quizzes have been completed across all quizzes
+      if (totalQuizzesCompleted === 10) {
+        promises.push(
+          awardBadge({
+            credentials,
+            visitor,
+            visitorInventory,
+            badgeName: "Quiz Master",
+          }).catch((error) =>
+            errorHandler({
+              error,
+              functionName: "handleAnswerQuestion",
+              message: "Error awarding Quiz Master badge",
+            }),
+          ),
+        );
+      }
+
+      // Award Top 3 Finisher badge if player is in top 3 of leaderboard
+      leaderboard[profileId] = `${displayName}|${score}|${updatedStatus.timeElapsed}`;
+      const sortedLeaderboard = sortLeaderboard(leaderboard);
+      const top3ProfileIds = sortedLeaderboard.slice(0, 3).map((entry) => entry.profileId);
+      if (top3ProfileIds.includes(profileId)) {
+        promises.push(
+          awardBadge({
+            credentials,
+            visitor,
+            visitorInventory,
+            badgeName: "Top 3 Finisher",
+          }).catch((error) =>
+            errorHandler({
+              error,
+              functionName: "handleAnswerQuestion",
+              message: "Error awarding Top 3 Finisher badge",
+            }),
+          ),
+        );
+      }
+    }
+
+    if (answerIsCorrect && showCorrectAnswer && correctAnswerParticle) {
+      const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
+      promises.push(
+        world
+          .triggerParticle({
+            name: correctAnswerParticle,
+            duration: 3,
+            position: droppedAsset.position,
+          })
+          .catch((error: any) =>
+            errorHandler({
+              error,
+              functionName: "handleAnswerQuestion",
+              message: "Error triggering particle effects",
+            }),
+          ),
+      );
+    }
+
+    promises.push(
+      visitor.updateDataObject(
         {
-          [`leaderboard.${profileId}`]: `${displayName}|${score}|${updatedStatus.timeElapsed}`,
+          totalQuizzesCompleted,
+          [`quizCompletions.${quizKey}`]: quizAttempts,
+          [quizKey]: updatedStatus,
         },
         {
           analytics: [
             {
-              analyticName: "completions",
+              analyticName: `question${questionId}Answered`,
               profileId,
               uniqueKey: profileId,
               urlSlug,
             },
           ],
         },
-      );
+      ),
+    );
 
-      visitor
-        .triggerParticle({
-          name: "partyPopper_float",
-          duration: 5,
-        })
-        .catch((error: any) =>
-          errorHandler({
-            error,
-            functionName: "handleAnswerQuestion",
-            message: "Error triggering particle effects",
-          }),
-        );
-    }
-
-    if (isCorrect) {
-      const droppedAsset = await DroppedAsset.get(assetId, urlSlug, { credentials });
-      world
-        .triggerParticle({
-          name: "brain_float",
-          duration: 3,
-          position: droppedAsset.position,
-        })
-        .catch((error: any) =>
-          errorHandler({
-            error,
-            functionName: "handleAnswerQuestion",
-            message: "Error triggering particle effects",
-          }),
-        );
-    }
+    const results = await Promise.allSettled(promises);
+    results.forEach((result) => {
+      if (result.status === "rejected") console.error(result.reason);
+    });
 
     const keyAssetDataObject = (await keyAsset.fetchDataObject()) as KeyAssetDataObject;
 
+    // If showCorrectAnswer is false (configured quiz), don't reveal correct answers
+    const responseQuiz = { ...keyAssetDataObject };
+    if (isConfigured && settings && !showCorrectAnswer) {
+      // Strip correct answer info from questions in response
+      const sanitizedQuestions: Record<string, any> = {};
+      for (const [qId, q] of Object.entries(responseQuiz.questions)) {
+        const { answer, correctOptions, ...rest } = q as QuestionDefinition;
+        sanitizedQuestions[qId] = rest;
+      }
+      responseQuiz.questions = sanitizedQuestions;
+    }
+
     return res.json({
-      quiz: keyAssetDataObject,
+      quiz: responseQuiz,
       playerStatus: updatedStatus,
     });
   } catch (error) {
