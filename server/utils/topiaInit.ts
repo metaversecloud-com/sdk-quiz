@@ -27,6 +27,5 @@ const Ecosystem = new EcosystemFactory(myTopiaInstance);
 const User = new UserFactory(myTopiaInstance);
 const Visitor = new VisitorFactory(myTopiaInstance);
 const World = new WorldFactory(myTopiaInstance);
-const Ecosystem = new EcosystemFactory(myTopiaInstance);
 
 export { Asset, DroppedAsset, Ecosystem, myTopiaInstance, User, Visitor, World };
