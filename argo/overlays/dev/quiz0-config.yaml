@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quiz0-config
+  labels:
+    app.kubernetes.io/name: quiz0
+data:
+  IMG_ASSET_ID: "webImageAsset"
+  INSTANCE_DOMAIN: "api.topia.io"
+  INSTANCE_PROTOCOL: "https"
+  INTERACTIVE_KEY: "VUE7QfycF0Pob9FtYzbk"
+  NODE_ENV: "production"
+  PORT: "3000"
+  REACT_APP_API_URL: "https://quiz0-dev-Topia.topia-rtsdk.com"
