@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quiz0
+  labels:
+    app.kubernetes.io/name: quiz0
+spec:
+  # Replicas are managed by the per-env KEDA HTTPScaledObject (dev: scale-to-zero
+  # 0<->1 via the KEDA HTTP add-on interceptor).
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: quiz0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: quiz0
+    spec:
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: quiz0
+          image: quiz0 # placeholder; overlay `images:` maps it to the real ref
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          # OTel opts in per-env via OTEL_SERVICE_NAME in the overlay ConfigMap
+          # (the endpoint defaults in-app to the spoke-local collector). This app
+          # is not yet instrumented, so it omits OTEL_SERVICE_NAME and stays dark.
+          envFrom:
+            # Per-service config + secret (own INTERACTIVE_KEY/SECRET). Seeded
+            # out-of-band by the Terraform-templated CI job (NOT Argo-managed).
+            - configMapRef:
+                name: quiz0-config
+            - secretRef:
+                name: quiz0-secrets
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
