@@ -16,6 +16,10 @@ spec:
       labels:
         app.kubernetes.io/name: quiz0
     spec:
+      # Suppress Docker-link-style env injection for every Service in the
+      # namespace (e.g. CHESS0_*, MERGE_WORLD_*). This app reads config only
+      # from its own ConfigMap/Secret, so the link vars are pure noise.
+      enableServiceLinks: false
       terminationGracePeriodSeconds: 30
       securityContext:
         seccompProfile:
