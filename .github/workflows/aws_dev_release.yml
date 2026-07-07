@@ -109,17 +109,27 @@ jobs:
       - name: Install kubectl + yq + aws cli
         run: |
           set -euo pipefail
-          if ! command -v kubectl >/dev/null 2>&1; then
-            curl -sSLo /tmp/kubectl https://dl.k8s.io/release/v1.34.0/bin/linux/amd64/kubectl
+          # Map the runner CPU arch to each tool's release naming. The runner arch
+          # can change between runs; a stale wrong-arch binary left in place would
+          # otherwise surface as "Exec format error". Gate each install on actually
+          # EXECUTING the binary (not `command -v`, which only checks the path) so a
+          # present-but-unrunnable binary from a prior arch is detected and replaced.
+          case "$(uname -m)" in
+            x86_64)          K8S_ARCH=amd64; YQ_ARCH=amd64; AWS_ARCH=x86_64 ;;
+            aarch64|arm64)   K8S_ARCH=arm64; YQ_ARCH=arm64; AWS_ARCH=aarch64 ;;
+            *) echo "::error::Unsupported arch $(uname -m)"; exit 1 ;;
+          esac
+          if ! kubectl version --client &>/dev/null; then
+            curl -sSLo /tmp/kubectl https://dl.k8s.io/release/v1.34.0/bin/linux/$K8S_ARCH/kubectl
             sudo install -m0755 /tmp/kubectl /usr/local/bin/kubectl
           fi
-          if ! command -v yq >/dev/null 2>&1; then
-            curl -sSLo /tmp/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          if ! yq --version &>/dev/null; then
+            curl -sSLo /tmp/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_$YQ_ARCH
             sudo install -m0755 /tmp/yq /usr/local/bin/yq
           fi
-          if ! command -v aws >/dev/null 2>&1; then
+          if ! aws --version &>/dev/null; then
             sudo apt-get update -y && sudo apt-get install -y unzip
-            curl -sSL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/aws.zip
+            curl -sSL https://awscli.amazonaws.com/awscli-exe-linux-$AWS_ARCH.zip -o /tmp/aws.zip
             unzip -q /tmp/aws.zip -d /tmp && sudo /tmp/aws/install --update
           fi
       - name: Get role ARN
