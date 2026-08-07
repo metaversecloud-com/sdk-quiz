@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# No `namespace:` directive: the interceptor Ingresses must stay in `keda`; the
+# workload resources carry no namespace and Argo injects the Application's
+# destination namespace (sdk-apps-dev).
+resources:
+  - ../../services/quiz0
+  - quiz0-config.yaml
+  - quiz0-sealedsecret.yaml
+  - quiz0-httpscaledobject.yaml
+  - quiz0-interceptor-ingress.yaml
+patches:
+  # Drop each service's direct ALB Ingress: in dev the app is fronted through the
+  # KEDA interceptor so a scaled-to-zero Deployment is woken by the first request.
+  - target:
+      kind: Ingress
+      name: quiz0
+    patch: |
+      $patch: delete
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: quiz0
+# Per-service image (defaults to the shared dev ECR sdk-example:<repo>; an
+# independent deployment may pin a different tag/image).
+images:
+  - name: quiz0
+    newName: 368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example
+    digest: sha256:f110bf1b4cdab5e0a157c215b5802167f0da4de0ffd0ceff7380854a7d41885c

@@ -1,7 +1,6 @@
 {
   "app": "sdk-quiz",
   "env": "dev",
-  "targetRevision": "dev",
   "clusterName": "Topia-dev-SDK-Apps",
   "clusterType": "eks",
   "namespace": "sdk-apps-dev",
@@ -12,7 +11,7 @@
       "hosts": [
         "quiz0-dev-topia.topia-rtsdk.com"
       ],
-      "health": "/"
+      "health": "/api/system/health"
     }
   ]
 }
