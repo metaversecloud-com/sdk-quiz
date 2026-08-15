@@ -27,3 +27,4 @@ images:
   - name: quiz0
     newName: 368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example
     digest: sha256:f110bf1b4cdab5e0a157c215b5802167f0da4de0ffd0ceff7380854a7d41885c
+    newTag: sdk-quiz
