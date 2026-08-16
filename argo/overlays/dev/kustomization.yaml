@@ -26,5 +26,5 @@ patches:
 images:
   - name: quiz0
     newName: 368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example
-    digest: sha256:f110bf1b4cdab5e0a157c215b5802167f0da4de0ffd0ceff7380854a7d41885c
+    digest: sha256:5c546438e72bccd7a0f52e43bed360897e1ad4b2aa52e368e5018d169b573611
     newTag: sdk-quiz
