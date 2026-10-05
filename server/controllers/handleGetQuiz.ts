@@ -113,10 +113,11 @@ export const handleGetQuiz = async (req: Request, res: Response) => {
 
     const inventoryItems = await getCachedInventoryItems({ credentials, forceRefresh: forceRefreshInventory });
 
+    // INACTIVE items are filtered at the cache layer.
     const badges: BadgesType = {};
     for (const item of inventoryItems) {
-      const { id, name, image_path, description, type, status } = item;
-      if (name && type === "BADGE" && status === "ACTIVE") {
+      const { id, name, image_path, description, type } = item;
+      if (name && type === "BADGE") {
         badges[name] = {
           id: id,
           name,
