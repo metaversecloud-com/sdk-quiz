@@ -6,6 +6,7 @@
 //   POST /__mock/worlds/:urlSlug   seed a world  { dataObject, assets, visitors }
 //   GET  /__mock/worlds/:urlSlug   read world state + event log (particles, toasts, grants, ...)
 //   GET  /__mock/users/:profileId  read a user data object
+//   GET  /__mock/unhandled         public-API calls the mock didn't recognize, outside any world
 //   GET  /__mock/health
 
 import http from "node:http";
@@ -26,9 +27,10 @@ const PARTICLES = ["brain_float", "partyPopper_float", "confetti_float"].map((na
 
 const worlds = new Map();
 const users = new Map();
+const unhandledOutsideWorlds = [];
 let assetCounter = 0;
 
-const emptyWorld = () => ({ dataObject: {}, assets: {}, visitors: {}, events: [] });
+const emptyWorld = () => ({ dataObject: {}, assets: {}, visitors: {}, events: [], unhandled: [] });
 const getWorld = (urlSlug) => {
   if (!worlds.has(urlSlug)) worlds.set(urlSlug, emptyWorld());
   return worlds.get(urlSlug);
@@ -93,6 +95,7 @@ const routes = [
   ],
   ["GET", /^\/__mock\/worlds\/([^/]+)$/, ([urlSlug]) => [200, getWorld(urlSlug)]],
   ["GET", /^\/__mock\/users\/([^/]+)$/, ([profileId]) => [200, getUser(profileId)]],
+  ["GET", /^\/__mock\/unhandled$/, () => [200, unhandledOutsideWorlds]],
 
   // ---- ecosystem ----
   ["GET", /^\/api\/v1\/inventory\/?$/, () => [200, INVENTORY_ITEMS]],
@@ -276,8 +279,13 @@ const server = http.createServer(async (req, res) => {
       return send(res, status, payload);
     }
 
-    // Surfaces endpoints the app started calling that this mock doesn't know about yet.
+    // Surfaces endpoints the app started calling that this mock doesn't know about yet; the e2e
+    // fixture fails the test that triggered one.
     console.error(`[mock-topia] unhandled ${req.method} ${url.pathname}`);
+    const call = `${req.method} ${url.pathname}`;
+    const worldSlug = url.pathname.match(/^\/api\/v1\/world\/([^/]+)\//)?.[1];
+    if (worldSlug) getWorld(decodeURIComponent(worldSlug)).unhandled.push(call);
+    else unhandledOutsideWorlds.push(call);
     send(res, 501, { message: `mock-topia: unhandled ${req.method} ${url.pathname}` });
   } catch (error) {
     console.error("[mock-topia] error", error);

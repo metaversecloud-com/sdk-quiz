@@ -1,4 +1,4 @@
-import { APIRequestContext, Page, test as base } from "@playwright/test";
+import { APIRequestContext, Page, test as base, expect } from "@playwright/test";
 import { INTERACTIVE_KEY, MOCK_TOPIA_URL } from "./constants";
 
 export const KEY_ASSET_ID = "key-asset";
@@ -72,7 +72,13 @@ export type SeedOptions = {
   /** profileId -> "displayName|score|mm:ss[|date|answered|attempts]" */
   leaderboard?: Record<string, string>;
   playerStatus?: PlayerStatus;
+  /** Extra visitor data-object fields, e.g. totalQuizzesCompleted or quizCompletions. */
+  visitorData?: Record<string, unknown>;
+  /** Badges the visitor already owns. */
+  badges?: string[];
 };
+
+export type IframePage = "start" | "question" | "leaderboard";
 
 export class QuizWorld {
   readonly quizKey: string;
@@ -86,7 +92,16 @@ export class QuizWorld {
     this.quizKey = `${urlSlug}-${SCENE_DROP_ID}`;
   }
 
-  async seed({ isAdmin = false, inZone = true, questions, settings, leaderboard = {}, playerStatus }: SeedOptions = {}) {
+  async seed({
+    isAdmin = false,
+    inZone = true,
+    questions,
+    settings,
+    leaderboard = {},
+    playerStatus,
+    visitorData = {},
+    badges = [],
+  }: SeedOptions = {}) {
     const isConfigured = !!questions;
     const questionIds = Object.keys(questions || {});
     const assets: Record<string, any> = {
@@ -138,8 +153,13 @@ export class QuizWorld {
             displayName: this.displayName,
             landmarkZonesString: inZone ? Object.keys(assets).join(",") : "",
             privateZoneId: "",
-            dataObject: playerStatus ? { [this.quizKey]: playerStatus } : {},
-            inventory: [],
+            dataObject: { ...visitorData, ...(playerStatus && { [this.quizKey]: playerStatus }) },
+            inventory: badges.map((name) => ({
+              id: `owned-${name}`,
+              item_id: `owned-${name}`,
+              status: "ACTIVE",
+              item: { name, type: "BADGE", image_url: "" },
+            })),
           },
         },
       },
@@ -154,7 +174,13 @@ export class QuizWorld {
       assets: Record<string, any>;
       visitors: Record<string, any>;
       events: Array<Record<string, any>>;
+      unhandled: string[];
     };
+  }
+
+  /** Badge names granted during the test. */
+  async grantedBadges() {
+    return (await this.state()).events.filter((e) => e.type === "grant-item").map((e) => e.name as string).sort();
   }
 
   async keyAssetData() {
@@ -171,7 +197,7 @@ export class QuizWorld {
   }
 
   /** Iframe URL with the session credentials Topia appends when it opens the app. */
-  url(page: "start" | "question" | "leaderboard", questionId?: string) {
+  url(page: IframePage, questionId?: string) {
     const assetId = page === "start" ? KEY_ASSET_ID : page === "leaderboard" ? LEADERBOARD_ASSET_ID : questionAssetId(questionId!);
     const params = new URLSearchParams({
       assetId,
@@ -189,6 +215,11 @@ export class QuizWorld {
     if (questionId) params.set("questionId", questionId);
     return `/${page}?${params}`;
   }
+
+  /** App API path carrying the credentials of the given iframe page, as the client sends them. */
+  api(path: string, page: IframePage = "start", questionId?: string) {
+    return `/api${path}${new URL(this.url(page, questionId), "http://x").search}`;
+  }
 }
 
 export const openAdminSettings = async (page: Page) => {
@@ -199,7 +230,14 @@ export const openAdminSettings = async (page: Page) => {
 export const test = base.extend<{ world: QuizWorld }>({
   world: async ({ request }, use, testInfo) => {
     const id = `${testInfo.testId}-${testInfo.repeatEachIndex}-${testInfo.retry}`.replace(/[^a-zA-Z0-9-]/g, "");
-    await use(new QuizWorld(`quiz-${id}`, `profile-${id}`, request));
+    const world = new QuizWorld(`quiz-${id}`, `profile-${id}`, request);
+    await use(world);
+
+    // Fail the test if the app called a public-API endpoint the mock doesn't implement (e.g. after an
+    // @rtsdk/topia upgrade): it would otherwise pass against a 501 the real API never returns.
+    expect((await world.state()).unhandled, "public-API calls mock-topia doesn't implement").toEqual([]);
+    const outside = await (await request.get(`${MOCK_TOPIA_URL}/__mock/unhandled`)).json();
+    expect(outside, "public-API calls mock-topia doesn't implement").toEqual([]);
   },
 });
 
