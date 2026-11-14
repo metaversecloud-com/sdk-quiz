@@ -53,7 +53,7 @@ Without a version (`e2e/scripts/test-image.sh`) it tests the image exactly as th
 - Assertions check both the UI and what the app wrote back to Topia (`world.keyAssetData()`,
   `world.playerStatus()`, `world.state().events` for particles, badges, teleports, webhooks, deletes).
 - If the app starts calling a public-API endpoint the mock doesn't implement, the mock logs
-  `[mock-topia] unhandled ...` and returns 501.
+  `[mock-topia] unhandled ...`, returns 501, and the test that triggered it fails.
 
 ## Coverage
 
@@ -62,3 +62,11 @@ Without a version (`e2e/scripts/test-image.sh`) it tests the image exactly as th
 | `admin.spec.ts` | not-live state, first-time setup (settings → leaderboard asset → first question asset + webhook), validation errors, adding each question type, editing, deleting + renumbering, settings |
 | `player.spec.ts` | start + teleport, timer timeout, not-started / outside-zone guards, right and wrong answers for all three question types, answer lock on revisit, server-side re-grading, hidden answers not leaked, completion (leaderboard, particles, badges), replay on/off |
 | `leaderboard.spec.ts` | empty state, ranking, admin reset, badges tab |
+| `security.spec.ts` | admin endpoints reject players, wrong public key, timeout can't end a quiz early, answer integrity |
+| `rules.spec.ts` | replays keep the best result, timeouts, Quiz Master / owned-badge / 4th-place badge rules, reset player starts fresh, particles set to None |
+
+Tests for bugs that still exist are marked `test.fail(true, "EXP-…")`: they pass while the bug is there and
+fail once it's fixed, so the marker is removed in the same PR as the fix.
+
+Every test also fails if the app calls a public-API endpoint `mock-topia` doesn't implement, so an
+`@rtsdk/topia` upgrade that starts using new endpoints can't pass silently.
