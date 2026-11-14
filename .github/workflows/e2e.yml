@@ -44,7 +44,7 @@ jobs:
           retention-days: 14
 
   e2e-node-matrix:
-    name: E2E (Node ${{ matrix.node_version }})
+    name: E2E node comparison
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 20
