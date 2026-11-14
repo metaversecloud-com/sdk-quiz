@@ -15,6 +15,30 @@ const appEnv = {
   GOOGLESHEETS_SHEET_ID: "",
 };
 
+// E2E_APP_IMAGE=<image> runs the app from a Docker image (e.g. to test a Node upgrade) instead of
+// local Node. The container reaches the mock on the host through host.docker.internal.
+const APP_IMAGE = process.env.E2E_APP_IMAGE;
+const imageEnvFlags = Object.entries({
+  ...appEnv,
+  PORT: "3000",
+  INSTANCE_DOMAIN: `host.docker.internal:${MOCK_TOPIA_PORT}`,
+})
+  .map(([key, value]) => `-e ${key}=${value}`)
+  .join(" ");
+
+const appServer = APP_IMAGE
+  ? {
+      command: `docker run --rm --init --name sdk-quiz-e2e --add-host=host.docker.internal:host-gateway -p ${APP_PORT}:3000 ${imageEnvFlags} ${APP_IMAGE}`,
+      // Never reuse a server already on the port: it wouldn't be the image under test.
+      reuseExistingServer: false,
+    }
+  : {
+      command: "npm run build --prefix .. && node dist/server/index.js",
+      cwd: "../server",
+      env: appEnv,
+      reuseExistingServer: !process.env.CI,
+    };
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
@@ -35,12 +59,9 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI,
     },
     {
-      command: "npm run build --prefix .. && node dist/server/index.js",
-      cwd: "../server",
+      ...appServer,
       url: `http://localhost:${APP_PORT}/api/system/health`,
-      env: appEnv,
       timeout: 180_000,
-      reuseExistingServer: !process.env.CI,
     },
   ],
 });

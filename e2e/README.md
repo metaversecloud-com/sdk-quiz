@@ -18,6 +18,32 @@ npm run test:ui                # interactive mode
 Ports: app `3100`, mock `3101` (override with `APP_PORT` / `MOCK_TOPIA_PORT`).
 Locally, already-running servers on those ports are reused; with `CI=1` they're always started fresh.
 
+## Run against a Docker image (e.g. a Node upgrade)
+
+`npm test` runs the app on your local Node. To test what actually ships, run the suite against the
+container image instead:
+
+```bash
+nvm use 24                              # build on the same Node as the image, like CI does
+e2e/scripts/test-image.sh 24            # from the repo root; extra args go to Playwright
+```
+
+The script builds the app, runs `docker build --build-arg NODE_VERSION=24`, refuses to continue if the
+image's Node isn't 24 (a hardcoded `FROM` tag would otherwise test the wrong version), then runs the suite
+with `E2E_APP_IMAGE` set so Playwright starts the container instead of local Node. Needs Docker running.
+
+Without a version (`e2e/scripts/test-image.sh`) it tests the image exactly as the Dockerfile builds it.
+
+## CI
+
+- **Every PR push** runs the `E2E` job (`.github/workflows/e2e.yml`): the app built on `vars.node_version`,
+  the image as the Dockerfile builds it, the full suite against the container. `E2E` is a required check,
+  so the PR can't merge while it's running or failing. A newer push cancels the older run. The Playwright
+  report is uploaded as the `playwright-report` artifact.
+- **Manual Node comparison**: Actions → E2E tests → Run workflow, with `node_versions` such as
+  `["22", "24"]`; reports land in `playwright-report-node<version>`. GitHub only lists the manual trigger
+  once the workflow is on the default branch (`main`).
+
 ## How it works
 
 - Each test gets its own world (`urlSlug`) in the mock, so tests run fully in parallel.
