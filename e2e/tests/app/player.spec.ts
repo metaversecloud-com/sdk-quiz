@@ -1,4 +1,4 @@
-import { PlayerStatus, SAMPLE_QUESTIONS, VISITOR_ID, expect, test } from "../fixtures";
+import { PlayerStatus, SAMPLE_QUESTIONS, VISITOR_ID, expect, test } from "../../fixtures";
 
 const startedStatus = (secondsAgo = 5, answers: PlayerStatus["answers"] = {}): PlayerStatus => ({
   answers,
