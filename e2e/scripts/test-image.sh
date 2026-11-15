@@ -11,7 +11,7 @@ set -euo pipefail
 NODE_VERSION="${1:-}"
 shift || true
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-IMAGE="sdk-quiz:e2e${NODE_VERSION:+-node$NODE_VERSION}"
+IMAGE="sdk-app:e2e${NODE_VERSION:+-node$NODE_VERSION}"
 
 echo "Host Node (build): $(node -v)"
 cd "$ROOT"
@@ -27,7 +27,7 @@ if [[ -n "$NODE_VERSION" && "$IMAGE_NODE" != "v${NODE_VERSION}"* ]]; then
 fi
 
 # Playwright stops `docker run` but not always the container; clear it before and after the run.
-cleanup() { docker rm -f sdk-quiz-e2e >/dev/null 2>&1 || true; }
+cleanup() { docker rm -f sdk-app-e2e >/dev/null 2>&1 || true; }
 cleanup
 trap cleanup EXIT
 

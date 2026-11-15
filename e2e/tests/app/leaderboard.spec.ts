@@ -1,4 +1,4 @@
-import { SAMPLE_QUESTIONS, expect, test } from "../fixtures";
+import { SAMPLE_QUESTIONS, expect, test } from "../../fixtures";
 
 const LEADERBOARD = {
   "profile-slow": "Slow Sam|3|02:10",

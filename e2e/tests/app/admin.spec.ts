@@ -1,4 +1,4 @@
-import { KEY_ASSET_ID, SAMPLE_QUESTIONS, expect, openAdminSettings, questionAssetId, test } from "../fixtures";
+import { KEY_ASSET_ID, SAMPLE_QUESTIONS, expect, openAdminSettings, questionAssetId, test } from "../../fixtures";
 
 test.describe("unconfigured quiz", () => {
   test("players see the not-live message and no admin controls", async ({ page, world }) => {

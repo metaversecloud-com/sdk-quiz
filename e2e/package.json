@@ -1,5 +1,5 @@
 {
-  "name": "@sdk-quiz/e2e",
+  "name": "@sdk-app/e2e",
   "private": true,
   "type": "module",
   "scripts": {
