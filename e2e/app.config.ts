@@ -64,12 +64,6 @@ export type RouteSpec = {
   knownBugs?: KnownBugs;
 };
 
-// getCredentials (protected file) returns { error } instead of throwing, so every route that
-// uses it has this bug until it's fixed there.
-const GET_CREDENTIALS_DOESNT_THROW = "EXP-428 #6: getCredentials doesn't throw";
-
-const UNNAMED = { unnamedCredentialError: GET_CREDENTIALS_DOESNT_THROW };
-
 /**
  * API routes that read the session credentials (getCredentials). Each one must reject missing or
  * foreign credentials and must never send the interactive secret to the browser. List them all.
@@ -79,18 +73,18 @@ const UNNAMED = { unnamedCredentialError: GET_CREDENTIALS_DOESNT_THROW };
  * tests/app instead (open it with page.request or fetch + AbortController and check the status).
  */
 export const CREDENTIALED_ROUTES: RouteSpec[] = [
-  { method: "get", path: "/quiz", knownBugs: UNNAMED },
-  { method: "put", path: "/start", knownBugs: UNNAMED },
-  { method: "post", path: "/question/answer/1", data: { isCorrect: true, selectedOption: "2" }, knownBugs: UNNAMED },
-  { method: "post", path: "/quiz/timeout", knownBugs: UNNAMED },
+  { method: "get", path: "/quiz" },
+  { method: "put", path: "/start" },
+  { method: "post", path: "/question/answer/1", data: { isCorrect: true, selectedOption: "2" } },
+  { method: "post", path: "/quiz/timeout" },
   // Admin
-  { method: "get", path: "/admin/particles", knownBugs: UNNAMED },
-  { method: "put", path: "/admin/save-questions", data: { questions: {} }, knownBugs: UNNAMED },
-  { method: "delete", path: "/admin/delete-question/1", knownBugs: UNNAMED },
-  { method: "put", path: "/admin/update-settings", data: { settings: {} }, knownBugs: UNNAMED },
-  { method: "post", path: "/admin/reset", knownBugs: UNNAMED },
+  { method: "get", path: "/admin/particles" },
+  { method: "put", path: "/admin/save-questions", data: { questions: {} } },
+  { method: "delete", path: "/admin/delete-question/1" },
+  { method: "put", path: "/admin/update-settings", data: { settings: {} } },
+  { method: "post", path: "/admin/reset" },
   // Webhook: Topia posts the clicked asset's credentials in the body.
-  { method: "post", path: "/iframe/start", credentialsIn: "body", knownBugs: UNNAMED },
+  { method: "post", path: "/iframe/start", credentialsIn: "body" },
 ];
 
 /**
@@ -148,10 +142,7 @@ export const HEALTH_KNOWN_BUGS: { incompleteContract?: string } = {};
  * registers its own logging handler. Fix: process.removeAllListeners("unhandledRejection") before
  * registering the app's handler.
  */
-export const PROCESS_KNOWN_BUGS: { exitsOnUnhandledRejection?: string } = {
-  exitsOnUnhandledRejection:
-    "EXP-472: @rtsdk/topia's unhandledRejection hook calls process.exit(1); server/index.ts's handler doesn't stop it",
-};
+export const PROCESS_KNOWN_BUGS: { exitsOnUnhandledRejection?: string } = {};
 
 /**
  * The request system.spec sends a malformed JSON body to. Default: the first POST/PUT route in
@@ -167,9 +158,7 @@ export const MALFORMED_JSON_REQUEST: { method: "post" | "put"; path: string } | 
  * middleware after express.json()). Fix: an error middleware that answers body-parser errors
  * (err.type === "entity.parse.failed") with res.status(400).json({ success: false, error: "Invalid JSON" }).
  */
-export const ERROR_KNOWN_BUGS: { malformedJson?: string } = {
-  malformedJson: "EXP-473: no error middleware: Express' default error page shows the stack trace (NODE_ENV isn't production)",
-};
+export const ERROR_KNOWN_BUGS: { malformedJson?: string } = {};
 
 /**
  * true starts mock-redis/server.mjs (an in-memory Redis) next to mock-topia and points REDIS_URL at it
